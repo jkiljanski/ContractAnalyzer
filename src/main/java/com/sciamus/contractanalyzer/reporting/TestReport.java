@@ -2,17 +2,22 @@ package com.sciamus.contractanalyzer.reporting;
 
 import io.vavr.control.Option;
 
-public abstract class TestReport {
-    // change to ENUM
-    private boolean result;
-    //zbyt konkretnie -> na String
-    private Option<String> report;
+public class TestReport {
 
-    public boolean getResult(){
-        return result;
+    public TestReport(ReportResults result, String report) {
+        this.result = result;
+        this.report = report;
     }
 
-    public Option<String> getReport() {
-        return report;
+    private ReportResults result;
+    private String report;
+
+    public TestReport() {
+
     }
+
+    public boolean isPassed() {
+        return result == ReportResults.PASSED;
+    }
+
 }

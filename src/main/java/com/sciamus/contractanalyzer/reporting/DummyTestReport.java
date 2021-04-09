@@ -5,7 +5,8 @@ public class DummyTestReport extends TestReport {
 
     public  DummyTestReport ()
     {
-        var result = true;
+        super();
+        var result = ReportResults.PASSED;
 
     }
 

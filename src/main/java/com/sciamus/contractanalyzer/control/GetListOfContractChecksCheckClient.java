@@ -6,10 +6,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
 
-@FeignClient(value = "TestClient")
-public interface TestClient {
+@FeignClient(value = "GetListOfContractChecksCheckClient")
+public interface GetListOfContractChecksCheckClient {
 
-    @RequestMapping(method = RequestMethod.GET, value = "/restContractCheck")
+    @RequestMapping(method = RequestMethod.GET, value = "/restContractChecks")
     List<String> getListOfChecks();
 
 }

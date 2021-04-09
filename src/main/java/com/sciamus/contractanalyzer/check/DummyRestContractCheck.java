@@ -10,16 +10,21 @@ import java.net.URL;
 
 public class DummyRestContractCheck implements RestContractCheck {
 
+
+    private final static String NAME = "Dummy Check";
+
+
     public DummyRestContractCheck() {
+
     }
 
 
-    public TestReport run(URL url) {
+    public TestReport run(URL Url) {
         return new DummyTestReport();
     }
 
     @Override
     public String getName() {
-        return "Dummy";
+        return NAME;
     }
 }

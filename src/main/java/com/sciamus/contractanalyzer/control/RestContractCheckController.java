@@ -10,20 +10,22 @@ import java.util.List;
 @RestController
 public class RestContractCheckController {
 
-    @Autowired
+    //TODO: dlaczego nie final
     private RestContractCheckRepository restContractCheckRepository;
 
-    @GetMapping("/")
-    public String index(){
-        return "Krowa";
+    @Autowired
+    public RestContractCheckController(RestContractCheckRepository restContractCheckRepository) {
+        this.restContractCheckRepository = restContractCheckRepository;
+    }
+
+    @GetMapping("/restContractChecks")
+    public List<String> getRestContractCheckList(){
+
+        return restContractCheckRepository.getAllChecks();
+
     }
 
 
-    @GetMapping("/restContractCheck")
-    public List<String> getRestContractCheck(){
 
-        return restContractCheckRepository.getNames();
-//        System.out.println("Krowa");
-    }
 
 }
