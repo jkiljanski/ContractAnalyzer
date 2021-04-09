@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
 
-@FeignClient(value = "TestClient", url = "http://localhost:8080")
+@FeignClient(value = "TestClient")
 public interface TestClient {
 
     @RequestMapping(method = RequestMethod.GET, value = "/restContractCheck")
