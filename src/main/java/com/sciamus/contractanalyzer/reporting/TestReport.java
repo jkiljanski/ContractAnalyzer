@@ -1,6 +1,6 @@
 package com.sciamus.contractanalyzer.reporting;
 
-import io.vavr.control.Option;
+import org.bouncycastle.util.test.TestResult;
 
 public class TestReport {
 
@@ -12,12 +12,11 @@ public class TestReport {
     private ReportResults result;
     private String report;
 
-    public TestReport() {
 
+    public ReportResults isPassed() {
+        return result;
     }
 
-    public boolean isPassed() {
-        return result == ReportResults.PASSED;
-    }
+
 
 }

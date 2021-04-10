@@ -5,7 +5,7 @@ import com.sciamus.contractanalyzer.reporting.TestReport;
 
 import java.net.URL;
 
-interface RestContractCheck {
+public interface RestContractCheck {
 
 //    TestReport run(URL url);
 

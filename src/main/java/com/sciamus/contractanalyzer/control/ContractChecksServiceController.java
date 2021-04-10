@@ -1,11 +1,11 @@
 package com.sciamus.contractanalyzer.control;
 
 import com.sciamus.contractanalyzer.check.ContractChecksService;
-import com.sciamus.contractanalyzer.reporting.TestReport;
+import com.sciamus.contractanalyzer.reporting.ReportResults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URL;
+import java.net.MalformedURLException;
 
 @RestController
 public class ContractChecksServiceController {
@@ -17,11 +17,11 @@ public class ContractChecksServiceController {
         this.contractChecksService = contractChecksService;
     }
 
-
-    @RequestMapping(value = "/checks/{name}/run", method = RequestMethod.GET)
+    //    @RequestMapping(value = , method = RequestMethod.GET)
+    @GetMapping("/checks/{name}/run")
     @ResponseBody
-    public boolean runAndSeeIfPassed(
-            @PathVariable("name") String name, URL url) {
+    public ReportResults runAndSeeIfPassed(
+            @PathVariable("name") String name, @RequestParam(required = false, name = "krowa") String url) throws MalformedURLException {
         return contractChecksService.checkIfPassed(name, url);
     }
 

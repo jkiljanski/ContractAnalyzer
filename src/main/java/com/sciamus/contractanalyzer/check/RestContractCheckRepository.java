@@ -23,9 +23,11 @@ public class RestContractCheckRepository {
     }
 
     public TestReport runCheck (String name, URL url) {
-        RestContractCheck r = restContractChecks.stream().filter(s->s.getName()==name).findFirst().orElse(null);
-        TestReport t = r.run(url);
-        return  t;
+        System.out.println("my checks: " + restContractChecks);
+        RestContractCheck restContractCheck = restContractChecks.stream()
+                .filter(s->s.getName().equals(name))
+                .findFirst().orElseThrow(()-> new RuntimeException("No check of name=" + name +" found"));
+        return restContractCheck.run(url);
     }
 
 
