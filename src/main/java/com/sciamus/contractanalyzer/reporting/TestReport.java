@@ -1,7 +1,5 @@
 package com.sciamus.contractanalyzer.reporting;
 
-import org.bouncycastle.util.test.TestResult;
-
 public class TestReport {
 
     public TestReport(ReportResults result, String report) {
@@ -16,7 +14,6 @@ public class TestReport {
     public ReportResults isPassed() {
         return result;
     }
-
 
 
 }

@@ -1,13 +1,9 @@
-package com.sciamus.contractanalyzer.check;
+package com.sciamus.contractanalyzer.checks.getlistof;
 
-import com.sciamus.contractanalyzer.control.GetListOfContractChecksCheckClient;
+import com.sciamus.contractanalyzer.checks.RestContractCheck;
 import com.sciamus.contractanalyzer.reporting.ReportResults;
 import com.sciamus.contractanalyzer.reporting.TestReport;
 import feign.Feign;
-import feign.codec.Decoder;
-import feign.codec.Encoder;
-import feign.codec.StringDecoder;
-import org.springframework.cloud.openfeign.support.SpringMvcContract;
 import org.springframework.stereotype.Component;
 
 import java.net.URL;

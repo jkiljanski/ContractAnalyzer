@@ -1,4 +1,4 @@
-package com.sciamus.contractanalyzer.check;
+package com.sciamus.contractanalyzer.checks;
 
 
 import com.sciamus.contractanalyzer.reporting.TestReport;

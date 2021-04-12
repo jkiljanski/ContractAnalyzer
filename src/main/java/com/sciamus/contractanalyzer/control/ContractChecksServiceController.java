@@ -1,6 +1,6 @@
 package com.sciamus.contractanalyzer.control;
 
-import com.sciamus.contractanalyzer.check.ContractChecksService;
+import com.sciamus.contractanalyzer.checks.ContractChecksService;
 import com.sciamus.contractanalyzer.reporting.ReportResults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
