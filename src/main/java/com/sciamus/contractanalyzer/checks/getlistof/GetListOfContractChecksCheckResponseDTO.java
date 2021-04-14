@@ -6,5 +6,4 @@ public class GetListOfContractChecksCheckResponseDTO {
 
     public List<String> listOfChecks;
 
-
 }

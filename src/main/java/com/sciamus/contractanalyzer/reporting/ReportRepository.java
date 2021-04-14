@@ -4,6 +4,7 @@ package com.sciamus.contractanalyzer.reporting;
 import org.springframework.stereotype.Repository;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Repository
@@ -28,7 +29,9 @@ public class ReportRepository {
     }
 
     public TestReport getReportByID(long id) {
-        return reportRepository.get(id);
+
+        return Optional.ofNullable(reportRepository.get(id))
+                .orElseThrow(() -> new ReportNotFoundException("" + id));
     }
 
 

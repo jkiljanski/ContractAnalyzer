@@ -1,10 +1,10 @@
-package com.sciamus.contractanalyzer.utils;
+package com.sciamus.contractanalyzer.reporting;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Report not found")
-public class ReportNotFoundException extends RuntimeException{
+public class ReportNotFoundException extends IllegalArgumentException{
 
     public ReportNotFoundException(String reportID) {
         super(reportID + " not found");

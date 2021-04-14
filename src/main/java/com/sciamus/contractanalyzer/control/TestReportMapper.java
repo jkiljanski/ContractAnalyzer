@@ -22,11 +22,11 @@ public class TestReportMapper {
     //review pls:
 
     public TestReport mapFromDTO(TestReportDTO testReportDTO) {
-        return new TestReport(testReportDTO.id, ReportResults.valueOf(testReportDTO.result), testReportDTO.reportBody);
+        return new TestReport(testReportDTO.id, ReportResults.valueOf(testReportDTO.result), testReportDTO.reportBody, testReportDTO.timestamp );
     }
 
     public TestReportDTO mapToDTO(TestReport testReport) {
-        return new TestReportDTO(testReport.getReportId(), testReport.getReportBody(), testReport.getReportBody(), testReport.getTimestamp());
+        return new TestReportDTO(testReport.getReportId(), testReport.getResult().toString(), testReport.getReportBody(), testReport.getTimestamp());
     }
 
 

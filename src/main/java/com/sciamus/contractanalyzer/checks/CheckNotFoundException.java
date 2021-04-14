@@ -1,4 +1,4 @@
-package com.sciamus.contractanalyzer.utils;
+package com.sciamus.contractanalyzer.checks;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

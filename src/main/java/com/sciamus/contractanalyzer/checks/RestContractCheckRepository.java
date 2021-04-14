@@ -1,8 +1,6 @@
 package com.sciamus.contractanalyzer.checks;
 
 import com.sciamus.contractanalyzer.reporting.TestReport;
-import com.sciamus.contractanalyzer.utils.CheckNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.net.URL;

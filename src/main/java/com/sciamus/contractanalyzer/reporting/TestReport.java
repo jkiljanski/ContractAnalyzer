@@ -1,17 +1,13 @@
 package com.sciamus.contractanalyzer.reporting;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import java.sql.Timestamp;
-
 
 
 public class TestReport {
 
-
-
+    //TODO: review: kiedy to pole się tworzy, nie jestem pewien tego rozwiązania
+    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
 
     private long id;
@@ -24,10 +20,12 @@ public class TestReport {
         this.reportBody = reportBody;
     }
 
-    public TestReport(long id, ReportResults result, String reportBody) {
+
+    public TestReport(long id, ReportResults result, String reportBody, Timestamp timestamp) {
         this.id = id;
         this.result = result;
         this.reportBody = reportBody;
+        this.timestamp = timestamp;
     }
 
     // nie jestem pewien tego rozwiązania
@@ -36,16 +34,18 @@ public class TestReport {
     }
 
 
-
     public ReportResults isPassed() {
         return result;
     }
-    public long getReportId(){
+
+    public long getReportId() {
         return id;
     }
-    public ReportResults getResult() {return this.result;}
 
-    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+    public ReportResults getResult() {
+        return this.result;
+    }
+
 
     public Timestamp getTimestamp() {
         return timestamp;
