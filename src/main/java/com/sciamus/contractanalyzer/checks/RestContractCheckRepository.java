@@ -1,6 +1,7 @@
 package com.sciamus.contractanalyzer.checks;
 
 import com.sciamus.contractanalyzer.reporting.TestReport;
+import com.sciamus.contractanalyzer.utils.CheckNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -13,7 +14,7 @@ import java.util.stream.Collectors;
 public class RestContractCheckRepository {
     private final List<RestContractCheck> restContractChecks;
 
-    @Autowired
+
     public RestContractCheckRepository(List<RestContractCheck> restContractChecks) {
         this.restContractChecks = restContractChecks;
     }
@@ -26,7 +27,7 @@ public class RestContractCheckRepository {
         System.out.println("my checks: " + restContractChecks);
         RestContractCheck restContractCheck = restContractChecks.stream()
                 .filter(s->s.getName().equals(name))
-                .findFirst().orElseThrow(()-> new RuntimeException("No check of name=" + name +" found"));
+                .findFirst().orElseThrow(()-> new CheckNotFoundException(name));
         return restContractCheck.run(url);
     }
 

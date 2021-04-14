@@ -4,6 +4,7 @@ import com.sciamus.contractanalyzer.checks.RestContractCheck;
 import com.sciamus.contractanalyzer.reporting.ReportResults;
 import com.sciamus.contractanalyzer.reporting.TestReport;
 import feign.Feign;
+import feign.gson.GsonDecoder;
 import org.springframework.stereotype.Component;
 
 import java.net.URL;
@@ -14,28 +15,36 @@ public class GetListOfContractChecksCheck implements RestContractCheck {
 
     private final static String NAME = "List Contract Check Getting Check";
 
-//    private final Client client;
-
-//    @Autowired
-//    public GetListOfContractChecksCheck(Client client) {
-//        this.client = client;
-//    }
 
     @Override
-//TODO: pytanie: nie dość, że wymagamy od sprawdzanego serwera wystawienia konkrentego endpointa, to jeszcze definiujemy konkretą metodę??
-
     public TestReport run(URL url) {
 
         GetListOfContractChecksCheckClient testClient = Feign.builder()
-
-//                .client(client)
+                .decoder(new GsonDecoder())
                 .target(GetListOfContractChecksCheckClient.class, url.toString());
 
-        if (testClient.getListOfChecks().isEmpty()) {
-            return new TestReport(ReportResults.FAILED, "Test failed");
-        }
         System.out.println(testClient.getListOfChecks());
-        return new TestReport(ReportResults.PASSED, "Test passed");
+
+        GetListOfContractChecksCheckResponseDTO responseDTO = new GetListOfContractChecksCheckResponseDTO();
+
+        responseDTO = testClient.getListOfChecks();
+
+        if (responseDTO.listOfChecks.size() > 0 && responseDTO.listOfChecks.contains(GetListOfContractChecksCheck.NAME)) {
+
+
+            return getPassedTestReport();
+        }
+        return getFailedTestReport();
+    }
+
+
+    //TODO: pomysł jak to wydelegować do oddzielnej klasy / ewentualnie zrobić TestReportBuilder
+    private TestReport getFailedTestReport() {
+        return new TestReport(ReportResults.FAILED, this.getName() + " FAILED");
+    }
+
+    private TestReport getPassedTestReport() {
+        return new TestReport(ReportResults.PASSED, this.getName() + " PASSED");
     }
 
     @Override

@@ -15,7 +15,7 @@ public class DummyRestContractCheck implements RestContractCheck {
 
 
     public TestReport run(URL Url) {
-        return new TestReport(ReportResults.PASSED, "Dummy Report");
+        return new TestReport(ReportResults.PASSED, this.getName()+ " is always PASSED");
     }
 
     @Override
