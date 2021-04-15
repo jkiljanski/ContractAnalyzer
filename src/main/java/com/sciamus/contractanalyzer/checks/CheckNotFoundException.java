@@ -8,6 +8,6 @@ public class CheckNotFoundException extends RuntimeException {
 
 
     public CheckNotFoundException(String testName) {
-        super(testName + " not found");
+        super("Sorry, we're unable to find check named: " + testName);
     }
 }

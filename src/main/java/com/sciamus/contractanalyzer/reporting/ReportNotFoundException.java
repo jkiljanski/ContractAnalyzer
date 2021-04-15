@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class ReportNotFoundException extends IllegalArgumentException{
 
     public ReportNotFoundException(String reportID) {
-        super(reportID + " not found");
+        super("Sorry, we're unable to find report with ID: "+ reportID);
     }
 }

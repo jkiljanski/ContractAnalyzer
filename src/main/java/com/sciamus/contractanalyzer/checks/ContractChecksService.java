@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Map;
 
 @Service
 public class ContractChecksService {
@@ -24,7 +23,7 @@ public class ContractChecksService {
 
     public TestReport runAndGetSavedReportWithId(String name, String url) throws MalformedURLException {
 
-        System.out.println("Called URL: "+url);
+        System.out.println("Called URL: " + url);
 
         TestReport toSave = restContractCheckRepository.runCheck(name, new URL(url));
         // TODO: czy nie trzeba zwalidować czy się zachował?
@@ -33,7 +32,6 @@ public class ContractChecksService {
         return toSave;
 
     }
-
 
 
 }

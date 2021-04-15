@@ -1,0 +1,12 @@
+{
+  "properties": [
+    {
+      "name": "myapp.someprop",
+      "type": "java.lang.String"
+    },
+    {
+      "name": "myapp.someintprop",
+      "type": "java.lang.Integer"
+    }
+  ]
+}

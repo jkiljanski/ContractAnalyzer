@@ -44,9 +44,6 @@ public class ReportingCheck implements RestContractCheck {
         TestReport reportToBeChecked2 = testReportMapper.
                 mapFromDTO(reportingCheckClient.getReportById(reportToBeChecked1.getReportId()));
 
-//        System.out.println("the compared timestamps:");
-//        System.out.println(reportToBeChecked1.getTimestamp());
-//        System.out.println(reportToBeChecked2.getTimestamp());
 
 
         if (reportToBeChecked1.getTimestamp().equals(reportToBeChecked2.getTimestamp())) {
