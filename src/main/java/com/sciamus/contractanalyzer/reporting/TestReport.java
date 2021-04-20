@@ -8,13 +8,14 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.sql.Timestamp;
+import java.util.Date;
 
 @Document(collection = "contractanalyzer")
 @TypeAlias("test_report")
 public class TestReport {
 
     //TODO: review: kiedy to pole się tworzy, nie jestem pewien tego rozwiązania
-    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+
 
     @Id
     private long id;
@@ -24,7 +25,10 @@ public class TestReport {
     private final String reportBody;
     @Field("name")
     private final String nameOfCheck;
+    @Field("timestamp")
 
+            //review: is it precise enough?
+    Date timestamp = new Date(System.currentTimeMillis());
 
 
     public TestReport(ReportResults result, String reportBody, String nameOfCheck) {
@@ -35,7 +39,7 @@ public class TestReport {
     }
 
     @PersistenceConstructor
-    public TestReport(long id, ReportResults result, String reportBody, Timestamp timestamp, String nameOfCheck) {
+    public TestReport(long id, ReportResults result, String reportBody, Date timestamp, String nameOfCheck) {
         this.id = id;
         this.result = result;
         this.reportBody = reportBody;
@@ -62,7 +66,7 @@ public class TestReport {
     }
 
 
-    public Timestamp getTimestamp() {
+    public Date getTimestamp() {
         return timestamp;
     }
 

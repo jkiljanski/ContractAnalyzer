@@ -23,11 +23,11 @@ public class TestReportMapper {
     //review pls:
 
     public TestReport mapFromDTO(TestReportDTO testReportDTO) {
-        return new TestReport(testReportDTO.id, ReportResults.valueOf(testReportDTO.result), testReportDTO.reportBody, java.sql.Timestamp.valueOf(testReportDTO.timestamp.toString()), testReportDTO.nameOfCheck);
+        return new TestReport(testReportDTO.id, ReportResults.valueOf(testReportDTO.result), testReportDTO.reportBody, testReportDTO.timestamp, testReportDTO.nameOfCheck);
     }
 
     public TestReportDTO mapToDTO(TestReport testReport) {
-        return new TestReportDTO(testReport.getReportId(), testReport.getResult().toString(), testReport.getReportBody(), new Date(testReport.getTimestamp().getTime()));
+        return new TestReportDTO(testReport.getReportId(), testReport.getResult().toString(), testReport.getReportBody(), testReport.getTimestamp(), testReport.getNameOfCheck());
     }
 
 
