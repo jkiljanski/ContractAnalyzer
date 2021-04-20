@@ -1,31 +1,46 @@
 package com.sciamus.contractanalyzer.reporting;
 
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.annotation.TypeAlias;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+
 import java.sql.Timestamp;
 
-
+@Document(collection = "contractanalyzer")
+@TypeAlias("test_report")
 public class TestReport {
 
     //TODO: review: kiedy to pole się tworzy, nie jestem pewien tego rozwiązania
     Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
-
+    @Id
     private long id;
+    @Field("result")
     private final ReportResults result;
+    @Field("content")
     private final String reportBody;
+    @Field("name")
+    private final String nameOfCheck;
 
-    public TestReport(ReportResults result, String reportBody) {
+
+
+    public TestReport(ReportResults result, String reportBody, String nameOfCheck) {
 
         this.result = result;
         this.reportBody = reportBody;
+        this.nameOfCheck = nameOfCheck;
     }
 
-
-    public TestReport(long id, ReportResults result, String reportBody, Timestamp timestamp) {
+    @PersistenceConstructor
+    public TestReport(long id, ReportResults result, String reportBody, Timestamp timestamp, String nameOfCheck) {
         this.id = id;
         this.result = result;
         this.reportBody = reportBody;
         this.timestamp = timestamp;
+        this.nameOfCheck = nameOfCheck;
     }
 
     // nie jestem pewien tego rozwiązania
@@ -54,4 +69,12 @@ public class TestReport {
     public String getReportBody() {
         return reportBody;
     }
+
+    public String getNameOfCheck() {
+        return nameOfCheck;
+    }
+
+
+
+
 }

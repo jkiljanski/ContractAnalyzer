@@ -1,38 +1,15 @@
 package com.sciamus.contractanalyzer.reporting;
 
-
+import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.List;
 
 @Repository
-public class ReportRepository {
+public interface ReportRepository extends MongoRepository<TestReport, Long> {
 
-    private final Map<Long, TestReport> reportRepository = new ConcurrentHashMap<>();
+    List<TestReport> findAllByNameOfCheck(String name);
 
-    private final IdGenerator idGenerator;
-
-    public ReportRepository(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator;
-    }
-
-    public int getCountOfReports() {
-        return reportRepository.size();
-    }
-
-    //pls review
-    public TestReport addReportToRepository(TestReport testReport) {
-        testReport.addId(idGenerator.getNextID());
-        return reportRepository.put(testReport.getReportId(), testReport);
-    }
-
-    public TestReport getReportByID(long id) {
-
-        return Optional.ofNullable(reportRepository.get(id))
-                .orElseThrow(() -> new ReportNotFoundException("" + id));
-    }
 
 
 }

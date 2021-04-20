@@ -47,9 +47,9 @@ public class ReportingCheck implements RestContractCheck {
 
 
         if (reportToBeChecked1.getTimestamp().equals(reportToBeChecked2.getTimestamp())) {
-            return new TestReport(ReportResults.PASSED, this.getName() + " PASSED");
+            return new TestReport(ReportResults.PASSED, this.getName() + " PASSED", this.getName());
         }
-        return new TestReport(ReportResults.FAILED, this.getName() + " FAILED");
+        return new TestReport(ReportResults.FAILED, this.getName() + " FAILED", this.getName());
 
     }
 

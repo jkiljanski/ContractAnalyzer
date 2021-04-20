@@ -1,6 +1,6 @@
 package com.sciamus.contractanalyzer.checks;
 
-import com.sciamus.contractanalyzer.reporting.ReportRepository;
+import com.sciamus.contractanalyzer.reporting.ReportService;
 import com.sciamus.contractanalyzer.reporting.TestReport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,12 +13,12 @@ public class ContractChecksService {
 
 
     private final RestContractCheckRepository restContractCheckRepository;
-    private final ReportRepository reportRepository;
+    private final ReportService reportService;
 
     @Autowired
-    public ContractChecksService(RestContractCheckRepository restContractCheckRepository, ReportRepository reportRepository) {
+    public ContractChecksService(RestContractCheckRepository restContractCheckRepository, ReportService reportService) {
         this.restContractCheckRepository = restContractCheckRepository;
-        this.reportRepository = reportRepository;
+        this.reportService = reportService;
     }
 
     public TestReport runAndGetSavedReportWithId(String name, String url) throws MalformedURLException {
@@ -27,7 +27,7 @@ public class ContractChecksService {
 
         TestReport toSave = restContractCheckRepository.runCheck(name, new URL(url));
         // TODO: czy nie trzeba zwalidować czy się zachował?
-        reportRepository.addReportToRepository(toSave);
+        reportService.addReportToRepository(toSave);
 
         return toSave;
 

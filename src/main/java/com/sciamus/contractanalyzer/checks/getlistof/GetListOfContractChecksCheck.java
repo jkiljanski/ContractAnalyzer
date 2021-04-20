@@ -25,7 +25,7 @@ public class GetListOfContractChecksCheck implements RestContractCheck {
 
         System.out.println(testClient.getListOfChecks());
 
-        GetListOfContractChecksCheckResponseDTO responseDTO = new GetListOfContractChecksCheckResponseDTO();
+        GetListOfContractChecksCheckResponseDTO responseDTO;
 
         responseDTO = testClient.getListOfChecks();
 
@@ -40,11 +40,11 @@ public class GetListOfContractChecksCheck implements RestContractCheck {
 
     //TODO: pomysł jak to wydelegować do oddzielnej klasy / ewentualnie zrobić TestReportBuilder
     private TestReport getFailedTestReport() {
-        return new TestReport(ReportResults.FAILED, this.getName() + " FAILED");
+        return new TestReport(ReportResults.FAILED, this.getName() + " FAILED", this.getName());
     }
 
     private TestReport getPassedTestReport() {
-        return new TestReport(ReportResults.PASSED, this.getName() + " PASSED");
+        return new TestReport(ReportResults.PASSED, this.getName() + " PASSED", this.getName());
     }
 
     @Override
