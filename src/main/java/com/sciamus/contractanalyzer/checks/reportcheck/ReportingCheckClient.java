@@ -18,8 +18,8 @@ public interface ReportingCheckClient {
     @RequestLine(value = "GET /restContractChecks")
     GetListOfContractChecksCheckResponseDTO getAvailableChecks();
 
-    @RequestLine(value = "GET /checks/{name}/run?url={url}")
-    TestReportDTO runCheckAndGetReportWithId(@Param("name") String name, @Param("url") URL url);
+    @RequestLine(value = "GET /checks/{name}/autorun?url={url}")
+    TestReportDTO autogen(@Param("name") String name, @Param("url") URL url);
 
     @RequestLine(value = "GET /reports/{id}")
     TestReportDTO getReportById(@Param("id") String id);

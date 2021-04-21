@@ -7,10 +7,12 @@ import java.net.URL;
 
 public interface RestContractCheck {
 
-//    TestReport run(URL url);
 
     TestReport run(URL url);
 
 
     String getName();
+
+
+
 }

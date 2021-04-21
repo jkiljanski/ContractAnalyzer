@@ -3,6 +3,7 @@ package com.sciamus.contractanalyzer.control;
 
 import com.sciamus.contractanalyzer.reporting.ReportResults;
 import com.sciamus.contractanalyzer.reporting.TestReport;
+import com.sciamus.contractanalyzer.reporting.TestReportBuilder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -21,7 +22,12 @@ public class TestReportMapper {
     //review pls:
 
     public TestReport mapFromDTO(TestReportDTO testReportDTO) {
-        return new TestReport(testReportDTO.id, ReportResults.valueOf(testReportDTO.result), testReportDTO.reportBody, testReportDTO.timestamp, testReportDTO.nameOfCheck);
+        return new TestReportBuilder().setId(testReportDTO.id)
+                .setResult(ReportResults.valueOf(testReportDTO.result))
+                .setReportBody(testReportDTO.reportBody)
+                .setTimestamp(testReportDTO.timestamp)
+                .setNameOfCheck(testReportDTO.nameOfCheck)
+                .createTestReport();
     }
 
     public TestReportDTO mapToDTO(TestReport testReport) {

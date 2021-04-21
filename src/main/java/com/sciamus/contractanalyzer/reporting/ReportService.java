@@ -36,8 +36,6 @@ public class ReportService {
     //watchout: żeby nie zaciągnęło całej bazy danych, to trzeba zrobić jakieś warunki
     public List<TestReport> getAllReports() {
 
-        System.out.println(reportRepository);
-
         return reportRepository.findAll();
 
     }
