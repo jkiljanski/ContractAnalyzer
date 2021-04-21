@@ -25,18 +25,18 @@ public class ReportRepositoryController {
     @GetMapping("/reports/{id}")
     @ResponseBody
     public TestReport GetReportById(
-            @PathVariable("id") long id) {
-//        System.out.println("# of reports: " + reportRepositoryImpl.getCountOfReports());
+            @PathVariable("id") String id) {
         return reportService.getReportByID(id);
     }
 
 
     @GetMapping("/reports")
     @ResponseBody
+
+    //refactor to DTO:
     public List<TestReport> getAllReports() {
         return reportService.getAllReports();
     }
-
 
 
     @ExceptionHandler(ReportNotFoundException.class)

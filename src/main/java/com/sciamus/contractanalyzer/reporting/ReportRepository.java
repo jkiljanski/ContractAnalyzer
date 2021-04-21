@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ReportRepository extends MongoRepository<TestReport, Long> {
+public interface ReportRepository extends MongoRepository<TestReport, String> {
 
     List<TestReport> findAllByNameOfCheck(String name);
 

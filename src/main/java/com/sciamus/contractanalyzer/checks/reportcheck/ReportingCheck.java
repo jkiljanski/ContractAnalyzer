@@ -35,14 +35,13 @@ public class ReportingCheck implements RestContractCheck {
                 .listOfChecks.get(0), StandardCharsets.UTF_8)
                 .replace("+", "%20");
 
-        System.out.println(checkToRun);
 
 
         TestReport reportToBeChecked1 = testReportMapper.
                 mapFromDTO(reportingCheckClient.runCheckAndGetReportWithId(checkToRun, url));
 
         TestReport reportToBeChecked2 = testReportMapper.
-                mapFromDTO(reportingCheckClient.getReportById(reportToBeChecked1.getReportId()));
+                mapFromDTO(reportingCheckClient.getReportById(reportToBeChecked1.getId()));
 
 
 

@@ -5,8 +5,6 @@ import com.sciamus.contractanalyzer.reporting.ReportResults;
 import com.sciamus.contractanalyzer.reporting.TestReport;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
-
 @Component
 public class TestReportMapper {
 
@@ -27,7 +25,7 @@ public class TestReportMapper {
     }
 
     public TestReportDTO mapToDTO(TestReport testReport) {
-        return new TestReportDTO(testReport.getReportId(), testReport.getResult().toString(), testReport.getReportBody(), testReport.getTimestamp(), testReport.getNameOfCheck());
+        return new TestReportDTO(testReport.getId(), testReport.getResult().toString(), testReport.getReportBody(), testReport.getTimestamp(), testReport.getNameOfCheck());
     }
 
 

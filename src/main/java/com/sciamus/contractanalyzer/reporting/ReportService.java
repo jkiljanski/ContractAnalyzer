@@ -27,7 +27,7 @@ public class ReportService {
         return reportRepository.save(testReport);
     }
 
-    public TestReport getReportByID(long id) {
+    public TestReport getReportByID(String id) {
 
         return reportRepository.findById(id)
                 .orElseThrow(() -> new ReportNotFoundException("" + id));
@@ -35,6 +35,8 @@ public class ReportService {
 
     //watchout: żeby nie zaciągnęło całej bazy danych, to trzeba zrobić jakieś warunki
     public List<TestReport> getAllReports() {
+
+        System.out.println(reportRepository);
 
         return reportRepository.findAll();
 

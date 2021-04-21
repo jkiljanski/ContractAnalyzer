@@ -22,7 +22,7 @@ public interface ReportingCheckClient {
     TestReportDTO runCheckAndGetReportWithId(@Param("name") String name, @Param("url") URL url);
 
     @RequestLine(value = "GET /reports/{id}")
-    TestReportDTO getReportById(@Param("id") long id);
+    TestReportDTO getReportById(@Param("id") String id);
 
 }
 
