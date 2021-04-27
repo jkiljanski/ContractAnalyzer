@@ -4,11 +4,16 @@ import com.sciamus.contractanalyzer.checks.RestContractCheckRepository;
 import com.sciamus.contractanalyzer.reporting.suites.SuiteReport;
 import com.sciamus.contractanalyzer.reporting.suites.SuiteReportMapper;
 import com.sciamus.contractanalyzer.reporting.suites.SuitesReportsRepository;
+import io.vavr.CheckedFunction1;
+import io.vavr.Function1;
+import io.vavr.Function2;
 import io.vavr.collection.List;
 import io.vavr.control.Try;
 import org.springframework.stereotype.Repository;
 
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.function.Predicate;
 
 @Repository
 public class SuitesRepository {
@@ -36,25 +41,40 @@ public class SuitesRepository {
                 .toJavaList();
     }
 
-    public SuiteReport runSuite(String name, String url) {
 
-        List<CheckSuite> list;
-        list = List.ofAll(checkSuites.stream());
+    public Function2<String, URL, SuiteReport> suiteReportFunctionWithURL = (name, url) ->
+            List.ofAll(checkSuites.stream())
+                    .filter(getCheckSuitePredicate(name))
+                    .headOption()
+                    .map(runSuiteReport(url))
+                    .getOrElseThrow(() -> new SuiteNotFoundException(name));
 
-        return list
-                .filter(s -> s.getName().equals(name))
-                .headOption()
-                //nie można odpalić createURL, bo to side-effect - refactor needed
-                .map(s -> s.run(createURL(url)))
-                .getOrElseThrow(() -> new SuiteNotFoundException(name));
+
+    private Function1<CheckSuite, SuiteReport> runSuiteReport(URL url) {
+        return s -> s.run(url);
     }
 
-    public SuiteReport runSuiteAndAddToRepository(String name, String url) {
+    private Predicate<CheckSuite> getCheckSuitePredicate(String name) {
+        return s -> s.getName().equals(name);
+    }
 
-        SuiteReport toSave = runSuite(name, url);
+    public CheckedFunction1<String, URL> toURL = URL::new;
 
-        return suitesReportsRepository.save(toSave);
+    public Function2<String, String, Try<SuiteReport>> gluingFunction = (name, url) -> CheckedFunction1.liftTry(toURL)
+            .apply(url)
+            .map(suiteReportFunctionWithURL.apply(name));
 
+
+    public SuiteReport runSuiteAndAddToRepository(String name, String url) throws RuntimeException {
+
+        return gluingFunction.apply(name, url)
+                .onFailure(MalformedURLException.class, this::throwBadURL)
+                .map(suitesReportsRepository::save)
+                .get();
+    }
+
+    private <X extends Throwable> void throwBadURL(MalformedURLException e) {
+        throw new RuntimeException("Bad URL!",e);
     }
 
     public java.util.List<SuiteReport> getAllReports() {
@@ -63,7 +83,8 @@ public class SuitesRepository {
 
     }
 
-    private URL createURL(String url) {
+    private URL createURL(String url) throws MalformedURLException {
         return Try.of(() -> new URL(url)).getOrElseThrow(t -> new RuntimeException(t));
+        //return new URL(url));
     }
 }
