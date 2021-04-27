@@ -1,14 +1,14 @@
 package com.sciamus.contractanalyzer.checks;
 
 
-import com.sciamus.contractanalyzer.reporting.TestReport;
+import com.sciamus.contractanalyzer.reporting.checks.CheckReport;
 
 import java.net.URL;
 
 public interface RestContractCheck {
 
 
-    TestReport run(URL url);
+    CheckReport run(URL url);
 
 
     String getName();

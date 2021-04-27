@@ -1,10 +1,10 @@
 package com.sciamus.contractanalyzer.checks.reportcheck;
 
 import com.sciamus.contractanalyzer.checks.RestContractCheck;
-import com.sciamus.contractanalyzer.reporting.ReportResults;
-import com.sciamus.contractanalyzer.reporting.TestReport;
-import com.sciamus.contractanalyzer.control.TestReportMapper;
-import com.sciamus.contractanalyzer.reporting.TestReportBuilder;
+import com.sciamus.contractanalyzer.reporting.checks.ReportResults;
+import com.sciamus.contractanalyzer.reporting.checks.CheckReport;
+import com.sciamus.contractanalyzer.control.CheckReportMapper;
+import com.sciamus.contractanalyzer.reporting.checks.CheckReportBuilder;
 import feign.Feign;
 import feign.gson.GsonDecoder;
 import org.springframework.stereotype.Component;
@@ -18,17 +18,17 @@ public class ReportingCheck implements RestContractCheck {
 
 
     private final static String NAME = "Reporting Check";
-    private final TestReportMapper testReportMapper;
+    private final CheckReportMapper checkReportMapper;
 
-    TestReportBuilder reportBuilder = new TestReportBuilder();
+    CheckReportBuilder reportBuilder = new CheckReportBuilder();
 
-    public ReportingCheck(TestReportMapper testReportMapper) {
-        this.testReportMapper = testReportMapper;
+    public ReportingCheck(CheckReportMapper checkReportMapper) {
+        this.checkReportMapper = checkReportMapper;
     }
 
 
     @Override
-    public TestReport run(URL url) {
+    public CheckReport run(URL url) {
         ReportingCheckClient reportingCheckClient = Feign.builder()
                 .decoder(new GsonDecoder())
                 .target(ReportingCheckClient.class, url.toString());
@@ -38,10 +38,10 @@ public class ReportingCheck implements RestContractCheck {
                 .listOfChecks.get(0), StandardCharsets.UTF_8)
                 .replace("+", "%20");
 
-        TestReport reportSentToDatabase = testReportMapper.
-                mapFromDTO(reportingCheckClient.autogen(checkToRun, url));
+        CheckReport reportSentToDatabase = checkReportMapper.
+                mapFromDTO(reportingCheckClient.autogenerate(checkToRun, url));
 
-        TestReport reportFetchedFromDatabase = testReportMapper.
+        CheckReport reportFetchedFromDatabase = checkReportMapper.
                 mapFromDTO(reportingCheckClient.getReportById(reportSentToDatabase.getId()));
 
         reportBuilder.setNameOfCheck(this.getName())

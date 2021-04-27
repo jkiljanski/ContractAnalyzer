@@ -1,4 +1,4 @@
-package com.sciamus.contractanalyzer.reporting;
+package com.sciamus.contractanalyzer.reporting.checks;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;

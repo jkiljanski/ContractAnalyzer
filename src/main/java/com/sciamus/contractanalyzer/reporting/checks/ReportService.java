@@ -1,4 +1,4 @@
-package com.sciamus.contractanalyzer.reporting;
+package com.sciamus.contractanalyzer.reporting.checks;
 
 
 import org.springframework.stereotype.Component;

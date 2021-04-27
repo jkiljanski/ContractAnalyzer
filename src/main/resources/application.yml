@@ -6,6 +6,7 @@ server:
     include-binding-errors: always
     include-stacktrace: on_trace_param
     include-exception: false
+
 spring:
   data:
     mongodb:

@@ -2,7 +2,8 @@ package com.sciamus.contractanalyzer.control;
 
 import java.util.Date;
 
-public class TestReportDTO {
+public class CheckReportDTO {
+
 
     public String id;
     public String result;
@@ -10,7 +11,7 @@ public class TestReportDTO {
     public Date timestamp;
     public String nameOfCheck;
 
-    public TestReportDTO(String id, String result, String reportBody, Date timestamp, String nameOfCheck) {
+    public CheckReportDTO(String id, String result, String reportBody, Date timestamp, String nameOfCheck) {
         this.id = id;
         this.result = result;
         this.reportBody = reportBody;
@@ -20,7 +21,7 @@ public class TestReportDTO {
 
     @Override
     public String toString() {
-        return "TestReportDTO{" +
+        return "CheckReportDTO{" +
                 "id='" + id + '\'' +
                 ", result='" + result + '\'' +
                 ", reportBody='" + reportBody + '\'' +

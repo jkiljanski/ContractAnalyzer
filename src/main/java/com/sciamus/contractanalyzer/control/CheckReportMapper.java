@@ -7,7 +7,7 @@ import com.sciamus.contractanalyzer.reporting.checks.CheckReportBuilder;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TestReportMapper {
+public class CheckReportMapper {
 
 //    private TestReport testReport;
 //    private TestReportDTO testReportDTO;
@@ -21,17 +21,17 @@ public class TestReportMapper {
 
     //review pls:
 
-    public CheckReport mapFromDTO(TestReportDTO testReportDTO) {
-        return new CheckReportBuilder().setId(testReportDTO.id)
-                .setResult(ReportResults.valueOf(testReportDTO.result))
-                .setReportBody(testReportDTO.reportBody)
-                .setTimestamp(testReportDTO.timestamp)
-                .setNameOfCheck(testReportDTO.nameOfCheck)
+    public CheckReport mapFromDTO(CheckReportDTO checkReportDTO) {
+        return new CheckReportBuilder().setId(checkReportDTO.id)
+                .setResult(ReportResults.valueOf(checkReportDTO.result))
+                .setReportBody(checkReportDTO.reportBody)
+                .setTimestamp(checkReportDTO.timestamp)
+                .setNameOfCheck(checkReportDTO.nameOfCheck)
                 .createTestReport();
     }
 
-    public TestReportDTO mapToDTO(CheckReport checkReport) {
-        return new TestReportDTO(checkReport.getId(), checkReport.getResult().toString(), checkReport.getReportBody(), checkReport.getTimestamp(), checkReport.getNameOfCheck());
+    public CheckReportDTO mapToDTO(CheckReport checkReport) {
+        return new CheckReportDTO(checkReport.getId(), checkReport.getResult().toString(), checkReport.getReportBody(), checkReport.getTimestamp(), checkReport.getNameOfCheck());
     }
 
 

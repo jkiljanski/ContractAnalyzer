@@ -1,9 +1,9 @@
 package com.sciamus.contractanalyzer.control;
 
 
-import com.sciamus.contractanalyzer.reporting.ReportNotFoundException;
-import com.sciamus.contractanalyzer.reporting.ReportService;
-import com.sciamus.contractanalyzer.reporting.TestReport;
+import com.sciamus.contractanalyzer.reporting.checks.ReportNotFoundException;
+import com.sciamus.contractanalyzer.reporting.checks.ReportService;
+import com.sciamus.contractanalyzer.reporting.checks.CheckReport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +24,7 @@ public class ReportRepositoryController {
 
     @GetMapping("/reports/{id}")
     @ResponseBody
-    public TestReport GetReportById(
+    public CheckReport GetReportById(
             @PathVariable("id") String id) {
         return reportService.getReportByID(id);
     }
@@ -34,7 +34,7 @@ public class ReportRepositoryController {
     @ResponseBody
 
     //refactor to DTO:
-    public List<TestReport> getAllReports() {
+    public List<CheckReport> getAllReports() {
         return reportService.getAllReports();
     }
 

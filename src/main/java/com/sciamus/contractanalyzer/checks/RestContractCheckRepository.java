@@ -1,6 +1,6 @@
 package com.sciamus.contractanalyzer.checks;
 
-import com.sciamus.contractanalyzer.reporting.TestReport;
+import com.sciamus.contractanalyzer.reporting.checks.CheckReport;
 import org.springframework.stereotype.Repository;
 
 import java.net.URL;
@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 //agregacja wszystkich checków
 @Repository
 public class RestContractCheckRepository {
+
     private final List<RestContractCheck> restContractChecks;
 
 
@@ -21,8 +22,8 @@ public class RestContractCheckRepository {
         return restContractChecks.stream().map(RestContractCheck::getName).collect(Collectors.toList());
     }
 
-    public TestReport runCheck (String name, URL url) {
-        System.out.println("my checks: " + restContractChecks);
+    public CheckReport runCheck (String name, URL url) {
+        System.out.println("check was run");
         RestContractCheck restContractCheck = restContractChecks.stream()
                 .filter(s->s.getName().equals(name))
                 .findFirst().orElseThrow(()-> new CheckNotFoundException(name));

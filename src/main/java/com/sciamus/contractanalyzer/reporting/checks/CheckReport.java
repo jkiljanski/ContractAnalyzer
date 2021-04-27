@@ -1,4 +1,4 @@
-package com.sciamus.contractanalyzer.reporting;
+package com.sciamus.contractanalyzer.reporting.checks;
 
 
 import org.springframework.data.annotation.Id;
@@ -82,7 +82,18 @@ public class CheckReport {
         return nameOfCheck;
     }
 
+
+    @Override
+    public String toString() {
+        return "CheckReport{" +
+                "id='" + id + '\'' +
+                ", result=" + result +
+                ", reportBody='" + reportBody + '\'' +
+                ", nameOfCheck='" + nameOfCheck + '\'' +
+                ", timestamp=" + timestamp +
+                '}';
     }
+}
 
 
 
