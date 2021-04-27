@@ -22,25 +22,25 @@ public class ReportService {
     }
 
     //pls review
-    public TestReport addReportToRepository(TestReport testReport) {
-        testReport.addId(idGenerator.getNextID());
-        return reportRepository.save(testReport);
+    public CheckReport addReportToRepository(CheckReport checkReport) {
+        checkReport.addId(idGenerator.getNextID());
+        return reportRepository.save(checkReport);
     }
 
-    public TestReport getReportByID(String id) {
+    public CheckReport getReportByID(String id) {
 
         return reportRepository.findById(id)
                 .orElseThrow(() -> new ReportNotFoundException("" + id));
     }
 
     //watchout: żeby nie zaciągnęło całej bazy danych, to trzeba zrobić jakieś warunki
-    public List<TestReport> getAllReports() {
+    public List<CheckReport> getAllReports() {
 
         return reportRepository.findAll();
 
     }
 
-    public List<TestReport> findAllByName(String name) {
+    public List<CheckReport> findAllByName(String name) {
         return reportRepository.findAllByNameOfCheck(name);
     }
 

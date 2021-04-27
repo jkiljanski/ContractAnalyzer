@@ -18,5 +18,14 @@ public class TestReportDTO {
         this.nameOfCheck = nameOfCheck;
     }
 
-
+    @Override
+    public String toString() {
+        return "TestReportDTO{" +
+                "id='" + id + '\'' +
+                ", result='" + result + '\'' +
+                ", reportBody='" + reportBody + '\'' +
+                ", timestamp=" + timestamp +
+                ", nameOfCheck='" + nameOfCheck + '\'' +
+                '}';
+    }
 }
