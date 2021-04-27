@@ -33,4 +33,11 @@ public class SuitesRepositoryController {
     }
 
 
+    @GetMapping("/suites/reports")
+    @ResponseBody
+    List<SuiteReport> getAllReports() {
+        return suitesRepository.getAllReports();
+    }
+
+
 }

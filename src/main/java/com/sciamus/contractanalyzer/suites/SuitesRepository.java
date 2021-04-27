@@ -7,6 +7,7 @@ import com.sciamus.contractanalyzer.reporting.suites.SuitesReportsRepository;
 import io.vavr.collection.List;
 import io.vavr.control.Try;
 import org.springframework.stereotype.Repository;
+
 import java.net.URL;
 
 @Repository
@@ -17,7 +18,10 @@ public class SuitesRepository {
     SuitesReportsRepository suitesReportsRepository;
     SuiteReportMapper mapper;
 
-    public SuitesRepository(java.util.List<CheckSuite> checkSuites, RestContractCheckRepository restContractCheckRepository, SuitesReportsRepository suitesReportsRepository, SuiteReportMapper mapper) {
+    public SuitesRepository(java.util.List<CheckSuite> checkSuites,
+                            RestContractCheckRepository restContractCheckRepository,
+                            SuitesReportsRepository suitesReportsRepository,
+                            SuiteReportMapper mapper) {
         this.checkSuites = checkSuites;
         this.restContractCheckRepository = restContractCheckRepository;
         this.suitesReportsRepository = suitesReportsRepository;
@@ -25,7 +29,6 @@ public class SuitesRepository {
     }
 
     public java.util.List<String> getAllSuites() {
-//        return restContractChecks.stream().map(RestContractCheck::getName).collect(Collectors.toList());
 
         return List.ofAll(checkSuites.stream())
                 .map(CheckSuite::getName)
@@ -35,16 +38,13 @@ public class SuitesRepository {
 
     public SuiteReport runSuite(String name, String url) {
 
-        //jak to zoptymalizować - tu jest lista vavrowa
         List<CheckSuite> list;
         list = List.ofAll(checkSuites.stream());
 
-
         return list
                 .filter(s -> s.getName().equals(name))
-                .peek(System.out::println)
                 .headOption()
-                //nie można odpalić createURL!!
+                //nie można odpalić createURL, bo to side-effect - refactor needed
                 .map(s -> s.run(createURL(url)))
                 .getOrElseThrow(() -> new SuiteNotFoundException(name));
     }
@@ -57,9 +57,13 @@ public class SuitesRepository {
 
     }
 
+    public java.util.List<SuiteReport> getAllReports() {
+
+        return suitesReportsRepository.findAll();
+
+    }
+
     private URL createURL(String url) {
-
         return Try.of(() -> new URL(url)).getOrElseThrow(t -> new RuntimeException(t));
-
     }
 }

@@ -10,5 +10,6 @@ server:
 spring:
   data:
     mongodb:
-      uri: "mongodb+srv://m001-student:walicwszystko190@sandbox.opih2.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+      uri: "mongodb+srv://m001-student:Orixa1911@sandbox.opih2.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
       database: reporting
+

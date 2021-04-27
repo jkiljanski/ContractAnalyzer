@@ -16,7 +16,11 @@ public class SuiteReportDTO {
     @Override
     public String toString() {
         return "SuiteReportDTO{" +
-                "testReportDTOList=" + testReportDTOList.toString() +
+                "testReportDTOList=" + testReportDTOList +
                 '}';
+    }
+
+    public void setTestReportDTOList(List<CheckReportDTO> testReportDTOList) {
+        this.testReportDTOList = testReportDTOList;
     }
 }

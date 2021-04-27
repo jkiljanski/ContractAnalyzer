@@ -9,9 +9,6 @@ import java.util.List;
 @Component
 public class ReportService {
 
-    //dlaczego to zwraca błąd:
-
-    // private final io.vavr.collection.Map<Long, TestReport> reportRepository = new HashMap<Long,TestReport>();
     private final ReportRepository reportRepository;
 
     private final IdGenerator idGenerator;

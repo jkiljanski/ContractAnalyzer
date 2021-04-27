@@ -33,4 +33,6 @@ public class SuiteReport {
                 "reportList=" + reportList.toString() +
                 '}';
     }
+
+
 }

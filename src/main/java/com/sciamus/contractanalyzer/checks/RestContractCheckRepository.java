@@ -7,7 +7,6 @@ import java.net.URL;
 import java.util.List;
 import java.util.stream.Collectors;
 
-//agregacja wszystkich checków
 @Repository
 public class RestContractCheckRepository {
 

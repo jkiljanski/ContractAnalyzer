@@ -20,6 +20,8 @@ public class ReportingCheck implements RestContractCheck {
     private final static String NAME = "Reporting Check";
     private final CheckReportMapper checkReportMapper;
 
+
+    // przerobić "funkcyjnie"
     CheckReportBuilder reportBuilder = new CheckReportBuilder();
 
     public ReportingCheck(CheckReportMapper checkReportMapper) {
