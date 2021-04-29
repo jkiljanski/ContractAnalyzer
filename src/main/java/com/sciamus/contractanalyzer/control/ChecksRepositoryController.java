@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.security.RolesAllowed;
+
 @RestController
 public class ChecksRepositoryController {
 
@@ -17,6 +19,7 @@ public class ChecksRepositoryController {
         this.restContractCheckRepository = restContractCheckRepository;
     }
 
+    @RolesAllowed({"writer"})
     @GetMapping("/restContractChecks")
     public GetListOfContractChecksCheckResponseDTO getRestContractCheckList(){
 

@@ -13,3 +13,13 @@ spring:
       uri: "mongodb+srv://m001-student:Orixa1911@sandbox.opih2.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
       database: reporting
 
+keycloak:
+  auth-server-url: http://localhost:8083/auth
+  realm: contractAnalyzer
+  resource: contract-analyzer-backend
+  public-client: true
+  ssl-required: external
+#  use-resource-role-mappings: true
+  confidential-port: 0
+  verify-token-audience: true
+

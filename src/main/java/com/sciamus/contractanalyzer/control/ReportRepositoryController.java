@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 @RestController
@@ -21,7 +22,7 @@ public class ReportRepositoryController {
         this.reportService = reportService;
     }
 
-
+    @RolesAllowed({"reader"})
     @GetMapping("/reports/{id}")
     @ResponseBody
     public CheckReport GetReportById(
@@ -29,7 +30,7 @@ public class ReportRepositoryController {
         return reportService.getReportByID(id);
     }
 
-
+    @RolesAllowed({"reader"})
     @GetMapping("/reports")
     @ResponseBody
 

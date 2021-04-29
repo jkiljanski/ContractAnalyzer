@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.net.MalformedURLException;
 
 @RestController
@@ -21,6 +22,7 @@ public class ChecksServiceController {
         this.checkReportMapper = mapper;
     }
 
+    @RolesAllowed({"writer"})
     @GetMapping("/checks/{name}/run")
     @ResponseBody
     public CheckReportDTO runAndGetReportWithId(
@@ -29,6 +31,7 @@ public class ChecksServiceController {
         return checkReportMapper.mapToDTO(contractChecksService.runAndGetSavedReportWithId(name, url));
     }
 
+    @RolesAllowed({"writer"})
     @GetMapping("/checks/{name}/autorun")
     @ResponseBody
     public CheckReportDTO autorunReport(

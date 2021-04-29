@@ -1,7 +1,7 @@
 package com.sciamus.contractanalyzer.checks;
 
-import com.sciamus.contractanalyzer.reporting.checks.ReportService;
 import com.sciamus.contractanalyzer.reporting.checks.CheckReport;
+import com.sciamus.contractanalyzer.reporting.checks.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
