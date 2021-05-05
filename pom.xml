@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.sciamus.ContractAnalyzer</groupId>
-    <artifactId>demo</artifactId>
+    <artifactId>contractAnalyzer</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>Contract Analyzer</name>
-    <description>Demo project for Spring Boot</description>
+    <description>An app for performing contract tests</description>
     <properties>
         <java.version>15</java.version>
         <vaadin.version>14.4.9</vaadin.version>

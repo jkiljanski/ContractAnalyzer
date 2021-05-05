@@ -16,7 +16,6 @@ public class FeignClientsConfig {
     @Bean
     protected RequestInterceptor keycloakRequestInterceptor(KeycloakSecurityContext keycloakSecurityContext) {
 
-        System.out.println("To ja!!!");
         return new KeycloakRequestInterceptor(keycloakSecurityContext);
     }
 
@@ -36,7 +35,7 @@ public class FeignClientsConfig {
 
             template.header(HttpHeaders.AUTHORIZATION, "Bearer " + keycloakSecurityContext.getTokenString());
 
-            System.out.println("JESTEM TUTAJ " + keycloakSecurityContext.getTokenString());
+//            System.out.println("JESTEM TUTAJ " + keycloakSecurityContext.getTokenString());
         }
 
         private void ensureTokenIsStillValid() {

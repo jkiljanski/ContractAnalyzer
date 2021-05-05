@@ -16,7 +16,6 @@ public class GetListOfContractChecksCheck implements RestContractCheck {
 
 
     private final static String NAME = "Get List Of Checks Check";
-
     URL urlSubjectToTest;
 
     CheckReportBuilder builder = new CheckReportBuilder();

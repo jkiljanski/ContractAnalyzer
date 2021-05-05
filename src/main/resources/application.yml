@@ -14,7 +14,6 @@ spring:
       uri: "mongodb://root:root@localhost:8085/"
       database: reporting
 
-
 keycloak:
   auth-server-url: http://localhost:8083/auth
   realm: contractAnalyzer
@@ -23,3 +22,5 @@ keycloak:
   ssl-required: external
 #  use-resource-role-mappings: true
   confidential-port: 0
+
+
