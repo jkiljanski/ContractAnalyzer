@@ -10,8 +10,10 @@ server:
 spring:
   data:
     mongodb:
-      uri: "mongodb+srv://m001-student:Orixa1911@sandbox.opih2.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+#      uri: "mongodb+srv://m001-student:Orixa1911@sandbox.opih2.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+      uri: "mongodb://root:root@localhost:8085/"
       database: reporting
+
 
 keycloak:
   auth-server-url: http://localhost:8083/auth
@@ -21,5 +23,3 @@ keycloak:
   ssl-required: external
 #  use-resource-role-mappings: true
   confidential-port: 0
-  verify-token-audience: true
-

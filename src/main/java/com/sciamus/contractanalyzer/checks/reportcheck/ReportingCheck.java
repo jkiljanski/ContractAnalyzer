@@ -6,6 +6,7 @@ import com.sciamus.contractanalyzer.reporting.checks.CheckReport;
 import com.sciamus.contractanalyzer.control.CheckReportMapper;
 import com.sciamus.contractanalyzer.reporting.checks.CheckReportBuilder;
 import feign.Feign;
+import feign.RequestInterceptor;
 import feign.gson.GsonDecoder;
 import org.springframework.stereotype.Component;
 
@@ -24,15 +25,19 @@ public class ReportingCheck implements RestContractCheck {
     // przerobić "funkcyjnie"
     CheckReportBuilder reportBuilder = new CheckReportBuilder();
 
-    public ReportingCheck(CheckReportMapper checkReportMapper) {
-        this.checkReportMapper = checkReportMapper;
-    }
 
+    private final RequestInterceptor interceptor;
+
+    public ReportingCheck(CheckReportMapper checkReportMapper, RequestInterceptor interceptor) {
+        this.checkReportMapper = checkReportMapper;
+        this.interceptor = interceptor;
+    }
 
     @Override
     public CheckReport run(URL url) {
         ReportingCheckClient reportingCheckClient = Feign.builder()
                 .decoder(new GsonDecoder())
+                .requestInterceptor(interceptor)
                 .target(ReportingCheckClient.class, url.toString());
 
         String checkToRun = URLEncoder.encode(reportingCheckClient

@@ -22,7 +22,7 @@ public class ChecksServiceController {
         this.checkReportMapper = mapper;
     }
 
-    @RolesAllowed({"writer"})
+    @RolesAllowed("writer")
     @GetMapping("/checks/{name}/run")
     @ResponseBody
     public CheckReportDTO runAndGetReportWithId(
@@ -31,7 +31,7 @@ public class ChecksServiceController {
         return checkReportMapper.mapToDTO(contractChecksService.runAndGetSavedReportWithId(name, url));
     }
 
-    @RolesAllowed({"writer"})
+    @RolesAllowed("writer")
     @GetMapping("/checks/{name}/autorun")
     @ResponseBody
     public CheckReportDTO autorunReport(
