@@ -1,12 +1,13 @@
 package com.sciamus.contractanalyzer.control;
 
 import com.sciamus.contractanalyzer.checks.RestContractCheckRepository;
-import com.sciamus.contractanalyzer.checks.getlistof.GetListOfContractChecksCheckResponseDTO;
+import com.sciamus.contractanalyzer.checks.getlistof.ListOfChecksDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.security.RolesAllowed;
+import java.util.List;
 
 @RestController
 public class ChecksRepositoryController {
@@ -19,17 +20,15 @@ public class ChecksRepositoryController {
         this.restContractCheckRepository = restContractCheckRepository;
     }
 
-    @RolesAllowed({"writer"})
+    @RolesAllowed("reader")
     @GetMapping("/restContractChecks")
-    public GetListOfContractChecksCheckResponseDTO getRestContractCheckList(){
+    public ListOfChecksDTO getRestContractCheckList() {
 
-        GetListOfContractChecksCheckResponseDTO responseDTO = new GetListOfContractChecksCheckResponseDTO();
+        ListOfChecksDTO responseDTO = new ListOfChecksDTO();
         responseDTO.listOfChecks = restContractCheckRepository.getAllChecks();
         return responseDTO;
 
     }
-
-
 
 
 }

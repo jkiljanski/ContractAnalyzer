@@ -22,7 +22,7 @@ public class ReportRepositoryController {
         this.reportService = reportService;
     }
 
-    @RolesAllowed({"reader"})
+    @RolesAllowed("reader")
     @GetMapping("/reports/{id}")
     @ResponseBody
     public CheckReport GetReportById(
@@ -30,7 +30,7 @@ public class ReportRepositoryController {
         return reportService.getReportByID(id);
     }
 
-    @RolesAllowed({"reader"})
+    @RolesAllowed("reader")
     @GetMapping("/reports")
     @ResponseBody
 

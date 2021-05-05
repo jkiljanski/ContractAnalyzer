@@ -5,6 +5,7 @@ import com.sciamus.contractanalyzer.reporting.checks.ReportResults;
 import com.sciamus.contractanalyzer.reporting.checks.CheckReport;
 import com.sciamus.contractanalyzer.reporting.checks.CheckReportBuilder;
 import feign.Feign;
+import feign.RequestInterceptor;
 import feign.gson.GsonDecoder;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +20,13 @@ public class GetListOfContractChecksCheck implements RestContractCheck {
     URL urlSubjectToTest;
 
     CheckReportBuilder builder = new CheckReportBuilder();
+    private final RequestInterceptor requestInterceptor;
+
+
+    public GetListOfContractChecksCheck(RequestInterceptor requestInterceptor) {
+        this.requestInterceptor = requestInterceptor;
+    }
+
 
     @Override
     public CheckReport run(URL url) {
@@ -26,24 +34,26 @@ public class GetListOfContractChecksCheck implements RestContractCheck {
         urlSubjectToTest = url;
 
 
-        GetListOfContractChecksCheckClient testClient = Feign.builder()
-                .decoder(new GsonDecoder())
-                .target(GetListOfContractChecksCheckClient.class, url.toString());
+        GetListOfContractChecksCheckClient testClient = feignClient(url);
 
-
-        GetListOfContractChecksCheckResponseDTO responseDTO;
+        ListOfChecksDTO responseDTO;
 
         responseDTO = testClient.getListOfChecks();
 
         builder.setReportBody("Run on "+ urlSubjectToTest).createTimestamp().setNameOfCheck(this.getName());
-
-
 
         if (responseDTO.listOfChecks.size() > 0 && responseDTO.listOfChecks.contains(GetListOfContractChecksCheck.NAME)) {
 
             return getPassedTestReport(builder);
         }
         return getFailedTestReport(builder);
+    }
+
+    private GetListOfContractChecksCheckClient feignClient(URL url) {
+        return Feign.builder()
+                .decoder(new GsonDecoder())
+                .requestInterceptor(requestInterceptor)
+                .target(GetListOfContractChecksCheckClient.class, url.toString());
     }
 
 // there are no cases in which this test fails.
