@@ -20,7 +20,7 @@ public class ChecksRepositoryController {
         this.restContractCheckRepository = restContractCheckRepository;
     }
 
-    @RolesAllowed("reader")
+//    @RolesAllowed("reader")
     @GetMapping("/restContractChecks")
     public ListOfChecksDTO getRestContractCheckList() {
 

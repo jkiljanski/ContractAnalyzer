@@ -22,21 +22,21 @@ public class SuitesRepositoryController {
     }
 
 
-    @RolesAllowed({"writer"})
+//    @RolesAllowed({"writer"})
     @GetMapping("/suites/{name}/run")
     @ResponseBody
     SuiteReport runSuite(@PathVariable("name") String name, @RequestParam(name = "url") String url) {
         return suitesRepository.runSuiteAndAddToRepository(name, url);
     }
 
-    @RolesAllowed("reader")
+//    @RolesAllowed("reader")
     @GetMapping("/suites")
     @ResponseBody
     List<String> getAllSuites() {
         return suitesRepository.getAllSuites();
     }
 
-    @RolesAllowed("reader")
+//    @RolesAllowed("reader")
     @GetMapping("/suites/reports")
     @ResponseBody
     List<SuiteReport> getAllReports() {
