@@ -1,6 +1,7 @@
 package com.sciamus.contractanalyzer.checks.getlistof;
 
 import com.sciamus.contractanalyzer.checks.RestContractCheck;
+import com.sciamus.contractanalyzer.checks.reportcheck.CurrentUserService;
 import com.sciamus.contractanalyzer.reporting.checks.ReportResults;
 import com.sciamus.contractanalyzer.reporting.checks.CheckReport;
 import com.sciamus.contractanalyzer.reporting.checks.CheckReportBuilder;
@@ -17,8 +18,8 @@ public class GetListOfContractChecksCheck implements RestContractCheck {
 
     private final static String NAME = "Get List Of Checks Check";
     URL urlSubjectToTest;
+    private CheckReportBuilder builder;
 
-    CheckReportBuilder builder = new CheckReportBuilder();
     private final RequestInterceptor requestInterceptor;
 
 
@@ -28,10 +29,11 @@ public class GetListOfContractChecksCheck implements RestContractCheck {
 
 
     @Override
-    public CheckReport run(URL url) {
+    public CheckReport run(URL url, CheckReportBuilder checkReportBuilder) {
 
         urlSubjectToTest = url;
 
+        this.builder = builder;
 
         GetListOfContractChecksCheckClient testClient = feignClient(url);
 
@@ -61,13 +63,13 @@ public class GetListOfContractChecksCheck implements RestContractCheck {
         return builder
                 .addTextToBody("We couldn't get list of checks")
                 .setResult(ReportResults.FAILED)
-                .createTestReport();
+                .build();
     }
 
     private CheckReport getPassedTestReport(CheckReportBuilder builder) {
         return builder
                 .setResult(ReportResults.PASSED)
-                .createTestReport();
+                .build();
     }
 
     @Override

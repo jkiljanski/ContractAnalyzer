@@ -1,6 +1,7 @@
 package com.sciamus.contractanalyzer.reporting.checks;
 
 
+import com.sciamus.contractanalyzer.checks.reportcheck.CurrentUserService;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.annotation.TypeAlias;
@@ -11,10 +12,7 @@ import java.util.Date;
 
 @Document(collection = "checkReports")
 @TypeAlias("check_report")
-
 public class CheckReport {
-
-
 
     //TODO: review: kiedy to pole się tworzy, nie jestem pewien tego rozwiązania
 
@@ -29,15 +27,17 @@ public class CheckReport {
     @Field("timestamp")
             //review: is it precise enough?
     Date timestamp;
+    @Field("userName")
+    private final String userName;
 
     @PersistenceConstructor
-    public CheckReport(String id, ReportResults result, String reportBody, Date timestamp, String nameOfCheck) {
+    public CheckReport(String id, ReportResults result, String reportBody, Date timestamp, String nameOfCheck, String userName) {
         this.id = id;
         this.result = result;
         this.reportBody = reportBody;
         this.timestamp = timestamp;
         this.nameOfCheck = nameOfCheck;
-
+        this.userName = userName;
     }
 
 //     TO REVIEW:
@@ -82,6 +82,9 @@ public class CheckReport {
         return nameOfCheck;
     }
 
+    public String getUserName() {
+        return userName;
+    }
 
     @Override
     public String toString() {
@@ -90,7 +93,8 @@ public class CheckReport {
                 ", result=" + result +
                 ", reportBody='" + reportBody + '\'' +
                 ", nameOfCheck='" + nameOfCheck + '\'' +
-                ", timestamp=" + timestamp +
+                ", timestamp=" + timestamp + '\'' +
+                ", userName='" + userName +
                 '}';
     }
 }

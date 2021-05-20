@@ -1,5 +1,7 @@
 package com.sciamus.contractanalyzer.reporting.checks;
 
+import com.sciamus.contractanalyzer.checks.reportcheck.CurrentUserService;
+
 import java.util.Date;
 
 public class CheckReportBuilder {
@@ -9,6 +11,7 @@ public class CheckReportBuilder {
     // refactor to Localdate
     private Date timestamp;
     private String nameOfCheck;
+    private String userName;
 
     public CheckReportBuilder setId(String id) {
         this.id = id;
@@ -40,12 +43,18 @@ public class CheckReportBuilder {
         return this;
     }
 
+    public CheckReportBuilder setUserName(String userName) {
+        this.userName = userName;
+        return this;
+    }
+
+
     public CheckReportBuilder addTextToBody(String text) {
         this.reportBody = reportBody +text;
         return this;
     }
 
-    public CheckReport createTestReport() {
-        return new CheckReport(id, result, reportBody, timestamp, nameOfCheck);
+    public CheckReport build() {
+        return new CheckReport(id, result, reportBody, timestamp, nameOfCheck, userName);
     }
 }
