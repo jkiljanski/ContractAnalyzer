@@ -2,6 +2,7 @@ package com.sciamus.contractanalyzer.checks.getlistof;
 
 import com.sciamus.contractanalyzer.checks.RestContractCheck;
 import com.sciamus.contractanalyzer.checks.reportcheck.CurrentUserService;
+import com.sciamus.contractanalyzer.checks.reportcheck.ReportingCheckClient;
 import com.sciamus.contractanalyzer.reporting.checks.ReportResults;
 import com.sciamus.contractanalyzer.reporting.checks.CheckReport;
 import com.sciamus.contractanalyzer.reporting.checks.CheckReportBuilder;
@@ -18,7 +19,6 @@ public class GetListOfContractChecksCheck implements RestContractCheck {
 
     private final static String NAME = "Get List Of Checks Check";
     URL urlSubjectToTest;
-    private CheckReportBuilder builder;
 
     private final RequestInterceptor requestInterceptor;
 
@@ -29,17 +29,15 @@ public class GetListOfContractChecksCheck implements RestContractCheck {
 
 
     @Override
-    public CheckReport run(URL url, CheckReportBuilder checkReportBuilder) {
+    public CheckReport run(URL url, CheckReportBuilder builder) {
 
         urlSubjectToTest = url;
 
-        this.builder = builder;
-
-        GetListOfContractChecksCheckClient testClient = feignClient(url);
+        ReportingCheckClient testClient = feignClient(url);
 
         ListOfChecksDTO responseDTO;
 
-        responseDTO = testClient.getListOfChecks();
+        responseDTO = testClient.getAvailableChecks();
 
         builder.setReportBody("Run on "+ urlSubjectToTest).createTimestamp().setNameOfCheck(this.getName());
 
@@ -50,11 +48,11 @@ public class GetListOfContractChecksCheck implements RestContractCheck {
         return getFailedTestReport(builder);
     }
 
-    private GetListOfContractChecksCheckClient feignClient(URL url) {
+    private ReportingCheckClient feignClient(URL url) {
         return Feign.builder()
                 .decoder(new GsonDecoder())
                 .requestInterceptor(requestInterceptor)
-                .target(GetListOfContractChecksCheckClient.class, url.toString());
+                .target(ReportingCheckClient.class, url.toString());
     }
 
 // there are no cases in which this test fails.
