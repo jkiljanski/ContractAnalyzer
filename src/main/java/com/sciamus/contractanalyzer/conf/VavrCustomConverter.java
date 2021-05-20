@@ -1,4 +1,4 @@
-package com.sciamus.contractanalyzer;
+package com.sciamus.contractanalyzer.conf;
 
 import io.vavr.collection.List;
 import org.springframework.context.annotation.Bean;

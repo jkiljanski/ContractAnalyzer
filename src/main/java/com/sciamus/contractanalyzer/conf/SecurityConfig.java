@@ -1,4 +1,4 @@
-package com.sciamus.contractanalyzer;
+package com.sciamus.contractanalyzer.conf;
 
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.KeycloakSecurityContext;

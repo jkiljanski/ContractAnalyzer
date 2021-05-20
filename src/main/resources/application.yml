@@ -6,21 +6,26 @@ server:
     include-binding-errors: always
     include-stacktrace: on_trace_param
     include-exception: false
+  port: 8080
 
 spring:
   data:
     mongodb:
 #      uri: "mongodb+srv://m001-student:Orixa1911@sandbox.opih2.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
-      uri: "mongodb://root:root@localhost:8085/"
+#      uri: "mongodb://root:root@localhost:8085/"
+      uri: "mongodb://root:root@db:27017/"
       database: reporting
 
+kafka:
+  bootstrap-servers: localhost:9092
+
 keycloak:
-  auth-server-url: http://localhost:8083/auth
+  auth-server-url: http://keycloak:8080/auth
+  #  auth-server-url: http://security:8080/auth
   realm: contractAnalyzer
   resource: contract-analyzer-backend
   public-client: true
   ssl-required: external
 #  use-resource-role-mappings: true
   confidential-port: 0
-
 
