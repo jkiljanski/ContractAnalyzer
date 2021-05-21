@@ -1,4 +1,4 @@
-package com.sciamus.contractanalyzer.conf;
+package com.example.kafkapingponger.kafka.config;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;

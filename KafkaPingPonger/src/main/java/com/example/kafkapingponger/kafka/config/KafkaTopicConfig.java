@@ -1,4 +1,4 @@
-package com.sciamus.contractanalyzer.conf;
+package com.example.kafkapingponger.kafka.config;
 
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
@@ -11,8 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-public class KafkaConfig {
-
+public class KafkaTopicConfig {
 
     @Value(value = "${kafka.bootstrap-servers}")
     private String bootstrapAddress;
@@ -24,13 +23,15 @@ public class KafkaConfig {
         return new KafkaAdmin(configs);
     }
 
-
     @Bean
-    public NewTopic topic1() {
-        return new NewTopic("baeldung", 1, (short) 1);
+    public NewTopic createPing() {
+        return new NewTopic("ping", 1, (short) 1);
     }
 
-
+    @Bean
+    public NewTopic createPong() {
+        return new NewTopic("pong", 1, (short) 1);
+    }
 
 
 }
