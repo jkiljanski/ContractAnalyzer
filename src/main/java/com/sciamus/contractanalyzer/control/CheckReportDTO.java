@@ -1,10 +1,11 @@
 package com.sciamus.contractanalyzer.control;
 
+import lombok.AllArgsConstructor;
+
 import java.util.Date;
 
-
+@AllArgsConstructor
 public class CheckReportDTO {
-
 
     public String id;
     public String result;
@@ -12,15 +13,6 @@ public class CheckReportDTO {
     public Date timestamp;
     public String nameOfCheck;
     public String userName;
-
-    public CheckReportDTO(String id, String result, String reportBody, Date timestamp, String nameOfCheck, String userName) {
-        this.id = id;
-        this.result = result;
-        this.reportBody = reportBody;
-        this.timestamp = timestamp;
-        this.nameOfCheck = nameOfCheck;
-        this.userName = userName;
-    }
 
     @Override
     public String toString() {

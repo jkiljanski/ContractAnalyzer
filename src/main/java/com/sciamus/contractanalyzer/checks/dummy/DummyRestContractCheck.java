@@ -16,7 +16,7 @@ public class DummyRestContractCheck implements RestContractCheck {
 
     public CheckReport run(URL url, CheckReportBuilder checkReportBuilder) {
 
-        return checkReportBuilder
+        return new CheckReportBuilder()
                 .setNameOfCheck(this.getName())
                 .setReportBody("This report is always PASSED;" + " Run on " + url)
                 .setResult(ReportResults.PASSED)
