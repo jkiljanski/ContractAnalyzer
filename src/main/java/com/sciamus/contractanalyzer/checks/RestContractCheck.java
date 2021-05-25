@@ -14,5 +14,4 @@ public interface RestContractCheck {
     String getName();
 
 
-
 }

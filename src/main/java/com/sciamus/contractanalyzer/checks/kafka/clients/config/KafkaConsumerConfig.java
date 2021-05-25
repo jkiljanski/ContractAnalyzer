@@ -1,4 +1,4 @@
-package com.example.kafkapingponger.kafka.config;
+package com.sciamus.contractanalyzer.checks.kafka.clients.config;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;

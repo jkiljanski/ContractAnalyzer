@@ -1,26 +1,18 @@
-package com.example.kafkapingponger.kafka;
+package com.sciamus.contractanalyzer.checks.kafka.clients;
 
 
-import com.example.kafkapingponger.RespondingService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 @Component
 
-public class KafkaPingConsumer {
+public class KafkaPongConsumer {
 
-    private final RespondingService respondingService;
+    private String topic;
 
-    public KafkaPingConsumer(RespondingService respondingService) {
-        this.respondingService = respondingService;
-    }
-
-    @KafkaListener(topics = "${kafka.incoming-topic}", groupId="1")
+    @KafkaListener(topics = "", groupId="1")
     public void listenGroup1(String message) {
 //        System.out.println("Received Message in group 1: " + message);
-
-        respondingService.notify(message);
 
     }
 

@@ -1,4 +1,4 @@
-package com.example.kafkapingponger.kafka;
+package com.sciamus.contractanalyzer.checks.kafka.clients;
 
 import org.springframework.stereotype.Component;
 
@@ -6,10 +6,10 @@ import org.springframework.stereotype.Component;
 public class KafkaTest {
 
 
-    private final KafkaPongProducer producer;
-    private final KafkaPingConsumer consumer;
+    private final KafkaPingProducer producer;
+    private final KafkaPongConsumer consumer;
 
-    public KafkaTest(KafkaPongProducer producer, KafkaPingConsumer consumer) {
+    public KafkaTest(KafkaPingProducer producer, KafkaPongConsumer consumer) {
         this.producer = producer;
         this.consumer = consumer;
     }

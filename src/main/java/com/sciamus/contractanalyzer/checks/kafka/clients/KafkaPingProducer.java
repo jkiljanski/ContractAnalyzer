@@ -1,4 +1,4 @@
-package com.example.kafkapingponger.kafka;
+package com.sciamus.contractanalyzer.checks.kafka.clients;
 
 
 import org.springframework.beans.factory.annotation.Value;
@@ -6,16 +6,19 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
-public class KafkaPongProducer {
+public class KafkaPingProducer {
 
 
     private KafkaTemplate<String, String> kafkaTemplate;
-    @Value("${kafka.outgoing-topic}")
     private String topicName;
 
-
-    public KafkaPongProducer(KafkaTemplate<String, String> kafkaTemplate) {
+    public KafkaPingProducer(KafkaTemplate<String, String> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
+    }
+
+    public void addTopicName(String topicName) {
+        this.topicName = topicName;
+
     }
 
     public void sendMessage(String msg) {

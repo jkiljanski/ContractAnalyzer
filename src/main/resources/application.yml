@@ -20,7 +20,7 @@ kafka:
   bootstrap-servers: localhost:9092
 
 keycloak:
-  auth-server-url: http://keycloak:8080/auth
+  auth-server-url: http://keycloak:8090/auth
   #  auth-server-url: http://security:8080/auth
   realm: contractAnalyzer
   resource: contract-analyzer-backend
