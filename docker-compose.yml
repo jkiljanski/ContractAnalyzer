@@ -8,6 +8,7 @@ services:
     depends_on:
       - db
       - keycloak
+      - kafka
 
   zookeeper:
     image: confluentinc/cp-zookeeper:latest

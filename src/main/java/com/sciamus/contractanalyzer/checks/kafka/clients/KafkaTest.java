@@ -19,6 +19,7 @@ public class KafkaTest {
         producer.sendMessage("ping");
 
 
+
     }
 
 //    void listenForPing() {
