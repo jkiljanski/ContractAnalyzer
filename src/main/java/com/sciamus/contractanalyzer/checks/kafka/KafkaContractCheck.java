@@ -4,7 +4,7 @@ import com.sciamus.contractanalyzer.reporting.checks.CheckReport;
 
 public interface KafkaContractCheck {
 
-    CheckReport run(String firstTopicName, String secondTopicName);
+    CheckReport run(String incomingTopic, String outgoingTopic, String host, String port);
 
 
 

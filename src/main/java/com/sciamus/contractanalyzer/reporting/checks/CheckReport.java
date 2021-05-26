@@ -30,6 +30,8 @@ public class CheckReport {
             //review: is it precise enough?
     Date timestamp;
 
+
+
     @PersistenceConstructor
     public CheckReport(String id, ReportResults result, String reportBody, Date timestamp, String nameOfCheck) {
         this.id = id;

@@ -12,10 +12,10 @@ public class KafkaContractService {
         this.kafkaPingPongCheck = kafkaPingPongCheck;
     }
 
-    CheckReport runKafkaCheck () {
+    public CheckReport runKafkaCheck (String incomingTopic, String outgoingTopic, String host, String port) {
 
-//        kafkaPingPongCheck.run()
-        return  null;
+        return kafkaPingPongCheck.run(incomingTopic, outgoingTopic, host, port);
+
     }
 
 
