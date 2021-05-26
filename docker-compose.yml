@@ -57,5 +57,13 @@ services:
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: admin
 
+  pingponger:
+    build: KafkaPingPonger/
+    ports:
+      - "8888:8888"
+    depends_on:
+      - kafka
+      - zookeeper
+
 
 #"-Djboss.socket.binding.port-offset=10"

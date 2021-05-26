@@ -29,13 +29,11 @@ public class KafkaPingPongCheck implements KafkaContractCheck {
     private final KafkaPingProducer kafkaPingProducer;
 
 
-    private final KafkaPongConsumer kafkaPongConsumer;
     private BlockingQueue<String> consumedMessages = new ArrayBlockingQueue<>(100);
 
 
-    public KafkaPingPongCheck(KafkaPingProducer kafkaPingProducer, KafkaPongConsumer kafkaPongConsumer) {
+    public KafkaPingPongCheck(KafkaPingProducer kafkaPingProducer) {
         this.kafkaPingProducer = kafkaPingProducer;
-        this.kafkaPongConsumer = kafkaPongConsumer;
     }
 
 
@@ -44,10 +42,14 @@ public class KafkaPingPongCheck implements KafkaContractCheck {
 
         //adres brokera
 
-        Map<String, Object> consumerConfig = Collections.unmodifiableMap(Map.of(
-                BOOTSTRAP_SERVERS_CONFIG, host+":" + port,
+
+        kafkaPingProducer.addTopicName(outgoingTopic);
+        kafkaPingProducer.sendMessage("ping");
+
+        Map<String, Object> consumerConfig = Map.of(
+                BOOTSTRAP_SERVERS_CONFIG, host + ":" + port,
                 GROUP_ID_CONFIG, "1"
-        ));
+        );
 
         DefaultKafkaConsumerFactory<String, String> kafkaConsumerFactory =
                 new DefaultKafkaConsumerFactory<>(
@@ -69,7 +71,7 @@ public class KafkaPingPongCheck implements KafkaContractCheck {
         container.start();
 
         try {
-            consumedMessages.poll(10, TimeUnit.SECONDS);
+            consumedMessages.poll(3, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
             System.out.println("failed but active");
