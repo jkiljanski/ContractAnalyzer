@@ -23,7 +23,7 @@ public class ChecksServiceController {
     }
 
     @RolesAllowed("writer")
-    @GetMapping("/checks/{name}/run")
+    @PostMapping("/checks/{name}/run")
     @ResponseBody
     public CheckReportDTO runAndGetReportWithId(
             @PathVariable("name") String name, @RequestParam(name = "url") String url) throws MalformedURLException {
@@ -32,7 +32,7 @@ public class ChecksServiceController {
     }
 
     @RolesAllowed("writer")
-    @GetMapping("/checks/{name}/autorun")
+    @PostMapping("/checks/{name}/autorun")
     @ResponseBody
     public CheckReportDTO autorunReport(
             @PathVariable("name") String name, @RequestParam(name = "url") String url) throws MalformedURLException {
