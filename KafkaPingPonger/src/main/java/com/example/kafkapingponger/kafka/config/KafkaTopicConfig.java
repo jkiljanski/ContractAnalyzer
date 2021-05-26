@@ -1,4 +1,4 @@
-package com.sciamus.contractanalyzer.checks.kafka.clients.config;
+package com.example.kafkapingponger.kafka.config;
 
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
