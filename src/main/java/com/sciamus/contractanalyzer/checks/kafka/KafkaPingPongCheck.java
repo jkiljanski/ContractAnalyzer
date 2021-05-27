@@ -1,7 +1,6 @@
 package com.sciamus.contractanalyzer.checks.kafka;
 
 import com.sciamus.contractanalyzer.checks.kafka.clients.KafkaPingProducer;
-import com.sciamus.contractanalyzer.checks.kafka.clients.KafkaPongConsumer;
 import com.sciamus.contractanalyzer.reporting.checks.CheckReport;
 import com.sciamus.contractanalyzer.reporting.checks.ReportResults;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -11,7 +10,6 @@ import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.listener.MessageListener;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -44,7 +42,7 @@ public class KafkaPingPongCheck implements KafkaContractCheck {
 
 
         kafkaPingProducer.addTopicName(outgoingTopic);
-        kafkaPingProducer.sendMessage("ping");
+
 
         Map<String, Object> consumerConfig = Map.of(
                 BOOTSTRAP_SERVERS_CONFIG, host + ":" + port,
@@ -60,7 +58,12 @@ public class KafkaPingPongCheck implements KafkaContractCheck {
 
         ContainerProperties containerProperties = new ContainerProperties(incomingTopic);
 
-        containerProperties.setMessageListener((MessageListener<String, String>) record -> consumedMessages.add(record.value()));
+
+        containerProperties.setMessageListener((MessageListener<String, String>) record -> System.out.println(record.value()));
+
+//        containerProperties.setMessageListener((MessageListener<String, String>) record -> System.out.println(record.topic()));
+
+
 
         ConcurrentMessageListenerContainer container =
                 new ConcurrentMessageListenerContainer<>(
@@ -70,8 +73,16 @@ public class KafkaPingPongCheck implements KafkaContractCheck {
 
         container.start();
 
+        System.out.println(container.getAssignedPartitions());
+
+        kafkaPingProducer.sendMessage("ping");
+
+        System.out.println("i'm here");
+
+
         try {
-            consumedMessages.poll(3, TimeUnit.SECONDS);
+            System.out.println(consumedMessages.poll(2, TimeUnit.SECONDS));
+
         } catch (InterruptedException e) {
             e.printStackTrace();
             System.out.println("failed but active");
@@ -80,7 +91,7 @@ public class KafkaPingPongCheck implements KafkaContractCheck {
 
         System.out.println("passed and active");
         System.out.println(consumedMessages);
-        return new CheckReport("13", ReportResults.FAILED, "sss", new Date(), "kafka");
+        return new CheckReport("13", ReportResults.PASSED, "sss", new Date(), "kafka");
 
     }
 

@@ -14,7 +14,8 @@ public class RespondingService {
 
     public void notify(String message) {
 
-        String response= "pong: " + message;
+        String response= message + "pong";
+
         kafkaPongProducer.sendMessage(response);
 
 
