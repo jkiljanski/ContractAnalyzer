@@ -23,7 +23,7 @@ public class SuitesRepositoryController {
 
 
     @RolesAllowed({"writer"})
-    @GetMapping("/suites/{name}/run")
+    @PostMapping("/suites/{name}/run")
     @ResponseBody
     SuiteReport runSuite(@PathVariable("name") String name, @RequestParam(name = "url") String url) {
         return suitesRepository.runSuiteAndAddToRepository(name, url);
