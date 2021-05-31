@@ -21,6 +21,8 @@ public class KafkaProd {
 
     @Bean
     public ProducerFactory<String, String> producerFactory() {
+
+        System.out.println("owcokrowa : " +bootstrapAddress);
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(
                 ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,

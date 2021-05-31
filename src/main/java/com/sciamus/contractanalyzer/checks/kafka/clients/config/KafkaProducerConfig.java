@@ -12,6 +12,7 @@ import org.springframework.kafka.core.ProducerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
+@Configuration
 @EnableKafka
 public class KafkaProducerConfig {
 
@@ -24,6 +25,8 @@ public class KafkaProducerConfig {
     @Bean
     public ProducerFactory<String, String> producerFactory() {
         Map<String, Object> configProps = new HashMap<>();
+
+        System.out.println("krowowca : " + bootstrapAddress);
         configProps.put(
                 ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
                 bootstrapAddress);
