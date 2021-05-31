@@ -21,7 +21,7 @@ public class KafkaCheckController {
 
     //add parameters
     @GetMapping("/kafkaContractCheck/pingpong")
-    CheckReport runKafka(@RequestParam("firstTopic") String firstTopic, @RequestParam("secondTopic") String secondTopic, @RequestParam("host") String host, @RequestParam("port") String port) {
+    CheckReport runKafka(@RequestParam("incomingTopic") String firstTopic, @RequestParam("outgoingTopic") String secondTopic, @RequestParam("host") String host, @RequestParam("port") String port) {
 
         return kafkaContractService.runKafkaCheck(firstTopic, secondTopic, host, port);
 

@@ -17,8 +17,13 @@ spring:
       database: reporting
 
 kafka:
-#    bootstrap-servers: localhost:29092
-    bootstrap-servers: kafka:29092
+    producer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+    consumer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
 
 
 

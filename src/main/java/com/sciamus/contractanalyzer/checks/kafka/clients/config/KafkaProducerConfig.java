@@ -26,7 +26,6 @@ public class KafkaProducerConfig {
     public ProducerFactory<String, String> producerFactory() {
         Map<String, Object> configProps = new HashMap<>();
 
-        System.out.println("krowowca : " + bootstrapAddress);
         configProps.put(
                 ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
                 bootstrapAddress);

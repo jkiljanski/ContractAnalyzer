@@ -106,22 +106,21 @@ public class KafkaPingPongCheck implements KafkaContractCheck {
         String correctMessage = message + "pong";
 
 
-        String additionalInfo = "incoming topic: " + incomingTopic + " outgoing topic: " + outgoingTopic +" ";
+        String additionalReportInfo = "incoming topic: " + incomingTopic + " outgoing topic: " + outgoingTopic +" ";
 
-        reportBuilder.setReportBody(additionalInfo);
+        reportBuilder.setReportBody(additionalReportInfo);
 
         if ((correctMessage).equals(consumedMessage)) {
             return reportService.addReportToRepository(reportBuilder.setResult(ReportResults.PASSED)
                     .addTextToBody("message should be: " +
                             "" + correctMessage +
-                            " and is: " +
+                            " and indeed is: " +
                             "" + consumedMessage)
                     .createTestReport());
         } else {
             return reportService.addReportToRepository(reportBuilder.setResult(ReportResults.FAILED)
                     .addTextToBody("message should be: " + correctMessage + " but is: " + consumedMessage)
                     .createTestReport());
-
         }
     }
 
