@@ -25,6 +25,11 @@ public class DemoApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(DemoApplication.class, args);
+        logger.info("info");
+        logger.warn("warn");
+        logger.error("error");
+        logger.debug("debug");
+        logger.fatal("fatal");
     }
 
     @Bean
