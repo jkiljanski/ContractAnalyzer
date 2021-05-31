@@ -64,7 +64,6 @@ services:
     depends_on:
       - kafka
       - zookeeper
-      - backend
 
 
 #"-Djboss.socket.binding.port-offset=10"

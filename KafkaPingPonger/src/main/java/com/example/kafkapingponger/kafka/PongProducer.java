@@ -6,7 +6,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
-public class KafkaPongProducer {
+public class PongProducer {
 
 
     private KafkaTemplate<String, String> kafkaTemplate;
@@ -14,7 +14,7 @@ public class KafkaPongProducer {
     private String topicName;
 
 
-    public KafkaPongProducer(KafkaTemplate<String, String> kafkaTemplate) {
+    public PongProducer(KafkaTemplate<String, String> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
 
