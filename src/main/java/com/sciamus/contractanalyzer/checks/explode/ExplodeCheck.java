@@ -1,6 +1,7 @@
 package com.sciamus.contractanalyzer.checks.explode;
 
 import com.sciamus.contractanalyzer.checks.RestContractCheck;
+import com.sciamus.contractanalyzer.checks.reportcheck.CurrentUserService;
 import com.sciamus.contractanalyzer.reporting.checks.ReportResults;
 import com.sciamus.contractanalyzer.reporting.checks.CheckReport;
 import com.sciamus.contractanalyzer.reporting.checks.CheckReportBuilder;
@@ -13,15 +14,14 @@ public class ExplodeCheck implements RestContractCheck {
 
     private final String NAME = "Exploding Check";
 
-
     @Override
-    public CheckReport run(URL url) {
-        return new CheckReportBuilder()
+    public CheckReport run(URL url, CheckReportBuilder checkReportBuilder) {
+        return checkReportBuilder
                 .setNameOfCheck(this.getName())
                 .setReportBody("This report always fails; " + "Run on "+url)
                 .setResult(ReportResults.FAILED)
                 .createTimestamp()
-                .createTestReport();
+                .build();
     }
 
 

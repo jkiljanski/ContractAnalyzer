@@ -17,15 +17,8 @@ import java.nio.charset.StandardCharsets;
 @Component
 public class ReportingCheck implements RestContractCheck {
 
-
     private final static String NAME = "Reporting Check";
     private final CheckReportMapper checkReportMapper;
-
-
-    // przerobić "funkcyjnie"
-    CheckReportBuilder reportBuilder = new CheckReportBuilder();
-
-
     private final RequestInterceptor interceptor;
 
     public ReportingCheck(CheckReportMapper checkReportMapper, RequestInterceptor interceptor) {
@@ -34,7 +27,7 @@ public class ReportingCheck implements RestContractCheck {
     }
 
     @Override
-    public CheckReport run(URL url) {
+    public CheckReport run(URL url, CheckReportBuilder reportBuilder) {
         ReportingCheckClient reportingCheckClient = Feign.builder()
                 .decoder(new GsonDecoder())
                 .requestInterceptor(interceptor)
@@ -56,9 +49,13 @@ public class ReportingCheck implements RestContractCheck {
                 .createTimestamp();
 
         if (reportSentToDatabase.getTimestamp().equals(reportFetchedFromDatabase.getTimestamp())) {
-            return reportBuilder.setResult(ReportResults.PASSED).createTestReport();
+            return reportBuilder
+                    .setResult(ReportResults.PASSED)
+                    .build();
         }
-        return  reportBuilder.setResult(ReportResults.FAILED).createTestReport();
+        return  reportBuilder
+                .setResult(ReportResults.FAILED)
+                .build();
     }
 
     @Override

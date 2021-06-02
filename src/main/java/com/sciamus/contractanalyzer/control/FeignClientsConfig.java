@@ -12,7 +12,6 @@ import org.springframework.http.HttpHeaders;
 @Configuration
 public class FeignClientsConfig {
 
-
     @Bean
     protected RequestInterceptor keycloakRequestInterceptor(KeycloakSecurityContext keycloakSecurityContext) {
 
