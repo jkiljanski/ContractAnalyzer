@@ -1,12 +1,14 @@
 FROM amazoncorretto:11
 ARG JAR_FILE=target/*.jar
 COPY ${JAR_FILE} app.jar
-ADD src/main/resources/application.yml application.yml
+#ADD src/main/resources/application.yml application.yml
 EXPOSE 8080
-ENTRYPOINT ["java","-jar", "/app.jar", "--spring.config.location=classpath:file:/application.yml"]
+EXPOSE 5050
+ENV JAVA_TOOL_OPTIONS -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5050
+ENTRYPOINT ["java","-jar", "/app.jar"]
 
 
-
+#, "--spring.config.location=classpath:file:/application.yml"
 #, "-agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n"
 #-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5050
 
