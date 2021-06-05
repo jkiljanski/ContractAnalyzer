@@ -4,7 +4,7 @@ COPY ${JAR_FILE} app.jar
 #ADD src/main/resources/application.yml application.yml
 EXPOSE 8080
 EXPOSE 5050
-ENV JAVA_TOOL_OPTIONS -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5050
+#ENV JAVA_TOOL_OPTIONS -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5050
 ENTRYPOINT ["java","-jar", "/app.jar"]
 
 

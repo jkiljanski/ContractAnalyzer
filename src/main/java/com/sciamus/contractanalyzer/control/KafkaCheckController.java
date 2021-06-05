@@ -1,31 +1,39 @@
 package com.sciamus.contractanalyzer.control;
 
-import com.sciamus.contractanalyzer.checks.kafka.KafkaContractService;
+import com.sciamus.contractanalyzer.checks.kafka.KafkaContractCheckService;
 import com.sciamus.contractanalyzer.reporting.checks.CheckReport;
-import org.springframework.data.repository.query.Param;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 
 
 public class KafkaCheckController {
 
-    private final KafkaContractService kafkaContractService;
+    private final KafkaContractCheckService kafkaContractCheckService;
 
 
-    public KafkaCheckController(KafkaContractService kafkaContractService) {
-        this.kafkaContractService = kafkaContractService;
+    public KafkaCheckController(KafkaContractCheckService kafkaContractCheckService) {
+        this.kafkaContractCheckService = kafkaContractCheckService;
     }
 
     //add parameters
-    @GetMapping("/kafkaContractCheck/pingpong")
-    CheckReport runKafka(@RequestParam("incomingTopic") String firstTopic, @RequestParam("outgoingTopic") String secondTopic, @RequestParam("host") String host, @RequestParam("port") String port) {
+    @PostMapping("/kafkaCheck/{name}/run")
+    CheckReport runKafka(@PathVariable("name") String name,
+                         @RequestParam("incomingTopic") String firstTopic,
+                         @RequestParam("outgoingTopic") String secondTopic,
+                         @RequestParam("host") String host,
+                         @RequestParam("port") String port) {
 
-        return kafkaContractService.runKafkaCheck(firstTopic, secondTopic, host, port);
-
+        return kafkaContractCheckService.runKafkaCheck(firstTopic, secondTopic, host, port,name);
     }
+
+    @GetMapping("/kafkaCheck/")
+    List<String> getAllChecks() {
+       return kafkaContractCheckService.getAllChecks();
+    }
+
 
 }
 //?firstTopic={firstTopic}&secondTopic={secondTopic}&host={host}&port={port}

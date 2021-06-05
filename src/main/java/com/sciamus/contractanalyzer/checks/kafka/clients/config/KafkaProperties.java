@@ -9,6 +9,16 @@ public class KafkaProperties {
 
     public Consum consum;
     public Produc produc;
+    public Streams streams;
+    public String appName;
+
+    public String getAppName() {
+        return appName;
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
+    }
 
     public void setConsum(Consum consum) {
         this.consum = consum;
@@ -24,6 +34,28 @@ public class KafkaProperties {
 
     public Consum getConsum() {
         return consum;
+    }
+
+    public Streams getStreams() {
+        return streams;
+    }
+
+    public void setStreams(Streams streams) {
+        this.streams = streams;
+    }
+
+    public static class Streams {
+        public String defaultKeySerdeClassConfig;
+        public String defaultValueSerdeClassConfig;
+
+
+        public void setDefaultKeySerdeClassConfig(String defaultKeySerdeClassConfig) {
+            this.defaultKeySerdeClassConfig = defaultKeySerdeClassConfig;
+        }
+
+        public void setDefaultValueSerdeClassConfig(String defaultValueSerdeClassConfig) {
+            this.defaultValueSerdeClassConfig = defaultValueSerdeClassConfig;
+        }
     }
 
     public static class Consum {

@@ -17,6 +17,7 @@ spring:
       database: reporting
 
 kafka:
+    app-name: contract-analyzer
     bootstrap-servers: kafka:29092
     produc:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
@@ -24,6 +25,12 @@ kafka:
     consum:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    streams:
+      default-key-serde-class-config: org.apache.kafka.common.serialization.Serdes$String
+      default-value-serde-class-config: org.apache.kafka.common.serialization.Serdes$String
+
+
+
 
 
 

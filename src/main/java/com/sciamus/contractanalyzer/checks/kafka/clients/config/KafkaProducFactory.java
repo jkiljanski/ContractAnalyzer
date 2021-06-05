@@ -13,14 +13,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class KafkaProducerFactory {
+public class KafkaProducFactory {
 
     private final KafkaProperties kafkaProperties;
 
-    public KafkaProducerFactory(KafkaProperties kafkaProperties) {
+    public KafkaProducFactory(KafkaProperties kafkaProperties) {
         this.kafkaProperties = kafkaProperties;
     }
 
+    //2 more arguments (topic, partition) + method for getting position
 
     public KafkaTemplate<String,String> createProducer(String host, String port) {
 
@@ -38,6 +39,8 @@ public class KafkaProducerFactory {
 
         ProducerFactory<String,String> factory = new DefaultKafkaProducerFactory<> (configProps);
         final KafkaTemplate<String,String> template = new KafkaTemplate<>(factory);
+
+
 
         return template;
 

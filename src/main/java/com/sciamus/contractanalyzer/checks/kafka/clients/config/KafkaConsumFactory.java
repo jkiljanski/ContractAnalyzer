@@ -37,11 +37,11 @@ public class KafkaConsumFactory {
 
         final Consumer<String,String> consumer = new KafkaConsumer<>(props);
 
-        TopicPartition topicPartition = new TopicPartition(topic, 0);
+//        TopicPartition topicPartition = new TopicPartition(topic, partition);
 
-        consumer.assign(List.of(topicPartition));
+//        consumer.assign(List.of(topicPartition));
 
-//        consumer.subscribe(List.of(topic));
+        consumer.subscribe(List.of(topic));
 
         return  consumer;
     }
