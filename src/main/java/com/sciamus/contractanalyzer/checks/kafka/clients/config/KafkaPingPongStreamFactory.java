@@ -1,13 +1,9 @@
 package com.sciamus.contractanalyzer.checks.kafka.clients.config;
 
 
-import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
-import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.Topology;
-import org.apache.kafka.streams.kstream.ForeachAction;
-import org.apache.kafka.streams.kstream.Printed;
 import org.springframework.stereotype.Component;
 
 import java.util.Properties;
@@ -23,7 +19,7 @@ public class KafkaPingPongStreamFactory {
         this.kafkaProperties = kafkaProperties;
     }
 
-    public KafkaStreams createStream (String inputTopic, String outputTopic, String host, String port) {
+    public KafkaStreams createStream (String host, String port, Topology topology) {
         final Properties props = new Properties();
 
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, host+":"+port);
@@ -39,16 +35,9 @@ public class KafkaPingPongStreamFactory {
 
         props.put(StreamsConfig.STATE_DIR_CONFIG, "data");
 
-        StreamsBuilder builder = new StreamsBuilder();
-
-        builder.stream(inputTopic).print((Printed.toSysOut()));
-                to(outputTopic);
-
-        Topology build = builder.build();
-
-        return new KafkaStreams(build, props);
 
 
+        return new KafkaStreams(topology, props);
 
     }
 

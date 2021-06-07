@@ -6,11 +6,13 @@ import com.sciamus.contractanalyzer.checks.kafka.clients.config.KafkaProducFacto
 import com.sciamus.contractanalyzer.reporting.checks.CheckReport;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.streams.KafkaStreams;
+import org.apache.kafka.streams.StreamsBuilder;
+import org.apache.kafka.streams.Topology;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
-public class KafkaStreamsCheck implements KafkaContractCheck{
+public class KafkaStreamsCheck implements KafkaContractCheck {
 
     private final KafkaPingPongStreamFactory kafkaPingPongStreamFactory;
 
@@ -35,16 +37,20 @@ public class KafkaStreamsCheck implements KafkaContractCheck{
 
         producer.send(outgoingTopic, "streams check");
 
-        KafkaStreams stream = kafkaPingPongStreamFactory.createStream(incomingTopic, outgoingTopic, host, port);
+        StreamsBuilder builder = new StreamsBuilder();
 
+        builder.stream(outgoingTopic).to(incomingTopic);
 
+        Topology topology = builder.build();
 
-        stream.cleanUp();
+        KafkaStreams stream = kafkaPingPongStreamFactory.createStream(host, port, topology);
+
+//        stream.cleanUp();
 
         stream.start();
 
         try {
-            Thread.sleep(3000);
+            Thread.sleep(30000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -52,7 +58,6 @@ public class KafkaStreamsCheck implements KafkaContractCheck{
         stream.close();
 
         return null;
-
     }
 
     @Override
