@@ -17,7 +17,23 @@ spring:
       database: reporting
 
 kafka:
-  bootstrap-servers: localhost:9092
+    app-name: contract-analyzer
+    bootstrap-servers: kafka:29092
+    produc:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consum:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    streams:
+      key-serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+      value-serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+
+
+
+
+
+
 
 keycloak:
   auth-server-url: http://keycloak:8090/auth
@@ -28,4 +44,3 @@ keycloak:
   ssl-required: external
 #  use-resource-role-mappings: true
   confidential-port: 0
-

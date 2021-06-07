@@ -1,4 +1,4 @@
-package com.sciamus.contractanalyzer.checks.kafka.clients.config;
+package com.example.kafkapingponger.kafka.config;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-public class KafkaProducerConfig {
+public class KafkaProd {
 
 
 
@@ -21,6 +21,8 @@ public class KafkaProducerConfig {
 
     @Bean
     public ProducerFactory<String, String> producerFactory() {
+
+        System.out.println("owcokrowa : " +bootstrapAddress);
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(
                 ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,

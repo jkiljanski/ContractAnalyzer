@@ -1,4 +1,4 @@
-package com.sciamus.contractanalyzer.checks.kafka.clients.config;
+package com.example.kafkapingponger.kafka.config;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -15,7 +15,7 @@ import java.util.Map;
 
 @EnableKafka
 @Configuration
-public class KafkaConsumerConfig {
+public class KafkaConsConfig {
 
     @Value(value = "${kafka.bootstrap-servers}")
     private String bootstrapAddress;

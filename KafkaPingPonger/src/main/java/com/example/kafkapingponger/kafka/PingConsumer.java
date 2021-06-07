@@ -8,11 +8,11 @@ import org.springframework.stereotype.Component;
 
 @Component
 
-public class KafkaPingConsumer {
+public class PingConsumer {
 
     private final RespondingService respondingService;
 
-    public KafkaPingConsumer(RespondingService respondingService) {
+    public PingConsumer(RespondingService respondingService) {
         this.respondingService = respondingService;
     }
 

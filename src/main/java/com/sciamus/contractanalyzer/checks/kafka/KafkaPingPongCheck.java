@@ -1,86 +1,135 @@
 package com.sciamus.contractanalyzer.checks.kafka;
 
-import ch.qos.logback.core.BasicStatusManager;
-import ch.qos.logback.core.helpers.CyclicBuffer;
-import com.sciamus.contractanalyzer.checks.kafka.clients.KafkaPingProducer;
-import com.sciamus.contractanalyzer.checks.kafka.clients.KafkaPongConsumer;
+import com.sciamus.contractanalyzer.checks.kafka.clients.config.KafkaConsumFactory;
+import com.sciamus.contractanalyzer.checks.kafka.clients.config.KafkaProducFactory;
 import com.sciamus.contractanalyzer.reporting.checks.CheckReport;
+import com.sciamus.contractanalyzer.reporting.checks.CheckReportBuilder;
 import com.sciamus.contractanalyzer.reporting.checks.ReportResults;
-import org.apache.kafka.common.serialization.StringDeserializer;
-import org.springframework.kafka.core.ConsumerFactory;
-import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
-import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
-import org.springframework.kafka.listener.ContainerProperties;
-import org.springframework.kafka.listener.MessageListener;
+import com.sciamus.contractanalyzer.reporting.checks.ReportService;
+import org.apache.kafka.clients.consumer.Consumer;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.common.TopicPartition;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.TimeUnit;
-
-import static org.apache.kafka.clients.CommonClientConfigs.GROUP_ID_CONFIG;
-import static org.apache.kafka.clients.consumer.ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG;
+import java.time.Duration;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
+import java.util.stream.StreamSupport;
 
 
 @Component
 public class KafkaPingPongCheck implements KafkaContractCheck {
 
+    final String name = "KafkaPingPongCheck";
 
-    private final KafkaPingProducer kafkaPingProducer;
-
-
-    private final KafkaPongConsumer kafkaPongConsumer;
-    private BlockingQueue<String> consumedMessages =new ArrayBlockingQueue<>(100);
+    private final KafkaConsumFactory kafkaConsumFactory;
 
 
-    public KafkaPingPongCheck(KafkaPingProducer kafkaPingProducer, KafkaPongConsumer kafkaPongConsumer) {
-        this.kafkaPingProducer = kafkaPingProducer;
-        this.kafkaPongConsumer = kafkaPongConsumer;
+    private final KafkaProducFactory kafkaProducFactory;
+
+    private final ReportService reportService;
+
+    //2 strategie: albo assign() albo subscribe()
+
+
+    public KafkaPingPongCheck(KafkaConsumFactory kafkaConsumFactory, KafkaProducFactory kafkaProducFactory, ReportService reportService) {
+        this.kafkaConsumFactory = kafkaConsumFactory;
+        this.kafkaProducFactory = kafkaProducFactory;
+        this.reportService = reportService;
     }
 
 
     @Override
-    public CheckReport run(String outgoingTopic, String incomingTopic, String host, String port) {
-
-        //adres brokera
-
-        Map<String, Object> consumerConfig = Collections.unmodifiableMap(Map.of(
-                BOOTSTRAP_SERVERS_CONFIG, host + port,
-                GROUP_ID_CONFIG, "1"
-        ));
-
-        DefaultKafkaConsumerFactory<String, String> kafkaConsumerFactory =
-                new DefaultKafkaConsumerFactory<>(
-                        consumerConfig,
-                        new StringDeserializer(),
-                        new StringDeserializer());
+    public CheckReport run(String incomingTopic, String outgoingTopic, String host, String port) {
 
 
+        final Logger logger = LogManager.getLogger(KafkaPingPongCheck.class);
 
-        ContainerProperties containerProperties = new ContainerProperties(incomingTopic);
+        Consumer<String, String> consumer = kafkaConsumFactory.createConsumer(incomingTopic, host, port);
 
-        containerProperties.setMessageListener((MessageListener<String, String>) record -> consumedMessages.add(record.value()));
+        Set<TopicPartition> partitionSet = getTopicPartitions(incomingTopic);
 
-        ConcurrentMessageListenerContainer container =
-                new ConcurrentMessageListenerContainer<>(
-                        kafkaConsumerFactory,
-                        containerProperties);
+        Iterable<ConsumerRecord<String, String>> records;
 
+        records = consumer.poll(Duration.ofSeconds(3)).records(incomingTopic);
 
-        container.start();
-
-        try {
-            consumedMessages.poll(10, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            System.out.println("failed but active");
-            return new CheckReport("12", ReportResults.FAILED,"xxx",new Date(), "kafka");
+        logger.info("records after first poll");
+        for (ConsumerRecord<String, String> record : records) {
+            logger.info("logging records after initial poll " + record.value());
         }
 
-        System.out.println("passed and active");
-        return new CheckReport("13",ReportResults.FAILED,"sss",new Date(), "kafka");
 
+        //        logger.info("consumer position is " + getConsumerPosition(consumer, partitionSet));
+
+
+        CheckReportBuilder reportBuilder = new CheckReportBuilder();
+        reportBuilder.setNameOfCheck("kafka check").createTimestamp();
+
+        KafkaTemplate<String, String> producer = kafkaProducFactory.createProducer(host, port);
+
+        String messageToProduce = "ping" + (new Random().nextInt(10));
+
+        String correctFetchedMessage = messageToProduce + "pong";
+
+        producer.send(outgoingTopic, 0, null, messageToProduce);
+
+
+        logger.info("before poll");
+        records = consumer.poll(Duration.ofSeconds(5)).records(incomingTopic);
+
+//        logger.info("consumer position after polling " + getConsumerPosition(consumer, partitionSet));
+
+
+        for (ConsumerRecord<String, String> record : records) {
+            logger.info("logging records after second poll " + record.value());
+        }
+
+//        logger.info("position before sync: "+getConsumerPosition(consumer,partitionSet));
+
+        consumer.close();
+
+        String additionalReportInfo = "incoming topic: " + incomingTopic + " outgoing topic: " + outgoingTopic + " ";
+
+        reportBuilder.setReportBody(additionalReportInfo);
+
+
+        if (StreamSupport.stream(records.spliterator(), false)
+                .map(r -> r.value())
+//                .peek(System.out::println)
+                .anyMatch(p -> p.equals(correctFetchedMessage))) {
+
+            return reportService.addReportToRepository(reportBuilder.setResult(ReportResults.PASSED)
+                    .addTextToBody("messageToProduce should be: " +
+                            "" + correctFetchedMessage +
+                            " and indeed was")
+                    .build());
+        } else {
+            return reportService.addReportToRepository(reportBuilder.setResult(ReportResults.FAILED)
+                    .addTextToBody("Sorry, we couldn't find the correct messageToProduce: " + correctFetchedMessage
+                    )
+                    .build());
+        }
+    }
+
+    @Override
+    public String getName() {
+        return this.name;
+    }
+
+    private Set<TopicPartition> getTopicPartitions(String incomingTopic) {
+        TopicPartition partitionDefinition = new TopicPartition(incomingTopic, 0);
+
+        Set<TopicPartition> partitionSet = new HashSet<>(Collections.singleton(partitionDefinition));
+        return partitionSet;
+    }
+
+    private long getConsumerPosition(Consumer<String, String> consumer, Set<TopicPartition> topicPartitions) {
+        return consumer.position(topicPartitions.iterator().next());
     }
 
 }
