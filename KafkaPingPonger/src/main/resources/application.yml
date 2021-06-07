@@ -1,0 +1,7 @@
+kafka:
+  bootstrap-servers: localhost:29092
+  incoming-topic: ping
+  outgoing-topic: pong
+
+server:
+  port: 8888

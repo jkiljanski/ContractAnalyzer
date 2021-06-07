@@ -1,4 +1,4 @@
-package com.sciamus.contractanalyzer;
+package com.sciamus.contractanalyzer.conf;
 
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.springframework.context.annotation.Bean;

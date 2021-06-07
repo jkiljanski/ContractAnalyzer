@@ -13,6 +13,8 @@ public class ReportService {
 
     private final IdGenerator idGenerator;
 
+
+
     public ReportService(ReportRepository reportRepository, IdGenerator idGenerator) {
         this.reportRepository = reportRepository;
         this.idGenerator = idGenerator;
@@ -40,7 +42,5 @@ public class ReportService {
     public List<CheckReport> findAllByName(String name) {
         return reportRepository.findAllByNameOfCheck(name);
     }
-
-
 
 }

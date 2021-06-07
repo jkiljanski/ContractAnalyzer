@@ -34,7 +34,9 @@ public class FeignClientsConfig {
 
             template.header(HttpHeaders.AUTHORIZATION, "Bearer " + keycloakSecurityContext.getTokenString());
 
-//            System.out.println("JESTEM TUTAJ " + keycloakSecurityContext.getTokenString());
+//            keycloakSecurityContext.getToken()
+
+            System.out.println("JESTEM TUTAJ " + keycloakSecurityContext.getTokenString());
         }
 
         private void ensureTokenIsStillValid() {

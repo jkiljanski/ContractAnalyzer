@@ -32,6 +32,8 @@ public class CheckReport {
     @Field("userName")
     private final String userName;
 
+
+
     @PersistenceConstructor
     public CheckReport(String id, ReportResults result, String reportBody, Date timestamp, String nameOfCheck, String userName) {
         this.id = id;
