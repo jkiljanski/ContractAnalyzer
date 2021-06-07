@@ -26,8 +26,8 @@ kafka:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
     streams:
-      default-key-serde-class-config: org.apache.kafka.common.serialization.Serdes$String
-      default-value-serde-class-config: org.apache.kafka.common.serialization.Serdes$String
+      key-serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+      value-serde: org.apache.kafka.common.serialization.Serdes$StringSerde
 
 
 

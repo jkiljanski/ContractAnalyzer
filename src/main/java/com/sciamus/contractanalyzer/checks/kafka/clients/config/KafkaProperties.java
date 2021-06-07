@@ -45,17 +45,26 @@ public class KafkaProperties {
     }
 
     public static class Streams {
-        public String defaultKeySerdeClassConfig;
-        public String defaultValueSerdeClassConfig;
 
+        public String keySerde;
+        public String valueSerde;
 
-        public void setDefaultKeySerdeClassConfig(String defaultKeySerdeClassConfig) {
-            this.defaultKeySerdeClassConfig = defaultKeySerdeClassConfig;
+        public String getKeySerde() {
+            return keySerde;
         }
 
-        public void setDefaultValueSerdeClassConfig(String defaultValueSerdeClassConfig) {
-            this.defaultValueSerdeClassConfig = defaultValueSerdeClassConfig;
+        public String getValueSerde() {
+            return valueSerde;
         }
+
+        public void setKeySerde(String keySerde) {
+            this.keySerde = keySerde;
+        }
+
+        public void setValueSerde(String valueSerde) {
+            this.valueSerde = valueSerde;
+        }
+
     }
 
     public static class Consum {
