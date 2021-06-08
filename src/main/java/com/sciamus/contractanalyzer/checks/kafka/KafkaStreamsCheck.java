@@ -33,7 +33,6 @@ public class KafkaStreamsCheck implements KafkaContractCheck {
 
         KafkaTemplate<String, String> producer = producFactory.createProducer(host, port);
 
-        Consumer<String, String> consumer = consumFactory.createConsumer(incomingTopic, host, port);
 
         producer.send(outgoingTopic, "streams check");
 
