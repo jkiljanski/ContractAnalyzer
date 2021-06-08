@@ -26,7 +26,7 @@ public class KafkaConsumFactory {
     // pytanie 2: ważne - mieszane konstruktory - trochę springa a trochę nie - jak to zrobić
 
 
-    public Consumer<String,String> createConsumer(String topic, String host, String port) {
+    public Consumer createConsumer(String topic, String host, String port) {
 
         final Properties props = new Properties();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, host+":"+port);
@@ -35,7 +35,7 @@ public class KafkaConsumFactory {
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, kafkaProperties.getConsum().getValueDeserializer());
 //        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG,  "earliest");
 
-        final Consumer<String,String> consumer = new KafkaConsumer<>(props);
+        final Consumer consumer = new KafkaConsumer<>(props);
 
 //        TopicPartition topicPartition = new TopicPartition(topic, partition);
 

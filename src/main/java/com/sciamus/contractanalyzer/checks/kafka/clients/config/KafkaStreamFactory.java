@@ -11,11 +11,11 @@ import java.util.Properties;
 import static net.bytebuddy.implementation.MethodDelegation.to;
 
 @Component
-public class KafkaPingPongStreamFactory {
+public class KafkaStreamFactory {
 
     private KafkaProperties kafkaProperties;
 
-    public KafkaPingPongStreamFactory(KafkaProperties kafkaProperties) {
+    public KafkaStreamFactory(KafkaProperties kafkaProperties) {
         this.kafkaProperties = kafkaProperties;
     }
 

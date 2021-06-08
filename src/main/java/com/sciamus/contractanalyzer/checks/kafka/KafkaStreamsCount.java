@@ -1,15 +1,12 @@
 package com.sciamus.contractanalyzer.checks.kafka;
 
-import com.sciamus.contractanalyzer.checks.kafka.clients.config.KafkaPingPongStreamFactory;
+import com.sciamus.contractanalyzer.checks.kafka.clients.config.KafkaStreamFactory;
 import com.sciamus.contractanalyzer.reporting.checks.CheckReport;
 import lombok.SneakyThrows;
-import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.kstream.Printed;
-import org.apache.kafka.streams.kstream.Produced;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -19,10 +16,10 @@ import org.springframework.stereotype.Component;
 public class KafkaStreamsCount implements KafkaContractCheck {
 
     private final String name = "KafkaStreamsCount";
-    private KafkaPingPongStreamFactory kafkaPingPongStreamFactory;
+    private KafkaStreamFactory kafkaStreamFactory;
 
-    public KafkaStreamsCount(KafkaPingPongStreamFactory kafkaPingPongStreamFactory) {
-        this.kafkaPingPongStreamFactory = kafkaPingPongStreamFactory;
+    public KafkaStreamsCount(KafkaStreamFactory kafkaStreamFactory) {
+        this.kafkaStreamFactory = kafkaStreamFactory;
     }
 
     @SneakyThrows
@@ -41,7 +38,7 @@ public class KafkaStreamsCount implements KafkaContractCheck {
 
         Topology topology = streamsBuilder.build();
 
-        KafkaStreams application = kafkaPingPongStreamFactory.createStream(host, port, topology);
+        KafkaStreams application = kafkaStreamFactory.createStream(host, port, topology);
 
         application.cleanUp();
 
