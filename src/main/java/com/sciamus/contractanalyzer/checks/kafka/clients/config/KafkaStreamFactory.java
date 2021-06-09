@@ -8,8 +8,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Properties;
 
-import static net.bytebuddy.implementation.MethodDelegation.to;
-
 @Component
 public class KafkaStreamFactory {
 
@@ -19,10 +17,10 @@ public class KafkaStreamFactory {
         this.kafkaProperties = kafkaProperties;
     }
 
-    public KafkaStreams createStream (String host, String port, Topology topology) {
+    public KafkaStreams createStream(String host, String port, Topology topology) {
         final Properties props = new Properties();
 
-        props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, host+":"+port);
+        props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, host + ":" + port);
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, kafkaProperties.getAppName());
 
 
@@ -36,13 +34,9 @@ public class KafkaStreamFactory {
         props.put(StreamsConfig.STATE_DIR_CONFIG, "data");
 
 
-
         return new KafkaStreams(topology, props);
 
     }
-
-
-
 
 
 }

@@ -13,7 +13,7 @@ import java.util.Map;
 @Configuration
 public class KafkaTopicConfig {
 
-    @Value(value = "${kafka.bootstrap-servers}")
+    @Value(value = "${spring.kafka.bootstrap-servers}")
     private String bootstrapAddress;
 
     @Bean
@@ -31,6 +31,16 @@ public class KafkaTopicConfig {
     @Bean
     public NewTopic createPong() {
         return new NewTopic("pong", 1, (short) 1);
+    }
+
+    @Bean
+    public NewTopic createStreamIn() {
+        return new NewTopic("input-topic", 1, (short) 1);
+    }
+
+    @Bean
+    public NewTopic createStreamOut() {
+        return new NewTopic("output-topic", 1, (short) 1);
     }
 
 

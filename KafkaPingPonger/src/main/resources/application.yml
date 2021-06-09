@@ -1,7 +1,66 @@
-kafka:
-  bootstrap-servers: kafka:29092
-  incoming-topic: ping
-  outgoing-topic: pong
+spring:
+  kafka:
+    bootstrap-servers: kafka:29092
+    incoming-topic: ping
+    outgoing-topic: pong
+    streams:
+      properties:
+  cloud:
+    stream:
+      kafka:
+        streams:
+          binder:
+            configuration:
+              key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+              value.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+
+
 
 server:
   port: 8888
+
+
+spring.cloud.stream:
+  function:
+    definition: process
+
+spring.cloud.stream.bindings.process-out-0:
+  destination: output-topic
+spring.cloud.stream.bindings.process-in-0:
+  destination: input-topic
+
+
+#spring:
+#  cloud:
+#    stream:
+#      function:
+#        bindings:
+#          process-in-0:
+#            destination: input-topic
+#          process-out-0:
+#            destination: output-topic
+#
+
+  kafka:
+    streams:
+      binder:
+        brokers: kafka
+        defaultBrokerPort: 29092
+        applicationId: ping-ponger
+        configuration:
+          commit.interval.ms: 100
+          default:
+            key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+            value.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+
+
+#spring.cloud.stream:
+#  function:
+#    definition: process
+#      bindings:
+#          process-in-0: input-topic
+#          process-out-0: output-topic
+
+
+
+

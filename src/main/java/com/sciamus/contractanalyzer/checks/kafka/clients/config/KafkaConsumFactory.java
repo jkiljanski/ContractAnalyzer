@@ -21,10 +21,6 @@ public class KafkaConsumFactory {
     }
 
 
-    // pytanie 1: czy tu trzeba używać springa??
-
-    // pytanie 2: ważne - mieszane konstruktory - trochę springa a trochę nie - jak to zrobić
-
 
     public Consumer createConsumer(String topic, String host, String port) {
 
@@ -33,21 +29,21 @@ public class KafkaConsumFactory {
         props.put(ConsumerConfig.GROUP_ID_CONFIG,"1");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, kafkaProperties.getConsum().getKeyDeserializer());
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, kafkaProperties.getConsum().getValueDeserializer());
-//        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG,  "earliest");
 
         final Consumer consumer = new KafkaConsumer<>(props);
 
-//        TopicPartition topicPartition = new TopicPartition(topic, partition);
-
-//        consumer.assign(List.of(topicPartition));
 
         consumer.subscribe(List.of(topic));
 
         return  consumer;
     }
 
+//        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG,  "earliest");
 
 
+//        TopicPartition topicPartition = new TopicPartition(topic, partition);
+
+//        consumer.assign(List.of(topicPartition));
 
 
 

@@ -6,18 +6,13 @@ import com.sciamus.contractanalyzer.checks.kafka.clients.config.KafkaStreamFacto
 import com.sciamus.contractanalyzer.reporting.checks.CheckReport;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.streams.KafkaStreams;
-import org.apache.kafka.streams.StreamsBuilder;
-import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.kstream.KTable;
-import org.apache.kafka.streams.kstream.Produced;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
+import java.util.Random;
 
 
 @Component
@@ -27,7 +22,6 @@ public class KTableCheck implements KafkaContractCheck {
     private final KafkaStreamFactory kafkaStreamFactory;
     private final KafkaProducFactory kafkaProducFactory;
     private final KafkaConsumFactory kafkaConsumFactory;
-
 
 
     public KTableCheck(KafkaStreamFactory kafkaStreamFactory, KafkaProducFactory kafkaProducFactory, KafkaConsumFactory kafkaConsumFactory) {
@@ -44,36 +38,38 @@ public class KTableCheck implements KafkaContractCheck {
 
         KafkaTemplate<String, String> producer = kafkaProducFactory.createProducer(host, port);
 
-        Consumer<String, Long> consumer = kafkaConsumFactory.createConsumer(incomingTopic, host, port);
 
-        producer.send(outgoingTopic, "one");
-        producer.send(outgoingTopic, "one");
-        producer.send(outgoingTopic, "two");
+        Consumer consumer = kafkaConsumFactory.createConsumer(incomingTopic, host, port);
 
 
-        StreamsBuilder streamsBuilder = new StreamsBuilder();
+        for (int i = 0; i <= 20; i++) {
+            producer.send(outgoingTopic, String.valueOf(new Random().nextInt(10)));
+        }
 
-        KStream<String, String> kStream = streamsBuilder.stream(outgoingTopic);
-
-        KTable <String,Long> kTable = kStream
-                .groupBy((k,v) -> v)
-                .count();
+        producer.send(outgoingTopic, "compute");
 
 
-        kTable.toStream()
-                .peek((k,v)-> {
-                    System.out.println("hello!! key " +k + " value " + v);
-                })
-                .to(incomingTopic, Produced.with(Serdes.String(),Serdes.Long()));
+//
+//
+//        StreamsBuilder streamsBuilder = new StreamsBuilder();
+//
+//        KStream<String, String> kStream = streamsBuilder.stream(outgoingTopic);
+//
+//        KTable<String, Long> kTable = kStream
+//                .groupBy((k, v) -> v)
+//                .count();
+//
+//        kTable.toStream()
+//                .mapValues(v -> String.valueOf(v))
+//                .peek((k, v) -> {
+//                    System.out.println("hello!! key " + k + " value " + v);
+//                })
+//                .to(incomingTopic);
+//
+//        KafkaStreams application = kafkaStreamFactory.createStream(host, port, streamsBuilder.build());
 
 
-        KafkaStreams application = kafkaStreamFactory.createStream(host, port, streamsBuilder.build());
-
-        application.cleanUp();
-
-        application.start();
-
-        consumer.poll(Duration.ofSeconds(5));
+        consumer.poll(Duration.ofSeconds(3));
 
         try {
             Thread.sleep(30000);
@@ -81,14 +77,12 @@ public class KTableCheck implements KafkaContractCheck {
             e.printStackTrace();
         }
 
-        application.close();
 
-
-        Iterable<ConsumerRecord<String, Long>> records = consumer.poll(Duration.ofSeconds(10)).records(incomingTopic);
+        Iterable<ConsumerRecord<String, Long>> records = consumer.poll(Duration.ofSeconds(5)).records(incomingTopic);
 
 
         for (ConsumerRecord<String, Long> record : records) {
-            logger.info("logging records after second poll " + record.key() +"---" +record.value());
+            logger.info("logging records after second poll " + record.key() + "---" + record.value());
         }
 
         return null;

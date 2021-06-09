@@ -10,7 +10,7 @@ public class PongProducer {
 
 
     private KafkaTemplate<String, String> kafkaTemplate;
-    @Value("${kafka.outgoing-topic}")
+    @Value("${spring.kafka.outgoing-topic}")
     private String topicName;
 
 

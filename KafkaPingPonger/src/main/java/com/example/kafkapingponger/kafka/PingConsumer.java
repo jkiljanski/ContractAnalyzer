@@ -1,8 +1,7 @@
 package com.example.kafkapingponger.kafka;
 
 
-import com.example.kafkapingponger.RespondingService;
-import org.springframework.beans.factory.annotation.Value;
+import com.example.kafkapingponger.PongRespondingService;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
@@ -10,17 +9,17 @@ import org.springframework.stereotype.Component;
 
 public class PingConsumer {
 
-    private final RespondingService respondingService;
+    private final PongRespondingService pongRespondingService;
 
-    public PingConsumer(RespondingService respondingService) {
-        this.respondingService = respondingService;
+    public PingConsumer(PongRespondingService pongRespondingService) {
+        this.pongRespondingService = pongRespondingService;
     }
 
-    @KafkaListener(topics = "${kafka.incoming-topic}", groupId="1")
+    @KafkaListener(topics = "${spring.kafka.incoming-topic}", groupId="1")
     public void listenGroup1(String message) {
 //        System.out.println("Received Message in group 1: " + message);
 
-        respondingService.notify(message);
+        pongRespondingService.notify(message);
 
     }
 

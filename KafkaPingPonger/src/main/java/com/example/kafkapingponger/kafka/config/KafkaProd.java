@@ -16,13 +16,12 @@ public class KafkaProd {
 
 
 
-    @Value(value = "${kafka.bootstrap-servers}")
+    @Value(value = "${spring.kafka.bootstrap-servers}")
     private String bootstrapAddress;
 
     @Bean
     public ProducerFactory<String, String> producerFactory() {
 
-        System.out.println("owcokrowa : " +bootstrapAddress);
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(
                 ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,

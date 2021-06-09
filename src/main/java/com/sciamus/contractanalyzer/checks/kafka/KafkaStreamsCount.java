@@ -49,13 +49,7 @@ public class KafkaStreamsCount implements KafkaContractCheck {
 
         application.close();
 
-//        KTable<String, Long> kTable = stream
-//                .flatMapValues(value -> Arrays.asList(value.split("\\W+")))
-//                .groupBy((key, value) -> value)
-//                .count();
-//
-//
-//        kTable.toStream().to(incomingTopic);
+
 
         final Logger logger = LogManager.getLogger(KafkaStreamsCount.class);
 

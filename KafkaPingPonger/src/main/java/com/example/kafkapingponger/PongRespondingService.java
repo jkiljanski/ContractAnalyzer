@@ -4,11 +4,11 @@ import com.example.kafkapingponger.kafka.PongProducer;
 import org.springframework.stereotype.Service;
 
 @Service
-public class RespondingService {
+public class PongRespondingService {
 
     private final PongProducer kafkaPongProducer;
 
-    public RespondingService(PongProducer kafkaPongProducer) {
+    public PongRespondingService(PongProducer kafkaPongProducer) {
         this.kafkaPongProducer = kafkaPongProducer;
     }
 
@@ -17,7 +17,6 @@ public class RespondingService {
         String response= message + "pong";
 
         kafkaPongProducer.sendMessage(response);
-
 
     }
 }
