@@ -2,10 +2,10 @@ package com.sciamus.contractanalyzer.checks.kafka;
 
 import com.sciamus.contractanalyzer.checks.kafka.clients.config.KafkaConsumFactory;
 import com.sciamus.contractanalyzer.checks.kafka.clients.config.KafkaProducFactory;
-import com.sciamus.contractanalyzer.reporting.checks.CheckReport;
-import com.sciamus.contractanalyzer.reporting.checks.CheckReportBuilder;
-import com.sciamus.contractanalyzer.reporting.checks.ReportResults;
-import com.sciamus.contractanalyzer.reporting.checks.ReportService;
+import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReport;
+import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReportBuilder;
+import com.sciamus.contractanalyzer.domain.reporting.checks.ReportResults;
+import com.sciamus.contractanalyzer.domain.reporting.checks.ReportService;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.TopicPartition;

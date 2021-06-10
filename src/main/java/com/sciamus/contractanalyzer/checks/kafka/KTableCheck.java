@@ -3,9 +3,9 @@ package com.sciamus.contractanalyzer.checks.kafka;
 import com.sciamus.contractanalyzer.checks.kafka.clients.config.KafkaConsumFactory;
 import com.sciamus.contractanalyzer.checks.kafka.clients.config.KafkaProducFactory;
 import com.sciamus.contractanalyzer.checks.kafka.clients.config.KafkaStreamFactory;
-import com.sciamus.contractanalyzer.reporting.checks.CheckReport;
-import com.sciamus.contractanalyzer.reporting.checks.CheckReportBuilder;
-import com.sciamus.contractanalyzer.reporting.checks.ReportResults;
+import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReport;
+import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReportBuilder;
+import com.sciamus.contractanalyzer.domain.reporting.checks.ReportResults;
 import io.vavr.control.Try;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -51,7 +51,7 @@ public class KTableCheck implements KafkaContractCheck {
         String checkUniqueIdentifier = getCheckUniqueIdentifier();
 
         List<Integer> integersListToSendToOutsideProcessor = getIntegersListToSendToOutsideProcessor();
-        
+
         Map<String, Long> expectedAnswerToGetFromOutsideProcessor = getExpectedAnswer(checkUniqueIdentifier, integersListToSendToOutsideProcessor);
 
         logAnswer(logger, expectedAnswerToGetFromOutsideProcessor);
@@ -132,11 +132,12 @@ public class KTableCheck implements KafkaContractCheck {
     private void processReceivedRecords(Logger logger, String checkUniqueKey, Iterable<ConsumerRecord<String, String>> records, Map<String, Long> answerToCheck) {
         for (ConsumerRecord<String, String> record : records) {
             logger.info("logging records after second poll " + record.key() + "---" + record.value());
-            if (record.key().contains(checkUniqueKey)){
+            if (record.key().contains(checkUniqueKey)) {
 
-            Try<Long> longTry = Try.of(()->Long.valueOf(record.value()));
+                Try<Long> longTry = Try.of(() -> Long.valueOf(record.value()));
 
-            answerToCheck.put(record.key(), longTry.getOrElseThrow(()->new RuntimeException("Sorry, I cannot convert the value you provided to type Long")));}
+                answerToCheck.put(record.key(), longTry.getOrElseThrow(() -> new RuntimeException("Sorry, I cannot convert the value you provided to type Long")));
+            }
         }
     }
 
@@ -184,7 +185,7 @@ public class KTableCheck implements KafkaContractCheck {
     private Map<String, Long> getExpectedAnswer(String checkUniqueKey, List<Integer> toSend) {
         Map<String, Long> expectedAnswer = toSend
                 .stream()
-                .map(i -> checkUniqueKey +i)
+                .map(i -> checkUniqueKey + i)
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
         return expectedAnswer;
     }

@@ -1,7 +1,7 @@
 package com.sciamus.contractanalyzer.checks.kafka;
 
 import com.sciamus.contractanalyzer.checks.kafka.clients.config.KafkaStreamFactory;
-import com.sciamus.contractanalyzer.reporting.checks.CheckReport;
+import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReport;
 import lombok.SneakyThrows;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
@@ -31,9 +31,9 @@ public class KafkaStreamsCount implements KafkaContractCheck {
         KStream<String, String> stream = getKStream(outgoingTopic, streamsBuilder);
 
         stream.mapValues(value ->
-            String.valueOf(value.length())
+                String.valueOf(value.length())
         )
-                .peek((k,v) -> System.out.println("value="+v))
+                .peek((k, v) -> System.out.println("value=" + v))
                 .to(incomingTopic);
 
         Topology topology = streamsBuilder.build();
@@ -48,7 +48,6 @@ public class KafkaStreamsCount implements KafkaContractCheck {
         Thread.sleep(30000);
 
         application.close();
-
 
 
         final Logger logger = LogManager.getLogger(KafkaStreamsCount.class);

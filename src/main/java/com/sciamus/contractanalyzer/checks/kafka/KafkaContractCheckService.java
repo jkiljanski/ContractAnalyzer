@@ -1,7 +1,7 @@
 package com.sciamus.contractanalyzer.checks.kafka;
 
-import com.sciamus.contractanalyzer.checks.CheckNotFoundException;
-import com.sciamus.contractanalyzer.reporting.checks.CheckReport;
+import com.sciamus.contractanalyzer.domain.checks.CheckNotFoundException;
+import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReport;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

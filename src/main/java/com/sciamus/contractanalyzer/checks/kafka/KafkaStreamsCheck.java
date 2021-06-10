@@ -1,9 +1,9 @@
 package com.sciamus.contractanalyzer.checks.kafka;
 
 import com.sciamus.contractanalyzer.checks.kafka.clients.config.KafkaConsumFactory;
-import com.sciamus.contractanalyzer.checks.kafka.clients.config.KafkaStreamFactory;
 import com.sciamus.contractanalyzer.checks.kafka.clients.config.KafkaProducFactory;
-import com.sciamus.contractanalyzer.reporting.checks.CheckReport;
+import com.sciamus.contractanalyzer.checks.kafka.clients.config.KafkaStreamFactory;
+import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReport;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.Topology;

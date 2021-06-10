@@ -1,7 +1,7 @@
 package com.sciamus.contractanalyzer.control;
 
 import com.sciamus.contractanalyzer.checks.kafka.KafkaContractCheckService;
-import com.sciamus.contractanalyzer.reporting.checks.CheckReport;
+import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReport;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
