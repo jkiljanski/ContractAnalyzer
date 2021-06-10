@@ -12,7 +12,6 @@ import java.util.List;
 @RestController
 public class SuitesRepositoryController {
 
-
     SuitesRepository suitesRepository;
     SuiteReportMapper mapper;
 
@@ -42,6 +41,5 @@ public class SuitesRepositoryController {
     List<SuiteReport> getAllReports() {
         return suitesRepository.getAllReports();
     }
-
 
 }

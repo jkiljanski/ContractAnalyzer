@@ -18,7 +18,7 @@ public interface ReportingCheckClient {
     @RequestLine(value = "GET /restContractChecks")
     ListOfChecksDTO getAvailableChecks();
 
-    @RequestLine(value = "GET /checks/{name}/autorun?url={url}")
+    @RequestLine(value = "POST /checks/{name}/autorun?url={url}")
     CheckReportDTO autogenerate(@Param("name") String name, @Param("url") URL url);
 
     @RequestLine(value = "GET /reports/{id}")
