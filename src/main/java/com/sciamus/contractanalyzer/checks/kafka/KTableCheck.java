@@ -42,46 +42,23 @@ public class KTableCheck implements KafkaContractCheck {
     @Override
     public CheckReport run(String incomingTopic, String outgoingTopic, String host, String port) {
 
+        Logger logger = getLogger();
 
-        Logger logger = LogManager.getLogger(KTableCheck.class);
+        KafkaTemplate<String, String> producer = getProducer(host, port);
 
-        KafkaTemplate<String, String> producer = kafkaProducFactory.createProducer(host, port);
+        Consumer consumer = getConsumer(incomingTopic, host, port);
 
+        String checkUniqueIdentifier = getCheckUniqueIdentifier();
 
-        Consumer consumer = kafkaConsumFactory.createConsumer(incomingTopic, host, port);
+        List<Integer> integersListToSendToOutsideProcessor = getIntegersListToSendToOutsideProcessor();
+        
+        Map<String, Long> expectedAnswerToGetFromOutsideProcessor = getExpectedAnswer(checkUniqueIdentifier, integersListToSendToOutsideProcessor);
 
-        String checkUniqueKey = new Random().nextInt(10) + "--test--";
+        logAnswer(logger, expectedAnswerToGetFromOutsideProcessor);
 
-        List<Integer> toSend = Stream
-                .generate(() -> new Random().nextInt(10))
-                .limit(10)
-                .collect(Collectors.toList());
+        sendMessagesToOutsideProcessor(outgoingTopic, producer, checkUniqueIdentifier, integersListToSendToOutsideProcessor);
 
-
-        Map<String, Long> expectedAnswer = toSend
-                .stream()
-                .map(i -> checkUniqueKey+i)
-                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
-
-        for (Map.Entry entry : expectedAnswer.entrySet()) {
-
-            logger.info(entry);
-        }
-
-        for (int i=0; i<5; i++) {
-            producer.send(outgoingTopic,"to be ignored");
-        }
-
-
-        for (Integer element : toSend) {
-            producer.send(outgoingTopic, checkUniqueKey, String.valueOf(element));
-        }
-
-        for (int i=0; i<5; i++) {
-            producer.send(outgoingTopic,"to be ignored");
-        }
-
-        consumer.poll(Duration.ofSeconds(5));
+        setUpConsumer(consumer);
 
         try {
             Thread.sleep(30000);
@@ -89,13 +66,70 @@ public class KTableCheck implements KafkaContractCheck {
             e.printStackTrace();
         }
 
-        Iterable<ConsumerRecord<String, String>> records = consumer.poll(Duration.ofSeconds(5)).records(incomingTopic);
+        Iterable<ConsumerRecord<String, String>> records = getRecordsFromOutsideProcessor(incomingTopic, consumer);
+
         Map<String, Long> answerToCheck = new HashMap<>();
 
         consumer.close();
 
+        processReceivedRecords(logger, checkUniqueIdentifier, records, answerToCheck);
 
+        logAnswer(logger, answerToCheck);
 
+        Boolean resultOfCheck = expectedAnswerToGetFromOutsideProcessor.equals(answerToCheck);
+
+        logCheckResult(logger, expectedAnswerToGetFromOutsideProcessor, answerToCheck);
+
+        CheckReportBuilder reportBuilder = new CheckReportBuilder();
+
+        setUpReportBuilder(reportBuilder);
+
+        if (resultOfCheck) {
+            return getPassedCheckReport(reportBuilder);
+        }
+
+        return getFailedCheckReport(expectedAnswerToGetFromOutsideProcessor, answerToCheck, reportBuilder);
+    }
+
+    private void logCheckResult(Logger logger, Map<String, Long> expectedAnswerToGetFromOutsideProcessor, Map<String, Long> answerToCheck) {
+        logger.info("And the answer is " + expectedAnswerToGetFromOutsideProcessor.equals(answerToCheck));
+    }
+
+    private void setUpReportBuilder(CheckReportBuilder reportBuilder) {
+        reportBuilder.createTimestamp().setNameOfCheck(getName());
+    }
+
+    private Consumer getConsumer(String incomingTopic, String host, String port) {
+        return kafkaConsumFactory.createConsumer(incomingTopic, host, port);
+    }
+
+    private KafkaTemplate<String, String> getProducer(String host, String port) {
+        KafkaTemplate<String, String> producer = kafkaProducFactory.createProducer(host, port);
+        return producer;
+    }
+
+    private Logger getLogger() {
+        Logger logger = LogManager.getLogger(KTableCheck.class);
+        return logger;
+    }
+
+    private CheckReport getFailedCheckReport(Map<String, Long> expectedAnswer, Map<String, Long> answerToCheck, CheckReportBuilder reportBuilder) {
+        return reportBuilder
+                .setResult(ReportResults.FAILED)
+                .setReportBody("Sorry, please have another shot. " +
+                        "Correct answer is: " + expectedAnswer + "\n" +
+                        " your system produced this: " + answerToCheck)
+                .build();
+    }
+
+    private CheckReport getPassedCheckReport(CheckReportBuilder reportBuilder) {
+        return reportBuilder
+                .setResult(ReportResults.PASSED)
+                .setReportBody("Your system produced a good answer. You deserve a hug.")
+                .build();
+    }
+
+    private void processReceivedRecords(Logger logger, String checkUniqueKey, Iterable<ConsumerRecord<String, String>> records, Map<String, Long> answerToCheck) {
         for (ConsumerRecord<String, String> record : records) {
             logger.info("logging records after second poll " + record.key() + "---" + record.value());
             if (record.key().contains(checkUniqueKey)){
@@ -104,35 +138,63 @@ public class KTableCheck implements KafkaContractCheck {
 
             answerToCheck.put(record.key(), longTry.getOrElseThrow(()->new RuntimeException("Sorry, I cannot convert the value you provided to type Long")));}
         }
+    }
 
-        for (Map.Entry entry : answerToCheck.entrySet()) {
+    private Iterable<ConsumerRecord<String, String>> getRecordsFromOutsideProcessor(String incomingTopic, Consumer consumer) {
+        Iterable<ConsumerRecord<String, String>> records = consumer.poll(Duration.ofSeconds(5)).records(incomingTopic);
+        return records;
+    }
+
+    private void setUpConsumer(Consumer consumer) {
+        consumer.poll(Duration.ofSeconds(5));
+    }
+
+    private void sendMessagesToOutsideProcessor(String outgoingTopic, KafkaTemplate<String, String> producer, String checkUniqueKey, List<Integer> integersListToSendToTopic) {
+        sendMessagesToIgnore(outgoingTopic, producer);
+
+        sendMessagesToBeChecked(outgoingTopic, producer, checkUniqueKey, integersListToSendToTopic);
+
+        sendMessagesToIgnore(outgoingTopic, producer);
+    }
+
+    private void sendMessagesToBeChecked(String outgoingTopic, KafkaTemplate<String, String> producer, String checkUniqueKey, List<Integer> toSendToTopic) {
+        for (Integer element : toSendToTopic) {
+            producer.send(outgoingTopic, checkUniqueKey, String.valueOf(element));
+        }
+    }
+
+    private void sendMessagesToIgnore(String outgoingTopic, KafkaTemplate<String, String> producer) {
+        for (int i = 0; i < 5; i++) {
+            producer.send(outgoingTopic, "to be ignored");
+        }
+    }
+
+    private void logAnswer(Logger logger, Map<String, Long> expectedAnswer) {
+        for (Map.Entry entry : expectedAnswer.entrySet()) {
+
             logger.info(entry);
         }
+    }
 
-        Boolean result = expectedAnswer.equals(answerToCheck);
+    private String getCheckUniqueIdentifier() {
+        String checkUniqueKey = new Random().nextInt(10) + "--test--";
+        return checkUniqueKey;
+    }
 
-        logger.info("And the answer is " + expectedAnswer.equals(answerToCheck));
+    private Map<String, Long> getExpectedAnswer(String checkUniqueKey, List<Integer> toSend) {
+        Map<String, Long> expectedAnswer = toSend
+                .stream()
+                .map(i -> checkUniqueKey +i)
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+        return expectedAnswer;
+    }
 
-        CheckReportBuilder reportBuilder = new CheckReportBuilder();
-
-        reportBuilder.createTimestamp().setNameOfCheck(getName());
-
-        if (result) {
-            return reportBuilder
-                    .setResult(ReportResults.PASSED)
-                    .setReportBody("Your system produced a good answer. You deserve a hug.")
-                    .build();
-        }
-
-
-
-
-        return reportBuilder
-                .setResult(ReportResults.FAILED)
-                .setReportBody("Sorry, please have another shot. " +
-                        "Correct answer is: " + expectedAnswer + "\n" +
-                        " your system produced this: " + answerToCheck)
-                .build();
+    private List<Integer> getIntegersListToSendToOutsideProcessor() {
+        List<Integer> toSend = Stream
+                .generate(() -> new Random().nextInt(10))
+                .limit(10)
+                .collect(Collectors.toList());
+        return toSend;
     }
 
     @Override
