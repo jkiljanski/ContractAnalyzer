@@ -4,6 +4,9 @@ import com.sciamus.contractanalyzer.checks.kafka.clients.config.KafkaConsumFacto
 import com.sciamus.contractanalyzer.checks.kafka.clients.config.KafkaProducFactory;
 import com.sciamus.contractanalyzer.checks.kafka.clients.config.KafkaStreamFactory;
 import com.sciamus.contractanalyzer.reporting.checks.CheckReport;
+import com.sciamus.contractanalyzer.reporting.checks.CheckReportBuilder;
+import com.sciamus.contractanalyzer.reporting.checks.ReportResults;
+import io.vavr.control.Try;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.logging.log4j.LogManager;
@@ -12,7 +15,13 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 @Component
@@ -41,35 +50,38 @@ public class KTableCheck implements KafkaContractCheck {
 
         Consumer consumer = kafkaConsumFactory.createConsumer(incomingTopic, host, port);
 
+        String checkUniqueKey = new Random().nextInt(10) + "--test--";
 
-        for (int i = 0; i <= 20; i++) {
-            producer.send(outgoingTopic, String.valueOf(new Random().nextInt(10)));
+        List<Integer> toSend = Stream
+                .generate(() -> new Random().nextInt(10))
+                .limit(10)
+                .collect(Collectors.toList());
+
+
+        Map<String, Long> expectedAnswer = toSend
+                .stream()
+                .map(i -> checkUniqueKey+i)
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+
+        for (Map.Entry entry : expectedAnswer.entrySet()) {
+
+            logger.info(entry);
         }
 
-        producer.send(outgoingTopic, "compute");
+        for (int i=0; i<5; i++) {
+            producer.send(outgoingTopic,"to be ignored");
+        }
 
 
-//
-//
-//        StreamsBuilder streamsBuilder = new StreamsBuilder();
-//
-//        KStream<String, String> kStream = streamsBuilder.stream(outgoingTopic);
-//
-//        KTable<String, Long> kTable = kStream
-//                .groupBy((k, v) -> v)
-//                .count();
-//
-//        kTable.toStream()
-//                .mapValues(v -> String.valueOf(v))
-//                .peek((k, v) -> {
-//                    System.out.println("hello!! key " + k + " value " + v);
-//                })
-//                .to(incomingTopic);
-//
-//        KafkaStreams application = kafkaStreamFactory.createStream(host, port, streamsBuilder.build());
+        for (Integer element : toSend) {
+            producer.send(outgoingTopic, checkUniqueKey, String.valueOf(element));
+        }
 
+        for (int i=0; i<5; i++) {
+            producer.send(outgoingTopic,"to be ignored");
+        }
 
-        consumer.poll(Duration.ofSeconds(3));
+        consumer.poll(Duration.ofSeconds(5));
 
         try {
             Thread.sleep(30000);
@@ -77,15 +89,50 @@ public class KTableCheck implements KafkaContractCheck {
             e.printStackTrace();
         }
 
+        Iterable<ConsumerRecord<String, String>> records = consumer.poll(Duration.ofSeconds(5)).records(incomingTopic);
+        Map<String, Long> answerToCheck = new HashMap<>();
 
-        Iterable<ConsumerRecord<String, Long>> records = consumer.poll(Duration.ofSeconds(5)).records(incomingTopic);
+        consumer.close();
 
 
-        for (ConsumerRecord<String, Long> record : records) {
+
+        for (ConsumerRecord<String, String> record : records) {
             logger.info("logging records after second poll " + record.key() + "---" + record.value());
+            if (record.key().contains(checkUniqueKey)){
+
+            Try<Long> longTry = Try.of(()->Long.valueOf(record.value()));
+
+            answerToCheck.put(record.key(), longTry.getOrElseThrow(()->new RuntimeException("Sorry, I cannot convert the value you provided to type Long")));}
         }
 
-        return null;
+        for (Map.Entry entry : answerToCheck.entrySet()) {
+            logger.info(entry);
+        }
+
+        Boolean result = expectedAnswer.equals(answerToCheck);
+
+        logger.info("And the answer is " + expectedAnswer.equals(answerToCheck));
+
+        CheckReportBuilder reportBuilder = new CheckReportBuilder();
+
+        reportBuilder.createTimestamp().setNameOfCheck(getName());
+
+        if (result) {
+            return reportBuilder
+                    .setResult(ReportResults.PASSED)
+                    .setReportBody("Your system produced a good answer. You deserve a hug.")
+                    .build();
+        }
+
+
+
+
+        return reportBuilder
+                .setResult(ReportResults.FAILED)
+                .setReportBody("Sorry, please have another shot. " +
+                        "Correct answer is: " + expectedAnswer + "\n" +
+                        " your system produced this: " + answerToCheck)
+                .build();
     }
 
     @Override
