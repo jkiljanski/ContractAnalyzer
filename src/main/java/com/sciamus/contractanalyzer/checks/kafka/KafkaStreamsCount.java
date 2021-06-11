@@ -28,7 +28,7 @@ public class KafkaStreamsCount implements KafkaContractCheck {
 
         StreamsBuilder streamsBuilder = new StreamsBuilder();
 
-        KStream<String, String> stream = streamsBuilder.stream(outgoingTopic);
+        KStream<String, String> stream = getKStream(outgoingTopic, streamsBuilder);
 
         stream.mapValues(value ->
             String.valueOf(value.length())
@@ -57,6 +57,11 @@ public class KafkaStreamsCount implements KafkaContractCheck {
 
         return null;
 
+    }
+
+    private KStream<String, String> getKStream(String outgoingTopic, StreamsBuilder streamsBuilder) {
+        KStream<String, String> stream = streamsBuilder.stream(outgoingTopic);
+        return stream;
     }
 
     @Override

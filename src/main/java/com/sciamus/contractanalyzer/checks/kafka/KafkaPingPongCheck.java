@@ -52,7 +52,6 @@ public class KafkaPingPongCheck implements KafkaContractCheck {
 
         Consumer<String, String> consumer = kafkaConsumFactory.createConsumer(incomingTopic, host, port);
 
-        Set<TopicPartition> partitionSet = getTopicPartitions(incomingTopic);
 
         Iterable<ConsumerRecord<String, String>> records;
 

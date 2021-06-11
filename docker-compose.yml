@@ -10,7 +10,6 @@ services:
       - db
       - keycloak
       - kafka
-      -
 
   rabbit:
     image: rabbitmq:3-management
