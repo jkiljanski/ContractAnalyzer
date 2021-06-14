@@ -1,10 +1,11 @@
 package com.sciamus.contractanalyzer.domain.suites;
 
+import com.sciamus.contractanalyzer.application.CheckReportDTO;
 import com.sciamus.contractanalyzer.application.ContractChecksService;
-import com.sciamus.contractanalyzer.domain.checks.CheckRepository;
+import com.sciamus.contractanalyzer.application.mapper.CheckReportMapper;
+import com.sciamus.contractanalyzer.domain.checks.rest.CheckRepository;
 import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReport;
 import com.sciamus.contractanalyzer.domain.reporting.suites.SuiteReport;
-import com.sciamus.contractanalyzer.domain.reporting.suites.SuiteReportMapper;
 import io.vavr.collection.List;
 import io.vavr.control.Try;
 import org.springframework.stereotype.Component;
@@ -20,15 +21,15 @@ public class BasicSuite extends CheckSuite {
 
     ContractChecksService contractChecksService;
     CheckRepository checkRepository;
-    SuiteReportMapper mapper;
+    CheckReportMapper checkReportMapper;
 
 
     public BasicSuite(ContractChecksService contractChecksService,
-                      SuiteReportMapper mapper,
+                      CheckReportMapper checkReportMapper,
                       CheckRepository checkRepository) {
         super();
         this.contractChecksService = contractChecksService;
-        this.mapper = mapper;
+        this.checkReportMapper = checkReportMapper;
         this.checkRepository = checkRepository;
     }
 
@@ -41,7 +42,7 @@ public class BasicSuite extends CheckSuite {
     public SuiteReport run(URL url) {
 
 
-        List<CheckReport> checkReports = List.ofAll(checkRepository.getAllChecks().stream())
+        List<CheckReportDTO> checkReportDTOS = List.ofAll(checkRepository.getAllChecks().stream())
                 .take(3)
                 .peek(System.out::println)
                 .map(s -> Try.of(()-> contractChecksService
@@ -50,6 +51,10 @@ public class BasicSuite extends CheckSuite {
                 .collect(List.collector());
 
 
+        List<CheckReport> checkReports = checkReportDTOS
+                .toStream()
+                .map(checkReportDTO -> checkReportMapper.mapFromDTO(checkReportDTO))
+                .collect(List.collector());
         SuiteReport suiteReport = new SuiteReport(checkReports.toJavaList());
         return suiteReport;
 

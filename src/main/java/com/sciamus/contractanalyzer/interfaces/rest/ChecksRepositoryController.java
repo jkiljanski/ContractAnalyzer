@@ -1,7 +1,7 @@
 package com.sciamus.contractanalyzer.interfaces.rest;
 
-import com.sciamus.contractanalyzer.domain.checks.CheckRepository;
-import com.sciamus.contractanalyzer.domain.checks.getlistof.ListOfChecksDTO;
+import com.sciamus.contractanalyzer.domain.checks.rest.CheckRepository;
+import com.sciamus.contractanalyzer.domain.checks.rest.getlistof.ListOfChecksDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

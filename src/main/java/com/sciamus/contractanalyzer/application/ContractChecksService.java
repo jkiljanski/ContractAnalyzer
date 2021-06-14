@@ -1,6 +1,6 @@
 package com.sciamus.contractanalyzer.application;
 
-import com.sciamus.contractanalyzer.domain.checks.CheckRepository;
+import com.sciamus.contractanalyzer.domain.checks.rest.CheckRepository;
 import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReport;
 import com.sciamus.contractanalyzer.domain.reporting.checks.ReportService;
 import com.sciamus.contractanalyzer.application.mapper.CheckReportMapper;

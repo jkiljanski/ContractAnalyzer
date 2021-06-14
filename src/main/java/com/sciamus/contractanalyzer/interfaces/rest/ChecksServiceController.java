@@ -2,7 +2,7 @@ package com.sciamus.contractanalyzer.interfaces.rest;
 
 import com.sciamus.contractanalyzer.application.CheckReportDTO;
 import com.sciamus.contractanalyzer.application.ContractChecksService;
-import com.sciamus.contractanalyzer.domain.checks.CheckNotFoundException;
+import com.sciamus.contractanalyzer.domain.exception.CheckNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

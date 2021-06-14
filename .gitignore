@@ -3,4 +3,8 @@ target/
 node_modules/
 *.iml
 /KafkaPingPonger/.mvn/
+<<<<<<< HEAD
 keycloak-db/
+=======
+/keycloak-db
+>>>>>>> #13RunManyTestAtOnce

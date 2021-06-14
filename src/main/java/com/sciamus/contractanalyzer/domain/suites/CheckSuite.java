@@ -1,6 +1,6 @@
 package com.sciamus.contractanalyzer.domain.suites;
 
-import com.sciamus.contractanalyzer.domain.checks.RestContractCheck;
+import com.sciamus.contractanalyzer.domain.checks.rest.RestContractCheck;
 import com.sciamus.contractanalyzer.domain.reporting.suites.SuiteReport;
 import io.vavr.collection.List;
 

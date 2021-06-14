@@ -19,7 +19,7 @@ import org.apache.logging.log4j.Logger;
 
 @SpringBootApplication()
 @EnableFeignClients
-@EnableMongoRepositories(basePackages = "com.sciamus.contractanalyzer.reporting")
+@EnableMongoRepositories(basePackages = "com.sciamus.contractanalyzer.domain.reporting")
 @EnableConfigurationProperties
 
 @EnableSwagger2

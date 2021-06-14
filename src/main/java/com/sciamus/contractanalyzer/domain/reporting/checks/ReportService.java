@@ -1,6 +1,7 @@
 package com.sciamus.contractanalyzer.domain.reporting.checks;
 
 
+import com.sciamus.contractanalyzer.domain.reporting.idGenerator.ReportIdGenerator;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -11,18 +12,18 @@ public class ReportService {
 
     private final ReportRepository reportRepository;
 
-    private final IdGenerator idGenerator;
+    private final ReportIdGenerator reportIdGenerator;
 
 
 
-    public ReportService(ReportRepository reportRepository, IdGenerator idGenerator) {
+    public ReportService(ReportRepository reportRepository, ReportIdGenerator reportIdGenerator) {
         this.reportRepository = reportRepository;
-        this.idGenerator = idGenerator;
+        this.reportIdGenerator = reportIdGenerator;
     }
 
     //pls review
     public CheckReport addReportToRepository(CheckReport checkReport) {
-        checkReport.addId(idGenerator.getNextID());
+        checkReport.addId(reportIdGenerator.getNextID());
         return reportRepository.save(checkReport);
     }
 
