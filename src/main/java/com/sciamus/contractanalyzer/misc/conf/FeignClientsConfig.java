@@ -1,4 +1,4 @@
-package com.sciamus.contractanalyzer.misc;
+package com.sciamus.contractanalyzer.misc.conf;
 
 import feign.RequestInterceptor;
 import feign.RequestTemplate;

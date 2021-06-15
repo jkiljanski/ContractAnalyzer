@@ -18,7 +18,11 @@ spring:
       definition: process
 
 spring.cloud.stream.bindings.process-out-0:
-  destination: output-topic
+  destination: command-topic
+
+spring.cloud.stream.bindings.process-out-1:
+  destination: count-topic
+
 spring.cloud.stream.bindings.process-in-0:
   destination: input-topic
 

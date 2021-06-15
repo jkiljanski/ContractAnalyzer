@@ -1,7 +1,7 @@
 package com.sciamus.contractanalyzer.domain.checks.rest.reportcheck;
 
 
-import com.sciamus.contractanalyzer.misc.FeignClientsConfig;
+import com.sciamus.contractanalyzer.misc.conf.FeignClientsConfig;
 import com.sciamus.contractanalyzer.domain.checks.rest.getlistof.ListOfChecksDTO;
 import com.sciamus.contractanalyzer.application.CheckReportDTO;
 import feign.Param;

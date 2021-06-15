@@ -15,25 +15,22 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
 @Component
-public class KTableCheck implements KafkaContractCheck {
+public class KafkaMessagesCountCheck implements KafkaContractCheck {
 
-    private final String name = "KTableCheck";
+    private final String name = "KafkaMessagesCountCheck";
     private final KafkaStreamFactory kafkaStreamFactory;
     private final KafkaProducFactory kafkaProducFactory;
     private final KafkaConsumFactory kafkaConsumFactory;
 
 
-    public KTableCheck(KafkaStreamFactory kafkaStreamFactory, KafkaProducFactory kafkaProducFactory, KafkaConsumFactory kafkaConsumFactory) {
+    public KafkaMessagesCountCheck(KafkaStreamFactory kafkaStreamFactory, KafkaProducFactory kafkaProducFactory, KafkaConsumFactory kafkaConsumFactory) {
         this.kafkaStreamFactory = kafkaStreamFactory;
         this.kafkaProducFactory = kafkaProducFactory;
         this.kafkaConsumFactory = kafkaConsumFactory;
@@ -109,7 +106,7 @@ public class KTableCheck implements KafkaContractCheck {
     }
 
     private Logger getLogger() {
-        Logger logger = LogManager.getLogger(KTableCheck.class);
+        Logger logger = LogManager.getLogger(KafkaMessagesCountCheck.class);
         return logger;
     }
 
@@ -136,7 +133,7 @@ public class KTableCheck implements KafkaContractCheck {
 
                 Try<Long> longTry = Try.of(() -> Long.valueOf(record.value()));
 
-                answerToCheck.put(record.key(), longTry.getOrElseThrow(() -> new RuntimeException("Sorry, I cannot convert the value you provided to type Long")));
+                answerToCheck.put(record.key(), longTry.getOrElseThrow(() -> new RuntimeException("Sorry, I cannot convert the value you provided to Long type")));
             }
         }
     }
@@ -155,11 +152,25 @@ public class KTableCheck implements KafkaContractCheck {
 
         sendMessagesToBeChecked(outgoingTopic, producer, checkUniqueKey, integersListToSendToTopic);
 
+        try {
+            Thread.sleep(30_000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         sendMessagesToIgnore(outgoingTopic, producer);
+        sendMessagesToBeChecked(outgoingTopic, producer, checkUniqueKey, Collections.singletonList("compute"));
+
     }
 
-    private void sendMessagesToBeChecked(String outgoingTopic, KafkaTemplate<String, String> producer, String checkUniqueKey, List<Integer> toSendToTopic) {
-        for (Integer element : toSendToTopic) {
+    private void sendMessagesToBeChecked(String outgoingTopic, KafkaTemplate<String, String> producer, String checkUniqueKey, List<? super Integer> toSendToTopic) {
+        for (Object element : toSendToTopic) {
+
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             producer.send(outgoingTopic, checkUniqueKey, String.valueOf(element));
         }
     }

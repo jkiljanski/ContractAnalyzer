@@ -43,5 +43,14 @@ public class KafkaTopicConfig {
         return new NewTopic("output-topic", 1, (short) 1);
     }
 
+    @Bean
+    public NewTopic createCommand() {
+        return new NewTopic("command-topic", 1, (short) 1);
+    }
+    @Bean
+    public NewTopic createCount() {
+        return new NewTopic("count-topic", 1, (short) 1);
+    }
+
 
 }

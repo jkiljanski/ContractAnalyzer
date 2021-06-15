@@ -48,71 +48,122 @@ public class KafkaPingPongCheck implements KafkaContractCheck {
     public CheckReport run(String incomingTopic, String outgoingTopic, String host, String port) {
 
 
-        final Logger logger = LogManager.getLogger(KafkaPingPongCheck.class);
+        final Logger logger = getLogger();
 
-        Consumer<String, String> consumer = kafkaConsumFactory.createConsumer(incomingTopic, host, port);
+        Consumer<String, String> consumer = getConsumer(incomingTopic, host, port);
 
-
-        Iterable<ConsumerRecord<String, String>> records;
-
-        records = consumer.poll(Duration.ofSeconds(3)).records(incomingTopic);
+        Iterable<ConsumerRecord<String, String>> records = fetchConsumerRecords(incomingTopic, consumer);
 
         logger.info("records after first poll");
-        for (ConsumerRecord<String, String> record : records) {
-            logger.info("logging records after initial poll " + record.value());
-        }
+
+        logRecords(logger, records, "logging records after initial poll ");
 
 
         //        logger.info("consumer position is " + getConsumerPosition(consumer, partitionSet));
 
 
-        CheckReportBuilder reportBuilder = new CheckReportBuilder();
-        reportBuilder.setNameOfCheck("kafka check").createTimestamp();
+        CheckReportBuilder reportBuilder = getCheckReportBuilder();
 
-        KafkaTemplate<String, String> producer = kafkaProducFactory.createProducer(host, port);
+        KafkaTemplate<String, String> producer = getProducer(host, port);
 
-        String messageToProduce = "ping" + (new Random().nextInt(10));
+        String messageToSend = getMessageToProduce();
 
-        String correctFetchedMessage = messageToProduce + "pong";
+        String correctMessageToFetch = getCorrectFetchedMessage(messageToSend);
 
-        producer.send(outgoingTopic, 0, null, messageToProduce);
-
+        sendMessage(outgoingTopic, producer, messageToSend);
 
         logger.info("before poll");
-        records = consumer.poll(Duration.ofSeconds(5)).records(incomingTopic);
+        records = getRecords(incomingTopic, consumer);
 
 //        logger.info("consumer position after polling " + getConsumerPosition(consumer, partitionSet));
 
 
-        for (ConsumerRecord<String, String> record : records) {
-            logger.info("logging records after second poll " + record.value());
-        }
+        logRecords(logger, records, "logging records after second poll ");
 
 //        logger.info("position before sync: "+getConsumerPosition(consumer,partitionSet));
 
-        consumer.close();
+        closeConsumer(consumer);
 
-        String additionalReportInfo = "incoming topic: " + incomingTopic + " outgoing topic: " + outgoingTopic + " ";
-
-        reportBuilder.setReportBody(additionalReportInfo);
+        addTopicInfoToReport(incomingTopic, outgoingTopic, reportBuilder);
 
 
         if (StreamSupport.stream(records.spliterator(), false)
                 .map(r -> r.value())
 //                .peek(System.out::println)
-                .anyMatch(p -> p.equals(correctFetchedMessage))) {
+                .anyMatch(p -> p.equals(correctMessageToFetch))) {
 
             return reportService.addReportToRepository(reportBuilder.setResult(ReportResults.PASSED)
-                    .addTextToBody("messageToProduce should be: " +
-                            "" + correctFetchedMessage +
+                    .addTextToBody("messageToSend should be: " +
+                            "" + correctMessageToFetch +
                             " and indeed was")
                     .build());
         } else {
             return reportService.addReportToRepository(reportBuilder.setResult(ReportResults.FAILED)
-                    .addTextToBody("Sorry, we couldn't find the correct messageToProduce: " + correctFetchedMessage
+                    .addTextToBody("Sorry, we couldn't find the correct messageToSend: " + correctMessageToFetch
                     )
                     .build());
         }
+    }
+
+    private void addTopicInfoToReport(String incomingTopic, String outgoingTopic, CheckReportBuilder reportBuilder) {
+        String additionalReportInfo = "incoming topic: " + incomingTopic + " outgoing topic: " + outgoingTopic + " ";
+
+        reportBuilder.setReportBody(additionalReportInfo);
+    }
+
+    private void closeConsumer(Consumer<String, String> consumer) {
+        consumer.close();
+    }
+
+    private void logRecords(Logger logger, Iterable<ConsumerRecord<String, String>> records, String s) {
+        for (ConsumerRecord<String, String> record : records) {
+            logger.info(s + record.value());
+        }
+    }
+
+    private Iterable<ConsumerRecord<String, String>> getRecords(String incomingTopic, Consumer<String, String> consumer) {
+        return consumer.poll(Duration.ofSeconds(5)).records(incomingTopic);
+    }
+
+    private void sendMessage(String outgoingTopic, KafkaTemplate<String, String> producer, String messageToProduce) {
+        producer.send(outgoingTopic, 0, null, messageToProduce);
+    }
+
+    private String getCorrectFetchedMessage(String messageToProduce) {
+        String correctFetchedMessage = messageToProduce + "pong";
+        return correctFetchedMessage;
+    }
+
+    private String getMessageToProduce() {
+        String messageToProduce = "ping" + (new Random().nextInt(10));
+        return messageToProduce;
+    }
+
+    private KafkaTemplate<String, String> getProducer(String host, String port) {
+        KafkaTemplate<String, String> producer = kafkaProducFactory.createProducer(host, port);
+        return producer;
+    }
+
+    private CheckReportBuilder getCheckReportBuilder() {
+        CheckReportBuilder reportBuilder = new CheckReportBuilder();
+        reportBuilder.setNameOfCheck("kafka check").createTimestamp();
+        return reportBuilder;
+    }
+
+    private Consumer<String, String> getConsumer(String incomingTopic, String host, String port) {
+        Consumer<String, String> consumer = kafkaConsumFactory.createConsumer(incomingTopic, host, port);
+        return consumer;
+    }
+
+    private Logger getLogger() {
+        return LogManager.getLogger(KafkaPingPongCheck.class);
+    }
+
+    private Iterable<ConsumerRecord<String, String>> fetchConsumerRecords(String incomingTopic, Consumer<String, String> consumer) {
+        Iterable<ConsumerRecord<String, String>> records;
+
+        records = consumer.poll(Duration.ofSeconds(3)).records(incomingTopic);
+        return records;
     }
 
     @Override

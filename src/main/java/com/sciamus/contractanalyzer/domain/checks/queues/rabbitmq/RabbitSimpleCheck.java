@@ -1,4 +1,4 @@
-package com.sciamus.contractanalyzer.domain.checks.queues.rabbitmq.config;
+package com.sciamus.contractanalyzer.domain.checks.queues.rabbitmq;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,7 +22,6 @@ public class RabbitSimpleCheck {
     public void sendToQueue() {
 
         rabbitTemplate.convertAndSend("queue","Bążur!");
-
 
     }
     @RabbitListener(queues = "queue")

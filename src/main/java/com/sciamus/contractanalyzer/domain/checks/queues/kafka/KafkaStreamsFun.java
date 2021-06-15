@@ -11,17 +11,17 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
-public class KafkaStreamsCheck implements KafkaContractCheck {
+public class KafkaStreamsFun implements KafkaContractCheck {
 
     private final KafkaStreamFactory kafkaStreamFactory;
 
-    private final String name = "KafkaStreamsCheck";
+    private final String name = "KafkaStreamsFun";
 
     private final KafkaProducFactory producFactory;
 
     private final KafkaConsumFactory consumFactory;
 
-    public KafkaStreamsCheck(KafkaStreamFactory kafkaStreamFactory, KafkaProducFactory producFactory, KafkaConsumFactory consumFactory) {
+    public KafkaStreamsFun(KafkaStreamFactory kafkaStreamFactory, KafkaProducFactory producFactory, KafkaConsumFactory consumFactory) {
         this.kafkaStreamFactory = kafkaStreamFactory;
         this.producFactory = producFactory;
         this.consumFactory = consumFactory;

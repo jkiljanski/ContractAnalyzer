@@ -13,12 +13,12 @@ import org.springframework.stereotype.Component;
 
 
 @Component
-public class KafkaStreamsCount implements KafkaContractCheck {
+public class KafkaStreamsCountFun implements KafkaContractCheck {
 
     private final String name = "KafkaStreamsCount";
     private KafkaStreamFactory kafkaStreamFactory;
 
-    public KafkaStreamsCount(KafkaStreamFactory kafkaStreamFactory) {
+    public KafkaStreamsCountFun(KafkaStreamFactory kafkaStreamFactory) {
         this.kafkaStreamFactory = kafkaStreamFactory;
     }
 
@@ -50,7 +50,7 @@ public class KafkaStreamsCount implements KafkaContractCheck {
         application.close();
 
 
-        final Logger logger = LogManager.getLogger(KafkaStreamsCount.class);
+        final Logger logger = LogManager.getLogger(KafkaStreamsCountFun.class);
 
         logger.info("I'm in the count stream class");
 
