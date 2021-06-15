@@ -21,7 +21,7 @@ public class StreamProcessor {
         //czy da się to zrobić wszystko w tej metodzie???
 
 
-        Predicate<String, String> isCommand = (k, v) -> k.contains("command");
+        Predicate<String, String> isCommand = (k, v) -> k.endsWith("compute");
 
 
         System.out.println("im here motherfucker");
