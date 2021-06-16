@@ -11,6 +11,9 @@ import java.net.URL;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
+
+//TODO: semamantic inconsistecy: check repository / check service - maybe merge repository with service
 @Repository
 public class CheckRepository {
 
