@@ -1,5 +1,6 @@
 package com.sciamus.contractanalyzer.domain.reporting.aggregatedChecks;
 
+import com.sciamus.contractanalyzer.application.ContractChecksService;
 import com.sciamus.contractanalyzer.application.FailedTestDTO;
 import com.sciamus.contractanalyzer.domain.checks.rest.CheckRepository;
 import com.sciamus.contractanalyzer.domain.checks.rest.reportcheck.CurrentUserService;
@@ -18,14 +19,14 @@ import java.util.List;
 @Service
 public class AggregatedChecksService {
 
-    private final CheckRepository checkRepository;
+    private final ContractChecksService contractChecksService;
     private final AggregatedChecksRepository aggregatedChecksRepository;
     private final AggregatedReportIdGenerator aggregatedReportIdGenerator;
     private final CurrentUserService currentUserService;
     private final ReportService reportService;
 
-    public AggregatedChecksService(CheckRepository checkRepository, AggregatedChecksRepository aggregatedChecksRepository, AggregatedReportIdGenerator aggregatedReportIdGenerator, CurrentUserService currentUserService, ReportService reportService) {
-        this.checkRepository = checkRepository;
+    public AggregatedChecksService(ContractChecksService contractChecksService, AggregatedChecksRepository aggregatedChecksRepository, AggregatedReportIdGenerator aggregatedReportIdGenerator, CurrentUserService currentUserService, ReportService reportService) {
+        this.contractChecksService = contractChecksService;
         this.aggregatedChecksRepository = aggregatedChecksRepository;
         this.aggregatedReportIdGenerator = aggregatedReportIdGenerator;
         this.currentUserService = currentUserService;
@@ -47,8 +48,9 @@ public class AggregatedChecksService {
         ArrayList<CheckReport> failedTestsId = new ArrayList<>();
         ArrayList<FailedTestDTO> failedTests = new ArrayList<>();
         for (String nameOfCheck: namesOfChecks) {
-            CheckReport toSave = checkRepository.runCheck(nameOfCheck, new URL(url));
+            CheckReport toSave = contractChecksService.runCheck(nameOfCheck, new URL(url));
             CheckReport savedReport = reportService.addReportToRepository(toSave);
+
             if (savedReport.getResult() == ReportResults.FAILED) {
                 failedTestsNumber++;
                 failedTestsId.add(savedReport);

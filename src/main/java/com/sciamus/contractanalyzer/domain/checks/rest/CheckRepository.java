@@ -29,13 +29,14 @@ public class CheckRepository {
     public List<String> getAllChecks() {
         return restContractChecks.stream().map(RestContractCheck::getName).collect(Collectors.toList());
     }
+//move to service
 
-    public CheckReport runCheck (String name, URL url) {
-        System.out.println("check was run");
+
+    public RestContractCheck findContractCheck(String name) {
         RestContractCheck restContractCheck = restContractChecks.stream()
                 .filter(s->s.getName().equals(name))
                 .findFirst().orElseThrow(()-> new CheckNotFoundException(name));
-        return restContractCheck.run(url, new CheckReportBuilder().setUserName(currentUserService.obtainUserName()));
+        return restContractCheck;
     }
 
 

@@ -4,14 +4,10 @@ import com.sciamus.contractanalyzer.application.mapper.CheckReportMapper;
 import com.sciamus.contractanalyzer.domain.checks.rest.CheckRepository;
 import com.sciamus.contractanalyzer.domain.checks.rest.dummy.DummyRestContractCheck;
 import com.sciamus.contractanalyzer.domain.checks.rest.reportcheck.CurrentUserService;
-import com.sciamus.contractanalyzer.domain.reporting.aggregatedChecks.AggregatedChecksReport;
 import com.sciamus.contractanalyzer.domain.reporting.aggregatedChecks.AggregatedChecksRepository;
-import com.sciamus.contractanalyzer.domain.reporting.checks.*;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.BDDMockito.given;
-
+import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReportBuilder;
+import com.sciamus.contractanalyzer.domain.reporting.checks.ReportRepository;
+import com.sciamus.contractanalyzer.domain.reporting.checks.ReportService;
 import com.sciamus.contractanalyzer.domain.reporting.idGenerator.ReportIdGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,14 +19,15 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.net.MalformedURLException;
-import java.util.ArrayList;
 import java.util.Arrays;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 public class CheckTest {
 
-    @Mock
-    private CheckReportBuilder checkReportBuilder;
+
 
     @Mock
     private KeycloakSecurityContext keycloakSecurityContextMock;
@@ -38,8 +35,6 @@ public class CheckTest {
     @Mock
     private ReportRepository reportRepositoryMock;
 
-    @Mock
-    private AggregatedChecksRepository aggregatedChecksRepositoryMock;
 
 
     private ContractChecksService contractChecksService;
@@ -51,7 +46,7 @@ public class CheckTest {
         final ReportService reportService = new ReportService(reportRepositoryMock, reportIdGenerator);
         final CheckReportMapper checkReportMapper = new CheckReportMapper(currentUserService);
         final CheckRepository checkRepository = new CheckRepository(Arrays.asList(new DummyRestContractCheck()), currentUserService);
-        contractChecksService = new ContractChecksService(checkRepository, reportService, checkReportMapper);
+        contractChecksService = new ContractChecksService(checkRepository, reportService, checkReportMapper, currentUserService);
     }
 
     @Test
@@ -60,7 +55,7 @@ public class CheckTest {
         //given
         AccessToken accessToken = new AccessToken();
         accessToken.setPreferredUsername("Test user");
-        given (keycloakSecurityContextMock.getToken()).willReturn(accessToken);
+        given(keycloakSecurityContextMock.getToken()).willReturn(accessToken);
 
 
         // when
@@ -72,9 +67,6 @@ public class CheckTest {
         assertThat(checkReportDTO.userName).isEqualTo("Test user");
 
     }
-
-
-
 
 
     @Test
@@ -90,8 +82,6 @@ public class CheckTest {
 
 
     }
-
-
 
 
 }
