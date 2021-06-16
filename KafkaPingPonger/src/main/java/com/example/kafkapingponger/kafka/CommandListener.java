@@ -25,19 +25,17 @@ public class CommandListener {
     @KafkaListener(topics = "command-topic", groupId="1")
     public void listenToCommand(ConsumerRecord<String,String> record) {
 
+        String command = "compute";
 
         logger.info("The krowa command is " + record.key());
 
-        if (record.key().contains("compute")) {
+
+        if (record.key().contains(command)) {
+
+        String uniqueKey = record.key().replace(command,"");
 
 
-
-            String s = record.key();
-
-
-
-
-//            KafkaStreams application = createKafkaStreams();
+        KafkaStreams application = createKafkaStreams(uniqueKey);
 
             try {
                 Thread.sleep(300);
@@ -62,7 +60,6 @@ public class CommandListener {
         application.start();
         return application;
     }
-
 
 
 }

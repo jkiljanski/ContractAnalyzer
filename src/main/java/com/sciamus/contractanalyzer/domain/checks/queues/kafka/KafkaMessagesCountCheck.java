@@ -189,7 +189,7 @@ public class KafkaMessagesCountCheck implements KafkaContractCheck {
     }
 
     private String getCheckUniqueIdentifier() {
-        String checkUniqueKey = new Random().nextInt(10) + "--test--";
+        String checkUniqueKey = new Random().nextInt(100) + "--test--";
         return checkUniqueKey;
     }
 
