@@ -12,7 +12,7 @@ public abstract class CheckSuite {
     private List<RestContractCheck> checkList;
 
     public CheckSuite(List<RestContractCheck> checkList) {
-
+        this.checkList = checkList;
     }
 
     public CheckSuite() {
