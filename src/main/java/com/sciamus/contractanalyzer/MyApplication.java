@@ -7,6 +7,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 
@@ -18,10 +20,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @SpringBootApplication()
+@Configuration
+@Import(AppConfig.class)
 @EnableFeignClients
 @EnableMongoRepositories(basePackages = "com.sciamus.contractanalyzer.domain.reporting")
 @EnableConfigurationProperties
-
 @EnableSwagger2
 //(basePackages = "com.sciamus.contractanalyzer.domain.reporting")
 public class MyApplication {
