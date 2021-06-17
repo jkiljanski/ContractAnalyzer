@@ -94,9 +94,7 @@ public class SuiteTest {
         });
 
         // then
-        String expectedMessage = "Bad URL!";
-        String actualMessage = exception.getMessage();
-        assertTrue(actualMessage.contains(expectedMessage));
+        assertThat(exception).hasMessageContaining("Bad URL!");
     }
 
     @Test
@@ -108,9 +106,7 @@ public class SuiteTest {
         });
 
         // then
-        String expectedMessage = "Test Suite";
-        String actualMessage = exception.getMessage();
-        assertTrue(actualMessage.contains(expectedMessage));
+        assertThat(exception).hasMessageContaining("Test Suite");
     }
 
 }
