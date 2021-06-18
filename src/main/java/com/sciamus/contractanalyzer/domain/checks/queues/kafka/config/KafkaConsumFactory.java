@@ -28,8 +28,8 @@ public class KafkaConsumFactory {
         props.put(ConsumerConfig.GROUP_ID_CONFIG, new Random().nextInt(100)+"");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, kafkaProperties.getConsum().getKeyDeserializer());
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, kafkaProperties.getConsum().getValueDeserializer());
-        props.put(
-                ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "100");
+//        props.put(
+//                ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "100");
 
         final Consumer consumer = new KafkaConsumer<>(props);
 
