@@ -20,19 +20,23 @@ public class StreamProcessor {
 
         //czy da się to zrobić wszystko w tej metodzie???
         Predicate<String, String> isCommand = (k, v) -> k.endsWith("compute");
+        Predicate<String, String> isNotCommand = (k, v) -> !k.endsWith("compute");
+
 
         System.out.println("im here motherfucker");
 
         return input -> input
+                .peek(((key, value) -> System.out.println("key value before grouping" +
+                        key + " " + value)))
                 .filter((k, v) -> Objects.nonNull(k) && k.contains("test"))
                 .groupBy((k, v) -> k + v)
 //                .windowedBy(TimeWindows.of(Duration.ofMillis(30000)))
                 .count()
                 .toStream()
-                .peek((k, v) -> System.out.println("krowa key " + k + " value " + v))
+                .peek((k, v) -> System.out.println("from input to count topic: key " + k + " value " + v))
                 .map((k, v) -> new KeyValue<>(k, String.valueOf(v)))
 
-                .branch(isCommand);
+                .branch(isCommand, isNotCommand);
 
     }
     //czy tym rzeczom można zmieniać sygnatury

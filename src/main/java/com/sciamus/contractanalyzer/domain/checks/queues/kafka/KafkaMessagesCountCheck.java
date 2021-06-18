@@ -39,6 +39,8 @@ public class KafkaMessagesCountCheck implements KafkaContractCheck {
     @Override
     public CheckReport run(String incomingTopic, String outgoingTopic, String host, String port) {
 
+
+
         Logger logger = getLogger();
 
         KafkaTemplate<String, String> producer = getProducer(host, port);
@@ -51,14 +53,17 @@ public class KafkaMessagesCountCheck implements KafkaContractCheck {
 
         Map<String, Long> expectedAnswerToGetFromOutsideProcessor = getExpectedAnswer(checkUniqueIdentifier, integersListToSendToOutsideProcessor);
 
-        logAnswer(logger, expectedAnswerToGetFromOutsideProcessor);
+        logExpectedAnswer(logger, expectedAnswerToGetFromOutsideProcessor);
 
         sendMessagesToOutsideProcessor(outgoingTopic, producer, checkUniqueIdentifier, integersListToSendToOutsideProcessor);
 
+
+        // do kontenera:
         setUpConsumer(consumer);
 
         try {
-            Thread.sleep(30000);
+            //Changed:
+            Thread.sleep(15000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -70,8 +75,6 @@ public class KafkaMessagesCountCheck implements KafkaContractCheck {
         consumer.close();
 
         processReceivedRecords(logger, checkUniqueIdentifier, records, answerToCheck);
-
-        logAnswer(logger, answerToCheck);
 
         Boolean resultOfCheck = expectedAnswerToGetFromOutsideProcessor.equals(answerToCheck);
 
@@ -87,6 +90,7 @@ public class KafkaMessagesCountCheck implements KafkaContractCheck {
 
         return getFailedCheckReport(expectedAnswerToGetFromOutsideProcessor, answerToCheck, reportBuilder);
     }
+
 
     private void logCheckResult(Logger logger, Map<String, Long> expectedAnswerToGetFromOutsideProcessor, Map<String, Long> answerToCheck) {
         logger.info("And the answer is " + expectedAnswerToGetFromOutsideProcessor.equals(answerToCheck));
@@ -128,8 +132,10 @@ public class KafkaMessagesCountCheck implements KafkaContractCheck {
 
     private void processReceivedRecords(Logger logger, String checkUniqueKey, Iterable<ConsumerRecord<String, String>> records, Map<String, Long> answerToCheck) {
         for (ConsumerRecord<String, String> record : records) {
-            logger.info("logging records after second poll " + record.key() + "---" + record.value());
-            if (record.key().contains(checkUniqueKey)) {
+            logger.info("logging records after second poll: key" + record.key() + " value: " + record.value()
+            + " offset: "+  record.offset()
+            + " timestamp " + record.timestamp());
+            if (record.key().startsWith(checkUniqueKey)) {
 
                 Try<Long> longTry = Try.of(() -> Long.valueOf(record.value()));
 
@@ -138,8 +144,10 @@ public class KafkaMessagesCountCheck implements KafkaContractCheck {
         }
     }
 
+
+
     private Iterable<ConsumerRecord<String, String>> getRecordsFromOutsideProcessor(String incomingTopic, Consumer consumer) {
-        Iterable<ConsumerRecord<String, String>> records = consumer.poll(Duration.ofSeconds(5)).records(incomingTopic);
+        Iterable<ConsumerRecord<String, String>> records = consumer.poll(Duration.ofSeconds(10)).records(incomingTopic);
         return records;
     }
 
@@ -152,11 +160,11 @@ public class KafkaMessagesCountCheck implements KafkaContractCheck {
 
         sendMessagesToBeChecked(outgoingTopic, producer, checkUniqueKey, integersListToSendToTopic);
 
-        try {
-            Thread.sleep(30_000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Thread.sleep(3000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
 
         sendMessagesToIgnore(outgoingTopic, producer);
         sendMessagesToBeChecked(outgoingTopic, producer, checkUniqueKey, Collections.singletonList("compute"));
@@ -166,12 +174,15 @@ public class KafkaMessagesCountCheck implements KafkaContractCheck {
     private void sendMessagesToBeChecked(String outgoingTopic, KafkaTemplate<String, String> producer, String checkUniqueKey, List<? super Integer> toSendToTopic) {
         for (Object element : toSendToTopic) {
 
+
+            producer.send(outgoingTopic, checkUniqueKey, String.valueOf(element));
+
             try {
                 Thread.sleep(3000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            producer.send(outgoingTopic, checkUniqueKey, String.valueOf(element));
+
         }
     }
 
@@ -181,10 +192,10 @@ public class KafkaMessagesCountCheck implements KafkaContractCheck {
         }
     }
 
-    private void logAnswer(Logger logger, Map<String, Long> expectedAnswer) {
+    private void logExpectedAnswer(Logger logger, Map<String, Long> expectedAnswer) {
         for (Map.Entry entry : expectedAnswer.entrySet()) {
 
-            logger.info(entry);
+            logger.info("expected answer " + entry);
         }
     }
 

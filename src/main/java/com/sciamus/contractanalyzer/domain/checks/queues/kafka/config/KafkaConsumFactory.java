@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Properties;
+import java.util.Random;
 
 @Component
 public class KafkaConsumFactory {
@@ -24,11 +25,14 @@ public class KafkaConsumFactory {
 
         final Properties props = new Properties();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, host+":"+port);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG,"1");
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, new Random().nextInt(100)+"");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, kafkaProperties.getConsum().getKeyDeserializer());
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, kafkaProperties.getConsum().getValueDeserializer());
+        props.put(
+                ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "100");
 
         final Consumer consumer = new KafkaConsumer<>(props);
+
 
 
         consumer.subscribe(List.of(topic));

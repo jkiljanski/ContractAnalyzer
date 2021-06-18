@@ -22,23 +22,22 @@ public class CommandListener {
 
     private KafkaStreamFactory factory;
 
-    @KafkaListener(topics = "command-topic", groupId="1")
-    public void listenToCommand(ConsumerRecord<String,String> record) {
+    @KafkaListener(topics = "command-topic", groupId = "1")
+    public void listenToCommand(ConsumerRecord<String, String> record) {
 
         String command = "compute";
 
         logger.info("The krowa command is " + record.key());
 
 
-        if (record.key().contains(command)) {
+        if (record.key().endsWith(command)) {
 
-        String uniqueKey = record.key().replace(command,"");
+            String uniqueKey = record.key().replace(command, "");
 
-
-        KafkaStreams application = createKafkaStreams(uniqueKey);
+            KafkaStreams application = createKafkaStreams(uniqueKey);
 
             try {
-                Thread.sleep(300);
+                Thread.sleep(30000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -49,12 +48,15 @@ public class CommandListener {
 
     }
 
-    private KafkaStreams createKafkaStreams(String key) {
+    private KafkaStreams createKafkaStreams(String uniqueKey) {
         StreamsBuilder builder = new StreamsBuilder();
 
-        KStream<String,String> stream = builder
-                .stream("count-topic");
-        stream.filter((k,v)-> k.contains(key));
+        KStream<String, String> stream = builder.stream("count-topic");
+        stream
+//                .filter((k, v) -> k.startsWith(uniqueKey))
+                .peek((k,v) -> System.out.println("From count-topic to output-topic: " +k+" :"+ v))
+                .to("output-topic");
+
 
         KafkaStreams application = factory.createStream(builder.build());
         application.start();
