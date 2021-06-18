@@ -8,6 +8,7 @@ import io.vavr.Function1;
 import io.vavr.Function2;
 import io.vavr.collection.List;
 import io.vavr.control.Try;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.net.MalformedURLException;
@@ -17,16 +18,11 @@ import java.util.function.Predicate;
 @Service
 public class SuitesService {
 
-    private final SuitesReportsRepository suitesReportsRepository;
-    private final SuiteReportMapper mapper;
-    private SuitesRepository suitesRepository;
+    @Autowired
+    private SuitesReportsRepository suitesReportsRepository;
 
-    public SuitesService(SuitesReportsRepository suitesReportsRepository,
-                         SuiteReportMapper mapper, SuitesRepository suitesRepository) {
-        this.suitesReportsRepository = suitesReportsRepository;
-        this.mapper = mapper;
-        this.suitesRepository = suitesRepository;
-    }
+    @Autowired
+    private SuitesRepository suitesRepository;
 
     public Function2<String, URL, SuiteReport> suiteReportFunctionWithURL = (name, url) ->
             List.ofAll(suitesRepository.getCheckSuites().stream())

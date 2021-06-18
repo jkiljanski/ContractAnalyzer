@@ -14,13 +14,8 @@ import java.net.MalformedURLException;
 @RestController
 public class ChecksServiceController {
 
-    private final ContractChecksService contractChecksService;
-
-
     @Autowired
-    public ChecksServiceController(ContractChecksService contractChecksService) {
-        this.contractChecksService = contractChecksService;
-    }
+    private ContractChecksService contractChecksService;
 
     @RolesAllowed("writer")
     @PostMapping("/checks/{name}/run")

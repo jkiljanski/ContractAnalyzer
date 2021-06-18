@@ -6,15 +6,14 @@ import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReport;
 import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReportBuilder;
 import com.sciamus.contractanalyzer.domain.reporting.checks.ReportResults;
 import com.sciamus.contractanalyzer.application.CheckReportDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CheckReportMapper {
-    private final CurrentUserService currentUserService;
 
-    public CheckReportMapper(CurrentUserService currentUserService) {
-        this.currentUserService = currentUserService;
-    }
+    @Autowired
+    private CurrentUserService currentUserService;
 
 //    private TestReport testReport;
 //    private TestReportDTO testReportDTO;

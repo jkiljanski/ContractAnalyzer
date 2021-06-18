@@ -1,6 +1,6 @@
 package com.sciamus.contractanalyzer.domain.checks.rest.reportcheck;
 
-import com.sciamus.contractanalyzer.domain.checks.RestContractCheck;
+import com.sciamus.contractanalyzer.domain.checks.rest.RestContractCheck;
 import org.keycloak.KeycloakSecurityContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -14,15 +14,17 @@ public class CurrentUserService {
     @Autowired
     RestContractCheck explodingCheck;
 
+    @Autowired
+    @Lazy
     private KeycloakSecurityContext keycloakSecurityContext;
 
     public String obtainUserName() {
         return keycloakSecurityContext.getToken().getPreferredUsername();
     }
 
-    @Autowired
-    @Lazy
-    public CurrentUserService(KeycloakSecurityContext keycloakSecurityContext) {
-        this.keycloakSecurityContext = keycloakSecurityContext;
-    }
+//    @Autowired
+//    @Lazy
+//    public CurrentUserService(KeycloakSecurityContext keycloakSecurityContext) {
+//        this.keycloakSecurityContext = keycloakSecurityContext;
+//    }
 }

@@ -7,6 +7,7 @@ import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReport;
 import com.sciamus.contractanalyzer.domain.reporting.checks.ReportResults;
 import com.sciamus.contractanalyzer.domain.reporting.checks.ReportService;
 import com.sciamus.contractanalyzer.domain.reporting.idGenerator.AggregatedReportIdGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.net.MalformedURLException;
@@ -18,19 +19,20 @@ import java.util.List;
 @Service
 public class AggregatedChecksService {
 
-    private final CheckRepository checkRepository;
-    private final AggregatedChecksRepository aggregatedChecksRepository;
-    private final AggregatedReportIdGenerator aggregatedReportIdGenerator;
-    private final CurrentUserService currentUserService;
-    private final ReportService reportService;
+    @Autowired
+    private AggregatedReportIdGenerator aggregatedReportIdGenerator;
 
-    public AggregatedChecksService(CheckRepository checkRepository, AggregatedChecksRepository aggregatedChecksRepository, AggregatedReportIdGenerator aggregatedReportIdGenerator, CurrentUserService currentUserService, ReportService reportService) {
-        this.checkRepository = checkRepository;
-        this.aggregatedChecksRepository = aggregatedChecksRepository;
-        this.aggregatedReportIdGenerator = aggregatedReportIdGenerator;
-        this.currentUserService = currentUserService;
-        this.reportService = reportService;
-    }
+    @Autowired
+    private CurrentUserService currentUserService;
+
+    @Autowired
+    private ReportService reportService;
+
+    @Autowired
+    private CheckRepository checkRepository;
+
+    @Autowired
+    private AggregatedChecksRepository aggregatedChecksRepository;
 
     public AggregatedChecksReport addAggregatedReportToRepository(String name, AggregatedChecksReport aggregatedChecksReport) {
         aggregatedChecksReport.addId(aggregatedReportIdGenerator.getNextID());

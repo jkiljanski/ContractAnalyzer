@@ -8,6 +8,7 @@ import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReport;
 import com.sciamus.contractanalyzer.domain.reporting.suites.SuiteReport;
 import io.vavr.collection.List;
 import io.vavr.control.Try;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.net.URL;
@@ -19,20 +20,18 @@ public class BasicSuite extends CheckSuite {
 
     private final String DESCRIPTION = "Runs 3 first checks of the system";
 
-    ContractChecksService contractChecksService;
-    CheckRepository checkRepository;
-    CheckReportMapper checkReportMapper;
+    @Autowired
+    private ContractChecksService contractChecksService;
 
+    @Autowired
+    private CheckRepository checkRepository;
 
-    public BasicSuite(ContractChecksService contractChecksService,
-                      CheckReportMapper checkReportMapper,
-                      CheckRepository checkRepository) {
+    @Autowired
+    private CheckReportMapper checkReportMapper;
+
+    public BasicSuite() {
         super();
-        this.contractChecksService = contractChecksService;
-        this.checkReportMapper = checkReportMapper;
-        this.checkRepository = checkRepository;
     }
-
 
     public String getName() {
         return NAME;

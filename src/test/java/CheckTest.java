@@ -40,12 +40,12 @@ public class CheckTest {
 
     @BeforeEach
     public void init() {
-        final CurrentUserService currentUserService = new CurrentUserService(keycloakSecurityContextMock);
-        ReportIdGenerator reportIdGenerator = new ReportIdGenerator(reportRepositoryMock);
-        final ReportService reportService = new ReportService(reportRepositoryMock, reportIdGenerator);
-        final CheckReportMapper checkReportMapper = new CheckReportMapper(currentUserService);
-        final CheckRepository checkRepository = new CheckRepository(Arrays.asList(new DummyRestContractCheck()), currentUserService);
-        contractChecksService = new ContractChecksService(checkRepository, reportService, checkReportMapper);
+        final CurrentUserService currentUserService = new CurrentUserService();
+        ReportIdGenerator reportIdGenerator = new ReportIdGenerator();
+        final ReportService reportService = new ReportService();
+        final CheckReportMapper checkReportMapper = new CheckReportMapper();
+        final CheckRepository checkRepository = new CheckRepository();
+        contractChecksService = new ContractChecksService();
     }
 
     @Test

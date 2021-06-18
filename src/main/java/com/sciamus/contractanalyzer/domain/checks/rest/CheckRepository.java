@@ -5,6 +5,7 @@ import com.sciamus.contractanalyzer.domain.checks.rest.RestContractCheck;
 import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReport;
 import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReportBuilder;
 import com.sciamus.contractanalyzer.domain.exception.CheckNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.net.URL;
@@ -14,14 +15,11 @@ import java.util.stream.Collectors;
 @Repository
 public class CheckRepository {
 
-    private final List<RestContractCheck> restContractChecks;
-    private final CurrentUserService currentUserService;
+    @Autowired
+    private List<RestContractCheck> restContractChecks;
 
-
-    public CheckRepository(List<RestContractCheck> restContractChecks, CurrentUserService currentUserService) {
-        this.restContractChecks = restContractChecks;
-        this.currentUserService = currentUserService;
-    }
+    @Autowired
+    private CurrentUserService currentUserService;
 
     public List<String> getAllChecks() {
         return restContractChecks.stream().map(RestContractCheck::getName).collect(Collectors.toList());

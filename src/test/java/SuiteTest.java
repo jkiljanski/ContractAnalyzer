@@ -22,17 +22,17 @@ import org.keycloak.representations.AccessToken;
 import org.mockito.AdditionalAnswers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
+@EnableMongoRepositories(basePackages = "com.sciamus.contractanalyzer.domain")
 @ExtendWith(MockitoExtension.class)
 public class SuiteTest {
 
@@ -50,15 +50,15 @@ public class SuiteTest {
     @BeforeEach
     public void init() {
 
-        final CurrentUserService currentUserService = new CurrentUserService(keycloakSecurityContextMock);
-        final CheckRepository checkRepository = new CheckRepository(Arrays.asList(new DummyRestContractCheck()), currentUserService);
-        CheckReportMapper checkReportMapper = new CheckReportMapper(currentUserService);
-        SuiteReportMapper suiteReportMapper = new SuiteReportMapper(checkReportMapper);
-        ReportIdGenerator reportIdGenerator = new ReportIdGenerator(reportRepositoryMock);
-        ReportService reportService = new ReportService(reportRepositoryMock, reportIdGenerator);
-        ContractChecksService contractChecksService = new ContractChecksService(checkRepository, reportService, checkReportMapper);
-        SuitesRepository suitesRepository = new SuitesRepository(Arrays.asList(new BasicSuite(contractChecksService, checkReportMapper, checkRepository)));
-        suitesService = new SuitesService(suitesReportsRepositoryMock, suiteReportMapper, suitesRepository);
+//        final CurrentUserService currentUserService = new CurrentUserService();
+//        final CheckRepository checkRepository = new CheckRepository();
+//        CheckReportMapper checkReportMapper = new CheckReportMapper();
+//        SuiteReportMapper suiteReportMapper = new SuiteReportMapper();
+//        ReportIdGenerator reportIdGenerator = new ReportIdGenerator();
+//        ReportService reportService = new ReportService();
+//        ContractChecksService contractChecksService = new ContractChecksService();
+//        SuitesRepository suitesRepository = new SuitesRepository();
+        suitesService = new SuitesService();
     }
 
     @Test

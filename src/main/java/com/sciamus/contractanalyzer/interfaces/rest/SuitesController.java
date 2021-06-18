@@ -4,6 +4,7 @@ import com.sciamus.contractanalyzer.domain.reporting.suites.SuiteReport;
 import com.sciamus.contractanalyzer.domain.reporting.suites.SuiteReportMapper;
 import com.sciamus.contractanalyzer.domain.suites.SuitesRepository;
 import com.sciamus.contractanalyzer.domain.suites.SuitesService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
@@ -13,16 +14,11 @@ import java.util.List;
 @RestController
 public class SuitesController {
 
+    @Autowired
     private SuitesService suitesService;
-    private SuiteReportMapper mapper;
+
+    @Autowired
     private SuitesRepository suitesRepository;
-
-    public SuitesController(SuitesService suitesService, SuiteReportMapper mapper, SuitesRepository suitesRepository) {
-        this.suitesService = suitesService;
-        this.mapper = mapper;
-        this.suitesRepository = suitesRepository;
-    }
-
 
     @RolesAllowed({"writer"})
     @PostMapping("/suites/{name}/run")
