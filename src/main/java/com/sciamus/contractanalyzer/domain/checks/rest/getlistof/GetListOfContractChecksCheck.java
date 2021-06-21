@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import java.net.URL;
 
-@Component
 public class GetListOfContractChecksCheck implements RestContractCheck {
 
     private final static String NAME = "Get List Of Checks Check";

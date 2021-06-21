@@ -4,12 +4,10 @@ import com.sciamus.contractanalyzer.domain.checks.queues.kafka.KafkaContractChec
 import com.sciamus.contractanalyzer.domain.exception.CheckNotFoundException;
 import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReport;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
 public class KafkaContractCheckService {
 
     @Autowired

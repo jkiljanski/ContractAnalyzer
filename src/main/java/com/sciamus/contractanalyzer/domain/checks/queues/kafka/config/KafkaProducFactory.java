@@ -2,6 +2,7 @@ package com.sciamus.contractanalyzer.domain.checks.queues.kafka.config;
 
 
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
@@ -10,14 +11,10 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.Map;
 
-@Component
 public class KafkaProducFactory {
 
-    private final KafkaProperties kafkaProperties;
-
-    public KafkaProducFactory(KafkaProperties kafkaProperties) {
-        this.kafkaProperties = kafkaProperties;
-    }
+    @Autowired
+    private KafkaProperties kafkaProperties;
 
     //2 more arguments (topic, partition) + method for getting position
 

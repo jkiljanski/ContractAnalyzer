@@ -2,12 +2,10 @@ import com.sciamus.contractanalyzer.application.CheckReportDTO;
 import com.sciamus.contractanalyzer.application.ContractChecksService;
 import com.sciamus.contractanalyzer.application.mapper.CheckReportMapper;
 import com.sciamus.contractanalyzer.domain.checks.rest.CheckRepository;
-import com.sciamus.contractanalyzer.domain.checks.rest.dummy.DummyRestContractCheck;
 import com.sciamus.contractanalyzer.domain.checks.rest.reportcheck.CurrentUserService;
 import com.sciamus.contractanalyzer.domain.reporting.checks.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 
 import com.sciamus.contractanalyzer.domain.reporting.idGenerator.ReportIdGenerator;
@@ -21,8 +19,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 @ExtendWith(MockitoExtension.class)
 public class CheckTest {
@@ -71,10 +67,4 @@ public class CheckTest {
 
         // then
     }
-
-//    @Test
-//    @DisplayName("Test of getting all checks")
-//    public void getAllChecksTest() {
-//
-//    }
 }

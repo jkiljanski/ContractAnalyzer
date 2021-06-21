@@ -11,8 +11,8 @@ import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.util.*;
@@ -20,21 +20,18 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-
-@Component
 public class KafkaMessagesCountCheck implements KafkaContractCheck {
 
     private final String name = "KafkaMessagesCountCheck";
-    private final KafkaStreamFactory kafkaStreamFactory;
-    private final KafkaProducFactory kafkaProducFactory;
-    private final KafkaConsumFactory kafkaConsumFactory;
 
+    @Autowired
+    private KafkaStreamFactory kafkaStreamFactory;
 
-    public KafkaMessagesCountCheck(KafkaStreamFactory kafkaStreamFactory, KafkaProducFactory kafkaProducFactory, KafkaConsumFactory kafkaConsumFactory) {
-        this.kafkaStreamFactory = kafkaStreamFactory;
-        this.kafkaProducFactory = kafkaProducFactory;
-        this.kafkaConsumFactory = kafkaConsumFactory;
-    }
+    @Autowired
+    private KafkaProducFactory kafkaProducFactory;
+
+    @Autowired
+    private KafkaConsumFactory kafkaConsumFactory;
 
     @Override
     public CheckReport run(String incomingTopic, String outgoingTopic, String host, String port) {

@@ -15,7 +15,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.function.Predicate;
 
-@Service
 public class SuitesService {
 
     @Autowired

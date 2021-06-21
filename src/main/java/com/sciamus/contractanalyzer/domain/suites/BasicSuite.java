@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import java.net.URL;
 
-@Component
 public class BasicSuite extends CheckSuite {
 
     private final String NAME = "Basic Suite";

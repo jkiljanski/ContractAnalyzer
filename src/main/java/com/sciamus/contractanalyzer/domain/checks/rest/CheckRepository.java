@@ -1,18 +1,15 @@
 package com.sciamus.contractanalyzer.domain.checks.rest;
 
 import com.sciamus.contractanalyzer.domain.checks.rest.reportcheck.CurrentUserService;
-import com.sciamus.contractanalyzer.domain.checks.rest.RestContractCheck;
 import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReport;
 import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReportBuilder;
 import com.sciamus.contractanalyzer.domain.exception.CheckNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 
 import java.net.URL;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Repository
 public class CheckRepository {
 
     @Autowired

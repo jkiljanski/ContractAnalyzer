@@ -1,6 +1,7 @@
-package com.sciamus.contractanalyzer.domain.checks;
+package com.sciamus.contractanalyzer.domain.checks.rest.config;
 
 import com.sciamus.contractanalyzer.domain.checks.queues.kafka.KafkaContractCheck;
+import com.sciamus.contractanalyzer.domain.checks.rest.CheckRepository;
 import com.sciamus.contractanalyzer.domain.checks.rest.RestContractCheck;
 import com.sciamus.contractanalyzer.domain.checks.rest.dummy.DummyRestContractCheck;
 import com.sciamus.contractanalyzer.domain.checks.rest.explode.ExplodeCheck;
@@ -43,4 +44,10 @@ public class ChecksConfig {
     @Bean List<KafkaContractCheck> kafkaContractChecks() {
         return new ArrayList<>();
     }
+
+    @Bean
+    public CheckRepository checkRepository(){
+        return new CheckRepository();
+    }
+
 }

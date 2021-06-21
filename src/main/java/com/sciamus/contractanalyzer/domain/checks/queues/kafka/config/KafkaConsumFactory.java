@@ -3,22 +3,16 @@ package com.sciamus.contractanalyzer.domain.checks.queues.kafka.config;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Properties;
 
-@Component
 public class KafkaConsumFactory {
 
-
-    private final KafkaProperties kafkaProperties;
-
-    public KafkaConsumFactory(KafkaProperties kafkaProperties) {
-        this.kafkaProperties = kafkaProperties;
-    }
-
-
+    @Autowired
+    private KafkaProperties kafkaProperties;
 
     public Consumer createConsumer(String topic, String host, String port) {
 
