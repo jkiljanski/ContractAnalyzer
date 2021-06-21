@@ -33,11 +33,10 @@ public class StreamProcessor {
                         key + " " + value)))
                 .filter((k, v) -> Objects.nonNull(k) && k.contains("test"))
                 .groupBy((k, v) -> k + v)
-                .windowedBy(TimeWindows.of(Duration.ofMinutes(2)))
-                .count(Materialized.as("count-store"))
+                .count(Materialized.as("statistics"))
                 .toStream()
                 .peek((k, v) -> System.out.println("from input to count topic: key " + k + " value " + v))
-                .map((k, v) -> new KeyValue<>(k.key(), String.valueOf(v)))
+                .map((k, v) -> new KeyValue<>(k, String.valueOf(v)))
 
                 .branch(isCommand, isNotCommand);
 

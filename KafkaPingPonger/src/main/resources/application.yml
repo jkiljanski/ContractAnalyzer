@@ -3,8 +3,7 @@ spring:
     bootstrap-servers: kafka:29092
     incoming-topic: ping
     outgoing-topic: pong
-    consumer:
-      auto-commit-interval: 100
+
 
 
   cloud:
