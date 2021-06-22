@@ -34,17 +34,10 @@ public class CommandListener {
 
             String uniqueKey = record.key().replace(command, "");
 
-
-            try {
-                Thread.sleep(15000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
             KafkaStreams application = createKafkaStreams(uniqueKey);
 
             try {
-                Thread.sleep(15000);
+                Thread.sleep(15_000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -72,3 +65,5 @@ public class CommandListener {
 
 
 }
+
+//#{T(java.util.UUID).randomUUID().toString()}

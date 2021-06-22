@@ -11,8 +11,9 @@ spring:
       kafka:
         streams:
           binder:
+#            applicationId: redirect-app
             configuration:
-                default:
+              default:
                   key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
                   value.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
     function:
@@ -29,6 +30,11 @@ spring.cloud.stream.bindings.process-in-0:
 
 server:
   port: 8888
+
+
+  #                  cache.max.bytes.buffering: 100000
+  #                  commit.interval.ms: 0
+  #                  num.max.threads: 4
 
 #spring:
 #  cloud:

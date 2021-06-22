@@ -1,15 +1,16 @@
 package com.example.kafkapingponger;
 
 
+import org.apache.kafka.common.serialization.Serde;
+import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KeyValue;
+import org.apache.kafka.streams.kstream.Grouped;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Materialized;
 import org.apache.kafka.streams.kstream.Predicate;
-import org.apache.kafka.streams.kstream.TimeWindows;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.time.Duration;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -29,7 +30,7 @@ public class StreamProcessor {
         System.out.println("im here motherfucker");
 
         return input -> input
-                .peek(((key, value) -> System.out.println("key value before grouping" +
+                .peek(((key, value) -> System.out.println("key value before grouping XD " +
                         key + " " + value)))
                 .filter((k, v) -> Objects.nonNull(k) && k.contains("test"))
                 .groupBy((k, v) -> k + v)
@@ -41,6 +42,8 @@ public class StreamProcessor {
                 .branch(isCommand, isNotCommand);
 
     }
+
+//Materialized.as("statistics")
     //czy tym rzeczom można zmieniać sygnatury
     //Można zmienić na consumer
 

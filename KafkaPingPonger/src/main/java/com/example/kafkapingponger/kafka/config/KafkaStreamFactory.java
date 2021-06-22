@@ -28,12 +28,13 @@ public class KafkaStreamFactory {
         props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
         props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
 //        props.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, 100);
+//        props.put(StreamsConfig.NUM_STREAM_THREADS_CONFIG, 4);
+
 
         props.put(StreamsConfig.STATE_DIR_CONFIG, "data");
 
         return new KafkaStreams(topology, props);
 
     }
-
 
 }

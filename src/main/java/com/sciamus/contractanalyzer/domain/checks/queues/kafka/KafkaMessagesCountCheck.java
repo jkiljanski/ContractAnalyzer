@@ -2,6 +2,7 @@ package com.sciamus.contractanalyzer.domain.checks.queues.kafka;
 
 import com.sciamus.contractanalyzer.domain.checks.queues.kafka.config.KafkaConsumFactory;
 import com.sciamus.contractanalyzer.domain.checks.queues.kafka.config.KafkaProducFactory;
+import com.sciamus.contractanalyzer.domain.checks.queues.kafka.config.KafkaProperties;
 import com.sciamus.contractanalyzer.domain.checks.queues.kafka.config.KafkaStreamFactory;
 import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReport;
 import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReportBuilder;
@@ -19,6 +20,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 
 @Component
@@ -36,16 +38,36 @@ public class KafkaMessagesCountCheck implements KafkaContractCheck {
         this.kafkaConsumFactory = kafkaConsumFactory;
     }
 
+
+    public static void main(String[] args) {
+
+
+        KafkaProperties props = new KafkaProperties();
+
+        props.setConsum(new KafkaProperties.Consum());
+        props.getConsum().setKeyDeserializer("org.apache.kafka.common.serialization.StringDeserializer");
+        props.getConsum().setValueDeserializer("org.apache.kafka.common.serialization.StringDeserializer");
+
+
+        KafkaMessagesCountCheck kafkaMessagesCountCheck = new KafkaMessagesCountCheck(new KafkaStreamFactory(props), new KafkaProducFactory(props), new KafkaConsumFactory(props));
+
+        Consumer consumer = kafkaMessagesCountCheck.createConsumer("output-topic", "localhost", "29092");
+
+
+        Iterable<ConsumerRecord<String, String>> recordsFromOutsideProcessor = kafkaMessagesCountCheck.getRecordsFromOutsideProcessor("output-topic", consumer);
+
+        System.out.println(StreamSupport.stream(recordsFromOutsideProcessor.spliterator(),false).collect(Collectors.toList()).size());
+
+    }
+
     @Override
     public CheckReport run(String incomingTopic, String outgoingTopic, String host, String port) {
-
-
 
         Logger logger = getLogger();
 
         KafkaTemplate<String, String> producer = getProducer(host, port);
 
-        Consumer consumer = getConsumer(incomingTopic, host, port);
+        Consumer consumer = createConsumer(incomingTopic, host, port);
 
         String checkUniqueIdentifier = getCheckUniqueIdentifier();
 
@@ -63,7 +85,7 @@ public class KafkaMessagesCountCheck implements KafkaContractCheck {
 
         try {
             //Changed:
-            Thread.sleep(15000);
+            Thread.sleep(30_000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -71,6 +93,10 @@ public class KafkaMessagesCountCheck implements KafkaContractCheck {
         Iterable<ConsumerRecord<String, String>> records = getRecordsFromOutsideProcessor(incomingTopic, consumer);
 
         Map<String, Long> answerToCheck = new HashMap<>();
+
+//        String consumData = consumer.groupMetadata().toString();
+
+//        consumer.commitSync();
 
         consumer.close();
 
@@ -100,7 +126,7 @@ public class KafkaMessagesCountCheck implements KafkaContractCheck {
         reportBuilder.createTimestamp().setNameOfCheck(getName());
     }
 
-    private Consumer getConsumer(String incomingTopic, String host, String port) {
+    private Consumer createConsumer(String incomingTopic, String host, String port) {
         return kafkaConsumFactory.createConsumer(incomingTopic, host, port);
     }
 
@@ -200,7 +226,7 @@ public class KafkaMessagesCountCheck implements KafkaContractCheck {
     }
 
     private String getCheckUniqueIdentifier() {
-        String checkUniqueKey = new Random().nextInt(100) + "--test--";
+        String checkUniqueKey = java.util.UUID.randomUUID() + "--test--";
         return checkUniqueKey;
     }
 
