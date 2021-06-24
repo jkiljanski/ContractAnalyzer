@@ -27,9 +27,7 @@ public class KafkaMessagesSimpleCountCheck implements KafkaContractCheck {
     private final KafkaProducFactory kafkaProducFactory;
     private final KafkaConsumFactory kafkaConsumFactory;
 
-    private final String checkUniqueIdentifier = getCheckUniqueIdentifier();
-    private final List<Integer> integersListToSendToOutsideProcessor = getIntegersListToSendToOutsideProcessor();
-    private CheckReportBuilder reportBuilder = new CheckReportBuilder();
+
 
 
     public KafkaMessagesSimpleCountCheck(KafkaProducFactory kafkaProducFactory, KafkaConsumFactory kafkaConsumFactory) {
@@ -46,6 +44,9 @@ public class KafkaMessagesSimpleCountCheck implements KafkaContractCheck {
 
         KafkaTemplate<String, String> producer = Producer(host, port);
         Consumer<String, String> consumer = Consumer(incomingTopic, host, port);
+        String checkUniqueIdentifier = getCheckUniqueIdentifier();
+        List<Integer> integersListToSendToOutsideProcessor = getIntegersListToSendToOutsideProcessor();
+        CheckReportBuilder reportBuilder = new CheckReportBuilder();
 
 
         //when:

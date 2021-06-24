@@ -59,32 +59,30 @@ public class KafkaMessagesManyRunsCheck implements KafkaContractCheck {
 
         Map<String, String> actualResults = waitForResults(Duration.ofSeconds(10), incomingTopic, consumer);
 
-        Optional<String> finalCheckResult = assertResultsMatch(actualResults, expectedResults);
+
+        Try<Void> finalCheckResult = assertResultsMatch(actualResults, expectedResults);
 
         setUpReportBuilder(reportBuilder);
 
-        if (finalCheckResult.isEmpty()) {
-            return getPassedCheckReport(reportBuilder);
-        }
+//        if (finalCheckResult.isEmpty()) {
+//            return getPassedCheckReport(reportBuilder);
+//        }
 
-        return getFailedCheckReport(expectedResults, actualResults, reportBuilder);
+        return finalCheckResult
+                .map(v -> getPassedCheckReport(reportBuilder))
+                .recover(AssertionError.class, e -> createFailedCheckReport(e.getMessage(), reportBuilder))
+                .recover(Exception.class, e-> createFailedCheckReport("Unexpected Exception: "+e.getMessage(),reportBuilder))
+                .get();
+
+//
+//        return getFailedCheckReport(expectedResults, actualResults, reportBuilder);
 
     }
 
-    private Optional<String> assertResultsMatch(Map<String, String> results, Map<String, String> expectedResults) {
+    private Try<Void> assertResultsMatch(Map<String, String> results, Map<String, String> expectedResults) {
 
+        return Try.runRunnable(() -> assertThat(results).containsAllEntriesOf(expectedResults));
 
-        try {
-            assertThat(results).containsAllEntriesOf(expectedResults);
-        } catch (AssertionError error) {
-
-            return Optional.of(error.getMessage());
-        }
-
-//        MapAssert<String, String> wrong_assertion = Try.of(() -> assertThat(results).containsAllEntriesOf(expectedResults))
-//                .getOrElseThrow(() -> new AssertionError("Wrong assertion"));
-
-        return Optional.empty();
 
     }
 
@@ -200,12 +198,10 @@ public class KafkaMessagesManyRunsCheck implements KafkaContractCheck {
         return LogManager.getLogger(KafkaMessagesManyRunsCheck.class);
     }
 
-    private CheckReport getFailedCheckReport(Map<String, String> expectedAnswer, Map<String, String> answerToCheck, CheckReportBuilder reportBuilder) {
+    private CheckReport createFailedCheckReport(String message, CheckReportBuilder reportBuilder) {
         return reportBuilder
                 .setResult(ReportResults.FAILED)
-                .setReportBody("Sorry, please have another shot. " +
-                        "Correct answer is: " + expectedAnswer + "\n" +
-                        " your system produced this: " + answerToCheck)
+                .setReportBody("Sorry, please have another shot. Assertion details: \n" + message)
                 .build();
     }
 
