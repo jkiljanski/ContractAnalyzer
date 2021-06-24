@@ -22,7 +22,7 @@ public class CommandListener {
 
     private KafkaStreamFactory factory;
 
-    @KafkaListener(topics = "command-topic", groupId = "1")
+    @KafkaListener(topics = "command-topic", groupId = "#{T(java.util.UUID).randomUUID().toString()}")
     public void listenToCommand(ConsumerRecord<String, String> record) {
 
         String command = "compute";
@@ -35,6 +35,9 @@ public class CommandListener {
             String uniqueKey = record.key().replace(command, "");
 
             KafkaStreams application = createKafkaStreams(uniqueKey);
+
+
+
 
             try {
                 Thread.sleep(15_000);

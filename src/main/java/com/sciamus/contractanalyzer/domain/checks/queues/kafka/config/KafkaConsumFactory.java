@@ -23,7 +23,7 @@ public class KafkaConsumFactory {
 
 
 
-    public Consumer createConsumer(String topic, String host, String port) {
+    public Consumer<String,String> createConsumer(String topic, String host, String port) {
 
         final Properties props = new Properties();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, host+":"+port);
@@ -36,7 +36,7 @@ public class KafkaConsumFactory {
 //                ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "100");
 
 
-        final Consumer consumer = new KafkaConsumer<>(props);
+        final Consumer<String,String> consumer = new KafkaConsumer<>(props);
 
         TopicPartition topicPartition = new TopicPartition(topic, 0);
 

@@ -37,7 +37,7 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
 
       KAFKA_LISTENERS: INTERNAL://kafka:29092, EXTERNAL://kafka:9092
-      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:29092,EXTERNAL://kafka:9092
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:29092, EXTERNAL://localhost:9092
 
 # if backend not in docker container:
 #      KAFKA_LISTENERS: INTERNAL://localhost:29092, EXTERNAL://localhost:9092
