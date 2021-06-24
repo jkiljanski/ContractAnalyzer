@@ -1,4 +1,4 @@
-package com.example.kafkapingponger;
+package com.example.kafkapingponger.kafka;
 
 
 import org.apache.kafka.streams.KeyValue;

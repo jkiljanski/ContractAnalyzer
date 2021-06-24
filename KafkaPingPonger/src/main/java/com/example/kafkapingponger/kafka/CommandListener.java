@@ -37,8 +37,6 @@ public class CommandListener {
             KafkaStreams application = createKafkaStreams(uniqueKey);
 
 
-
-
             try {
                 Thread.sleep(15_000);
             } catch (InterruptedException e) {

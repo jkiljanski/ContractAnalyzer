@@ -2,8 +2,6 @@ package com.sciamus.contractanalyzer.domain.checks.queues.kafka;
 
 import com.sciamus.contractanalyzer.domain.checks.queues.kafka.config.KafkaConsumFactory;
 import com.sciamus.contractanalyzer.domain.checks.queues.kafka.config.KafkaProducFactory;
-import com.sciamus.contractanalyzer.domain.checks.queues.kafka.config.KafkaProperties;
-import com.sciamus.contractanalyzer.domain.checks.queues.kafka.config.KafkaStreamFactory;
 import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReport;
 import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReportBuilder;
 import com.sciamus.contractanalyzer.domain.reporting.checks.ReportResults;
@@ -32,69 +30,36 @@ public class KafkaMessagesManyRunsCheck implements KafkaContractCheck {
 
     private static final int NUMBER_OF_CONCURRENT_RUNS = 10;
     private final String name = "KafkaMessagesManyRunsCheck";
-    private final KafkaStreamFactory kafkaStreamFactory;
     private final KafkaProducFactory kafkaProducFactory;
     private final KafkaConsumFactory kafkaConsumFactory;
 
 
-    public KafkaMessagesManyRunsCheck(KafkaStreamFactory kafkaStreamFactory, KafkaProducFactory kafkaProducFactory, KafkaConsumFactory kafkaConsumFactory) {
-        this.kafkaStreamFactory = kafkaStreamFactory;
+    public KafkaMessagesManyRunsCheck(KafkaProducFactory kafkaProducFactory, KafkaConsumFactory kafkaConsumFactory) {
         this.kafkaProducFactory = kafkaProducFactory;
         this.kafkaConsumFactory = kafkaConsumFactory;
     }
 
 
-    public static void main(String[] args) {
-
-
-        KafkaProperties props = new KafkaProperties();
-
-        props.setConsum(new KafkaProperties.Consum());
-        props.getConsum().setKeyDeserializer("org.apache.kafka.common.serialization.StringDeserializer");
-        props.getConsum().setValueDeserializer("org.apache.kafka.common.serialization.StringDeserializer");
-
-
-        KafkaMessagesManyRunsCheck kafkaMessagesCountCheck = new KafkaMessagesManyRunsCheck(new KafkaStreamFactory(props), new KafkaProducFactory(props), new KafkaConsumFactory(props));
-
-        Consumer<String, String> consumer = kafkaMessagesCountCheck.createConsumer("output-topic", "localhost", "29092");
-
-
-        Iterable<ConsumerRecord<String, String>> recordsFromOutsideProcessor = kafkaMessagesCountCheck.getRecordsFromOutsideProcessor("output-topic", consumer);
-
-        System.out.println(StreamSupport.stream(recordsFromOutsideProcessor.spliterator(), false).collect(Collectors.toList()).size());
-
-    }
-
     @Override
     public CheckReport run(String incomingTopic, String outgoingTopic, String host, String port) {
 
 
-
-
-
         //given
         Map<String, List<String>> messagesToSend = createMessagesForXRuns(NUMBER_OF_CONCURRENT_RUNS); //Multimap
-        Consumer<String, String> consumer = createConsumer(incomingTopic, host, port);
+        Consumer<String, String> consumer = createAndSetUpConsumer(incomingTopic, host, port);
 
 
         //when
         sendMessagesWithDelay(messagesToSend, 5L, host, port, outgoingTopic);
-        sendComputeMessages(messagesToSend.keySet(), host, port, outgoingTopic);
-
-
-        try {
-            Thread.sleep(30_000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        sendComputeCommands(messagesToSend.keySet(), host, port, outgoingTopic);
+        Try.run(() -> Thread.sleep(30_000)).onFailure(InterruptedException.class, Throwable::printStackTrace);
 
         //then
         Map<String, String> expectedResults = computeExpectedResults(messagesToSend);
 
+        Map<String, String> resultsPolledFromOutsideSystem = waitForResults(Duration.ofSeconds(10), incomingTopic, consumer);
 
-        Map<String, String> results = waitForResults(Duration.ofSeconds(10), incomingTopic,consumer);
-        Optional<String> result = assertResultsMatch(results, expectedResults);//results.size > expectedResults.size -> results.contains(expectedResults);
-
+        Optional<String> result = assertResultsMatch(resultsPolledFromOutsideSystem, expectedResults);
 
         CheckReportBuilder reportBuilder = new CheckReportBuilder();
 
@@ -104,71 +69,8 @@ public class KafkaMessagesManyRunsCheck implements KafkaContractCheck {
             return getPassedCheckReport(reportBuilder);
         }
 
-        return getFailedCheckReport(expectedResults, results, reportBuilder);
+        return getFailedCheckReport(expectedResults, resultsPolledFromOutsideSystem, reportBuilder);
 
-        ///
-
-
-
-
-
-
-       /* Logger logger = getLogger();
-
-        KafkaTemplate<String, String> producer = getProducer(host, port);
-
-        Consumer consumer = createConsumer(incomingTopic, host, port);
-
-        String checkUniqueIdentifier = getCheckUniqueIdentifier();
-
-        List<Integer> integersListToSendToOutsideProcessor = get10IntegersListToSendToOutsideProcessor();
-
-        Map<String, Long> expectedAnswerToGetFromOutsideProcessor = getExpectedAnswer(checkUniqueIdentifier, integersListToSendToOutsideProcessor);
-
-        logExpectedAnswer(logger, expectedAnswerToGetFromOutsideProcessor);
-
-        sendMessagesToOutsideProcessor(outgoingTopic, producer, checkUniqueIdentifier, integersListToSendToOutsideProcessor);
-*/
-
-        // do kontenera:
-
-        /*
-        setUpConsumer(consumer);
-
-        try {
-            //Changed:
-            Thread.sleep(30_000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        Iterable<ConsumerRecord<String, String>> records = getRecordsFromOutsideProcessor(incomingTopic, consumer);
-
-        Map<String, Long> answerToCheck = new HashMap<>();
-
-//        String consumData = consumer.groupMetadata().toString();
-
-//        consumer.commitSync();
-
-        consumer.close(Duration.ofSeconds(3));
-
-        processReceivedRecords(logger, checkUniqueIdentifier, records, answerToCheck);
-
-        Boolean resultOfCheck = expectedAnswerToGetFromOutsideProcessor.equals(answerToCheck);
-
-        logCheckResult(logger, expectedAnswerToGetFromOutsideProcessor, answerToCheck);
-
-        CheckReportBuilder reportBuilder = new CheckReportBuilder();
-
-        setUpReportBuilder(reportBuilder);
-
-        if (resultOfCheck) {
-            return getPassedCheckReport(reportBuilder);
-        }
-
-        return getFailedCheckReport(expectedAnswerToGetFromOutsideProcessor, answerToCheck, reportBuilder);
-
-         */
     }
 
     private Optional<String> assertResultsMatch(Map<String, String> results, Map<String, String> expectedResults) {
@@ -181,46 +83,41 @@ public class KafkaMessagesManyRunsCheck implements KafkaContractCheck {
             return Optional.of(error.getMessage());
         }
 
+//        MapAssert<String, String> wrong_assertion = Try.of(() -> assertThat(results).containsAllEntriesOf(expectedResults))
+//                .getOrElseThrow(() -> new AssertionError("Wrong assertion"));
+
         return Optional.empty();
 
 
     }
 
-    private Map<String, String> waitForResults(Duration ofSeconds, String topic, Consumer consumer) {
-        Logger logger = getLogger();
+    private Map<String, String> waitForResults(Duration ofSeconds, String topic, Consumer<String, String> consumer) {
 
+        Logger logger = getLogger();
 
         logger.info("Setting up consumer and blocking thread");
 
-        try {
-            Thread.sleep(10_000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
+        Try.run(() -> Thread.sleep(10_000)).onFailure(InterruptedException.class, Throwable::printStackTrace);
 
         Iterable<ConsumerRecord<String, String>> records = consumer.poll(ofSeconds).records(topic);
 
-
         logConsumerOffset(consumer);
 
-        records.iterator().forEachRemaining(s-> System.out.println("XDXDXD: "+s));
+        records.iterator().forEachRemaining(s -> System.out.println("XDXDXD: " + s));
 
         consumer.close();
 
-        Map<String, String> collect = StreamSupport.stream(records.spliterator(), false)
+        return StreamSupport.stream(records.spliterator(), false)
                 .peek(record -> logger.info("KROWA logging after poll: " + record))
-                .collect(Collectors.toMap(record -> record.key(), record -> record.value()));
-
-        return collect;
+                .collect(Collectors.toMap(ConsumerRecord::key, ConsumerRecord::value));
 
     }
 
-    private void logConsumerOffset(Consumer consumer) {
+    private void logConsumerOffset(Consumer<String,String> consumer) {
 
         Logger logger = getLogger();
 
-        TopicPartition partition = new TopicPartition("output-topic",0);
+        TopicPartition partition = new TopicPartition("output-topic", 0);
 
         long position = consumer.position(partition);
         logger.info("Consumer offset is: " + position);
@@ -232,18 +129,18 @@ public class KafkaMessagesManyRunsCheck implements KafkaContractCheck {
 
 
         return messagesToSend.entrySet().stream()
-                .peek(message -> logger.info("in expected results: " + message))
+                .peek(message -> logger.info("computing expected results: " + message))
                 .flatMap(stringListEntry -> stringListEntry.getValue().stream().map(string -> stringListEntry.getKey() + string))
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
-                .entrySet().stream().collect(Collectors.toMap(entry -> entry.getKey(), entry -> "" + entry.getValue()));
+                .entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> "" + entry.getValue()));
     }
 
 
-    private void sendComputeMessages(Set<String> keySet, String host, String port, String topic) {
+    private void sendComputeCommands(Set<String> keySet, String host, String port, String topic) {
 
         KafkaTemplate<String, String> producer = createProducer(host, port);
 
-        keySet.stream()
+        keySet
                 .forEach(key -> producer.send(topic, key, "compute"));
 
     }
@@ -260,13 +157,11 @@ public class KafkaMessagesManyRunsCheck implements KafkaContractCheck {
 
     }
 
-    private void sendWithDelay(Long ofMillis, String topic, KafkaTemplate<String, String> producer, String element1, String element2) {
-        try {
-            Thread.sleep(ofMillis);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        producer.send(topic, element1, element2);
+    private void sendWithDelay(Long ofMillis, String topic, KafkaTemplate<String, String> producer, String key, String value) {
+
+        Try.run(() -> Thread.sleep(ofMillis)).onFailure(InterruptedException.class, Throwable::printStackTrace);
+
+        producer.send(topic, key, value);
     }
 
     private Map<String, List<String>> createMessagesForXRuns(int numberOfConcurrentRuns) {
@@ -287,34 +182,28 @@ public class KafkaMessagesManyRunsCheck implements KafkaContractCheck {
 
             results.put(checkUniqueIdentifier, randomChars);
         }
+
         return results;
 
 
-    }
-
-
-    private void logCheckResult(Logger logger, Map<String, Long> expectedAnswerToGetFromOutsideProcessor, Map<String, Long> answerToCheck) {
-        logger.info("And the answer is " + expectedAnswerToGetFromOutsideProcessor.equals(answerToCheck));
     }
 
     private void setUpReportBuilder(CheckReportBuilder reportBuilder) {
         reportBuilder.createTimestamp().setNameOfCheck(getName());
     }
 
-    private Consumer<String, String> createConsumer(String incomingTopic, String host, String port) {
+    private Consumer<String, String> createAndSetUpConsumer(String incomingTopic, String host, String port) {
         Consumer<String, String> consumer = kafkaConsumFactory.createConsumer(incomingTopic, host, port);
         setUpConsumer(consumer);
         return consumer;
     }
 
     private KafkaTemplate<String, String> createProducer(String host, String port) {
-        KafkaTemplate<String, String> producer = kafkaProducFactory.createProducer(host, port);
-        return producer;
+        return kafkaProducFactory.createProducer(host, port);
     }
 
     private Logger getLogger() {
-        Logger logger = LogManager.getLogger(KafkaMessagesManyRunsCheck.class);
-        return logger;
+        return LogManager.getLogger(KafkaMessagesManyRunsCheck.class);
     }
 
     private CheckReport getFailedCheckReport(Map<String, String> expectedAnswer, Map<String, String> answerToCheck, CheckReportBuilder reportBuilder) {
@@ -333,94 +222,20 @@ public class KafkaMessagesManyRunsCheck implements KafkaContractCheck {
                 .build();
     }
 
-    private void processReceivedRecords(Logger logger, String checkUniqueKey, Iterable<ConsumerRecord<String, String>> records, Map<String, Long> answerToCheck) {
-        for (ConsumerRecord<String, String> record : records) {
-            logger.info("logging records after second poll: key" + record.key() + " value: " + record.value()
-                    + " offset: " + record.offset()
-                    + " timestamp " + record.timestamp());
-            if (record.key().startsWith(checkUniqueKey)) {
 
-                Try<Long> longTry = Try.of(() -> Long.valueOf(record.value()));
-
-                answerToCheck.put(record.key(), longTry.getOrElseThrow(() -> new RuntimeException("Sorry, I cannot convert the value you provided to Long type")));
-            }
-        }
-    }
-
-
-    private Iterable<ConsumerRecord<String, String>> getRecordsFromOutsideProcessor(String incomingTopic, Consumer consumer) {
-        Iterable<ConsumerRecord<String, String>> records = consumer.poll(Duration.ofSeconds(20)).records(incomingTopic);
-        return records;
-    }
-
-
-    private void setUpConsumer(Consumer consumer) {
+    private void setUpConsumer(Consumer<String,String> consumer) {
         consumer.poll(Duration.ofSeconds(5));
     }
 
-    private void sendMessagesToOutsideProcessor(String outgoingTopic, KafkaTemplate<String, String> producer, String checkUniqueKey, List<Integer> integersListToSendToTopic) {
-        sendMessagesToIgnore(outgoingTopic, producer);
-
-        sendMessagesToBeChecked(outgoingTopic, producer, checkUniqueKey, integersListToSendToTopic);
-
-//        try {
-//            Thread.sleep(3000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-
-        sendMessagesToIgnore(outgoingTopic, producer);
-        sendMessagesToBeChecked(outgoingTopic, producer, checkUniqueKey, Collections.singletonList("compute"));
-
-    }
-
-    private void sendMessagesToBeChecked(String outgoingTopic, KafkaTemplate<String, String> producer, String checkUniqueKey, List<? super Integer> toSendToTopic) {
-        for (Object element : toSendToTopic) {
-
-
-            producer.send(outgoingTopic, checkUniqueKey, String.valueOf(element));
-
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-        }
-    }
-
-    private void sendMessagesToIgnore(String outgoingTopic, KafkaTemplate<String, String> producer) {
-        for (int i = 0; i < 5; i++) {
-            producer.send(outgoingTopic, "to be ignored");
-        }
-    }
-
-    private void logExpectedAnswer(Logger logger, Map<String, Long> expectedAnswer) {
-        for (Map.Entry entry : expectedAnswer.entrySet()) {
-
-            logger.info("expected answer " + entry);
-        }
-    }
-
     private String getCheckUniqueIdentifier() {
-        String checkUniqueKey = UUID.randomUUID() + "--test--";
-        return checkUniqueKey;
-    }
-
-    private Map<String, Long> getExpectedAnswer(String checkUniqueKey, List<Integer> toSend) {
-        Map<String, Long> expectedAnswer = toSend
-                .stream()
-                .map(i -> checkUniqueKey + i)
-                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
-        return expectedAnswer;
+        return UUID.randomUUID() + "--test--";
     }
 
     private List<Integer> get10IntegersListToSendToOutsideProcessor() {
-        List<Integer> toSend = Stream
+        return Stream
                 .generate(() -> new Random().nextInt(10))
                 .limit(10)
                 .collect(Collectors.toList());
-        return toSend;
     }
 
     @Override

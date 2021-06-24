@@ -1,7 +1,6 @@
 package com.example.kafkapingponger.kafka;
 
 
-import com.example.kafkapingponger.PongRespondingService;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 

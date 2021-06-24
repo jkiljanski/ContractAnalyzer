@@ -1,6 +1,5 @@
-package com.example.kafkapingponger;
+package com.example.kafkapingponger.kafka;
 
-import com.example.kafkapingponger.kafka.PongProducer;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,7 +13,7 @@ public class PongRespondingService {
 
     public void notify(String message) {
 
-        String response= message + "pong";
+        String response = message + "pong";
 
         kafkaPongProducer.sendMessage(response);
 
