@@ -32,6 +32,7 @@ public class KafkaMessagesManyRunsCheck implements KafkaContractCheck {
     private final String name = "KafkaMessagesManyRunsCheck";
     private final KafkaProducFactory kafkaProducFactory;
     private final KafkaConsumFactory kafkaConsumFactory;
+    private CheckReportBuilder reportBuilder = new CheckReportBuilder();
 
 
     public KafkaMessagesManyRunsCheck(KafkaProducFactory kafkaProducFactory, KafkaConsumFactory kafkaConsumFactory) {
@@ -39,10 +40,8 @@ public class KafkaMessagesManyRunsCheck implements KafkaContractCheck {
         this.kafkaConsumFactory = kafkaConsumFactory;
     }
 
-
     @Override
     public CheckReport run(String incomingTopic, String outgoingTopic, String host, String port) {
-
 
         //given
         Map<String, List<String>> messagesToSend = createMessagesForXRuns(NUMBER_OF_CONCURRENT_RUNS); //Multimap
@@ -52,24 +51,23 @@ public class KafkaMessagesManyRunsCheck implements KafkaContractCheck {
         //when
         sendMessagesWithDelay(messagesToSend, 5L, host, port, outgoingTopic);
         sendComputeCommands(messagesToSend.keySet(), host, port, outgoingTopic);
+
         Try.run(() -> Thread.sleep(30_000)).onFailure(InterruptedException.class, Throwable::printStackTrace);
 
         //then
         Map<String, String> expectedResults = computeExpectedResults(messagesToSend);
 
-        Map<String, String> resultsPolledFromOutsideSystem = waitForResults(Duration.ofSeconds(10), incomingTopic, consumer);
+        Map<String, String> actualResults = waitForResults(Duration.ofSeconds(10), incomingTopic, consumer);
 
-        Optional<String> result = assertResultsMatch(resultsPolledFromOutsideSystem, expectedResults);
-
-        CheckReportBuilder reportBuilder = new CheckReportBuilder();
+        Optional<String> finalCheckResult = assertResultsMatch(actualResults, expectedResults);
 
         setUpReportBuilder(reportBuilder);
 
-        if (result.isEmpty()) {
+        if (finalCheckResult.isEmpty()) {
             return getPassedCheckReport(reportBuilder);
         }
 
-        return getFailedCheckReport(expectedResults, resultsPolledFromOutsideSystem, reportBuilder);
+        return getFailedCheckReport(expectedResults, actualResults, reportBuilder);
 
     }
 
@@ -87,7 +85,6 @@ public class KafkaMessagesManyRunsCheck implements KafkaContractCheck {
 //                .getOrElseThrow(() -> new AssertionError("Wrong assertion"));
 
         return Optional.empty();
-
 
     }
 
@@ -113,7 +110,7 @@ public class KafkaMessagesManyRunsCheck implements KafkaContractCheck {
 
     }
 
-    private void logConsumerOffset(Consumer<String,String> consumer) {
+    private void logConsumerOffset(Consumer<String, String> consumer) {
 
         Logger logger = getLogger();
 
@@ -182,10 +179,7 @@ public class KafkaMessagesManyRunsCheck implements KafkaContractCheck {
 
             results.put(checkUniqueIdentifier, randomChars);
         }
-
         return results;
-
-
     }
 
     private void setUpReportBuilder(CheckReportBuilder reportBuilder) {
@@ -223,7 +217,7 @@ public class KafkaMessagesManyRunsCheck implements KafkaContractCheck {
     }
 
 
-    private void setUpConsumer(Consumer<String,String> consumer) {
+    private void setUpConsumer(Consumer<String, String> consumer) {
         consumer.poll(Duration.ofSeconds(5));
     }
 

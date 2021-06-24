@@ -50,7 +50,7 @@ public class KafkaMessagesSimpleCountCheck implements KafkaContractCheck {
 
         //when:
 
-        sendMessagesToOutsideSystem(outgoingTopic, producer, checkUniqueIdentifier, integersListToSendToOutsideProcessor);
+        sendMessagesToOutsideSystemAndGoToSleep(outgoingTopic, producer, checkUniqueIdentifier, integersListToSendToOutsideProcessor);
         Map<String, Long> expectedAnswer = getExpectedAnswer(checkUniqueIdentifier, integersListToSendToOutsideProcessor);
 
         Iterable<ConsumerRecord<String, String>> recordsFromOutsideSystem = waitForRecordsFromOutsideSystem(incomingTopic, consumer);
@@ -138,19 +138,15 @@ public class KafkaMessagesSimpleCountCheck implements KafkaContractCheck {
         consumer.poll(Duration.ofSeconds(5));
     }
 
-    private void sendMessagesToOutsideSystem(String outgoingTopic, KafkaTemplate<String, String> producer, String checkUniqueKey, List<Integer> integersListToSendToTopic) {
+    private void sendMessagesToOutsideSystemAndGoToSleep(String outgoingTopic, KafkaTemplate<String, String> producer, String checkUniqueKey, List<Integer> integersListToSendToTopic) {
         sendMessagesToIgnore(outgoingTopic, producer);
 
         sendMessagesToBeChecked(outgoingTopic, producer, checkUniqueKey, integersListToSendToTopic);
-
-//        try {
-//            Thread.sleep(3000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-
         sendMessagesToIgnore(outgoingTopic, producer);
         sendMessagesToBeChecked(outgoingTopic, producer, checkUniqueKey, Collections.singletonList("compute"));
+
+        Try.run(()-> Thread.sleep(30_000)).onFailure(InterruptedException.class, Throwable::printStackTrace);
+
 
     }
 
@@ -160,11 +156,7 @@ public class KafkaMessagesSimpleCountCheck implements KafkaContractCheck {
 
             producer.send(outgoingTopic, checkUniqueKey, String.valueOf(element));
 
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            Try.run(()-> Thread.sleep(30_000)).onFailure(InterruptedException.class, Throwable::printStackTrace);
 
         }
     }
@@ -175,34 +167,23 @@ public class KafkaMessagesSimpleCountCheck implements KafkaContractCheck {
         }
     }
 
-    private void logExpectedAnswer(Logger logger, Map<String, Long> expectedAnswer) {
-        for (Map.Entry entry : expectedAnswer.entrySet()) {
-
-            logger.info("expected answer " + entry);
-        }
-    }
-
     private String getCheckUniqueIdentifier() {
-        String checkUniqueKey = java.util.UUID.randomUUID() + "--test--";
-        return checkUniqueKey;
+        return UUID.randomUUID() + "--test--";
     }
 
     private Map<String, Long> getExpectedAnswer(String checkUniqueKey, List<Integer> toSend) {
-        Map<String, Long> expectedAnswer = toSend
+
+        return toSend
                 .stream()
                 .map(i -> checkUniqueKey + i)
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
-
-
-        return expectedAnswer;
     }
 
     private List<Integer> getIntegersListToSendToOutsideProcessor() {
-        List<Integer> toSend = Stream
+        return Stream
                 .generate(() -> new Random().nextInt(10))
                 .limit(10)
                 .collect(Collectors.toList());
-        return toSend;
     }
 
     @Override
