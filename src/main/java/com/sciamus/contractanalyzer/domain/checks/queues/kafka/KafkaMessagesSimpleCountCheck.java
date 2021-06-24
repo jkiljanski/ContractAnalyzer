@@ -2,7 +2,6 @@ package com.sciamus.contractanalyzer.domain.checks.queues.kafka;
 
 import com.sciamus.contractanalyzer.domain.checks.queues.kafka.config.KafkaConsumFactory;
 import com.sciamus.contractanalyzer.domain.checks.queues.kafka.config.KafkaProducFactory;
-import com.sciamus.contractanalyzer.domain.checks.queues.kafka.config.KafkaStreamFactory;
 import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReport;
 import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReportBuilder;
 import com.sciamus.contractanalyzer.domain.reporting.checks.ReportResults;
@@ -25,16 +24,15 @@ import java.util.stream.Stream;
 public class KafkaMessagesSimpleCountCheck implements KafkaContractCheck {
 
     private final String name = "KafkaMessagesSimpleCountCheck";
-    private final KafkaStreamFactory kafkaStreamFactory;
     private final KafkaProducFactory kafkaProducFactory;
     private final KafkaConsumFactory kafkaConsumFactory;
+
     private final String checkUniqueIdentifier = getCheckUniqueIdentifier();
     private final List<Integer> integersListToSendToOutsideProcessor = getIntegersListToSendToOutsideProcessor();
     private CheckReportBuilder reportBuilder = new CheckReportBuilder();
 
 
-    public KafkaMessagesSimpleCountCheck(KafkaStreamFactory kafkaStreamFactory, KafkaProducFactory kafkaProducFactory, KafkaConsumFactory kafkaConsumFactory) {
-        this.kafkaStreamFactory = kafkaStreamFactory;
+    public KafkaMessagesSimpleCountCheck(KafkaProducFactory kafkaProducFactory, KafkaConsumFactory kafkaConsumFactory) {
         this.kafkaProducFactory = kafkaProducFactory;
         this.kafkaConsumFactory = kafkaConsumFactory;
     }
@@ -46,43 +44,40 @@ public class KafkaMessagesSimpleCountCheck implements KafkaContractCheck {
 
         //given:
 
-        KafkaTemplate<String, String> producer = getProducer(host, port);
-        Consumer<String, String> consumer = createAndSetUpConsumer(incomingTopic, host, port);
+        KafkaTemplate<String, String> producer = Producer(host, port);
+        Consumer<String, String> consumer = Consumer(incomingTopic, host, port);
 
 
         //when:
 
-        sendMessagesToOutsideProcessor(outgoingTopic, producer, checkUniqueIdentifier, integersListToSendToOutsideProcessor);
+        sendMessagesToOutsideSystem(outgoingTopic, producer, checkUniqueIdentifier, integersListToSendToOutsideProcessor);
+        Map<String, Long> expectedAnswer = getExpectedAnswer(checkUniqueIdentifier, integersListToSendToOutsideProcessor);
 
-        Map<String, Long> expectedAnswerToGetFromOutsideProcessor = getExpectedAnswer(checkUniqueIdentifier, integersListToSendToOutsideProcessor);
-
-        Iterable<ConsumerRecord<String, String>> records = waitForRecordsFromOutsideProcessor(incomingTopic, consumer);
-
-        Map<String, Long> answerToCheck = checkIfReceivedRecordsHaveIdentifier(checkUniqueIdentifier, records);
+        Iterable<ConsumerRecord<String, String>> recordsFromOutsideSystem = waitForRecordsFromOutsideSystem(incomingTopic, consumer);
+        Map<String, Long> actualAnswer = checkIfReceivedRecordsHaveUniqueIdentifier(checkUniqueIdentifier, recordsFromOutsideSystem);
 
 
         //then:
 
         setUpReportBuilder(reportBuilder);
 
-        if (expectedAnswerToGetFromOutsideProcessor.equals(answerToCheck)) {
+        if (expectedAnswer.equals(actualAnswer)) {
             return getPassedCheckReport(reportBuilder);
         }
-        return getFailedCheckReport(expectedAnswerToGetFromOutsideProcessor, answerToCheck, reportBuilder);
+        return getFailedCheckReport(expectedAnswer, actualAnswer, reportBuilder);
     }
-
 
     private void setUpReportBuilder(CheckReportBuilder reportBuilder) {
         reportBuilder.createTimestamp().setNameOfCheck(getName());
     }
 
-    private Consumer<String, String> createAndSetUpConsumer(String incomingTopic, String host, String port) {
+    private Consumer<String, String> Consumer(String incomingTopic, String host, String port) {
         Consumer<String, String> consumer = kafkaConsumFactory.createConsumer(incomingTopic, host, port);
         setUpConsumer(consumer);
         return consumer;
     }
 
-    private KafkaTemplate<String, String> getProducer(String host, String port) {
+    private KafkaTemplate<String, String> Producer(String host, String port) {
         KafkaTemplate<String, String> producer = kafkaProducFactory.createProducer(host, port);
         return producer;
     }
@@ -108,7 +103,7 @@ public class KafkaMessagesSimpleCountCheck implements KafkaContractCheck {
                 .build();
     }
 
-    private Map<String, Long> checkIfReceivedRecordsHaveIdentifier(String checkUniqueKey, Iterable<ConsumerRecord<String, String>> records) {
+    private Map<String, Long> checkIfReceivedRecordsHaveUniqueIdentifier(String checkUniqueKey, Iterable<ConsumerRecord<String, String>> records) {
 
         Map<String, Long> answerToCheck = new HashMap<>();
 
@@ -131,7 +126,7 @@ public class KafkaMessagesSimpleCountCheck implements KafkaContractCheck {
     }
 
 
-    private Iterable<ConsumerRecord<String, String>> waitForRecordsFromOutsideProcessor(String incomingTopic, Consumer<String, String> consumer) {
+    private Iterable<ConsumerRecord<String, String>> waitForRecordsFromOutsideSystem(String incomingTopic, Consumer<String, String> consumer) {
 
         Iterable<ConsumerRecord<String, String>> records = consumer.poll(Duration.ofSeconds(20)).records(incomingTopic);
         consumer.close();
@@ -143,7 +138,7 @@ public class KafkaMessagesSimpleCountCheck implements KafkaContractCheck {
         consumer.poll(Duration.ofSeconds(5));
     }
 
-    private void sendMessagesToOutsideProcessor(String outgoingTopic, KafkaTemplate<String, String> producer, String checkUniqueKey, List<Integer> integersListToSendToTopic) {
+    private void sendMessagesToOutsideSystem(String outgoingTopic, KafkaTemplate<String, String> producer, String checkUniqueKey, List<Integer> integersListToSendToTopic) {
         sendMessagesToIgnore(outgoingTopic, producer);
 
         sendMessagesToBeChecked(outgoingTopic, producer, checkUniqueKey, integersListToSendToTopic);
