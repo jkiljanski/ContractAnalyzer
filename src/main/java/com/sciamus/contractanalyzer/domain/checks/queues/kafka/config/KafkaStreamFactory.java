@@ -5,14 +5,17 @@ import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.Topology;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.Properties;
 
 public class KafkaStreamFactory {
 
+    private final KafkaProperties kafkaProperties;
+
     @Autowired
-    private KafkaProperties kafkaProperties;
+    public KafkaStreamFactory(KafkaProperties kafkaProperties) {
+        this.kafkaProperties = kafkaProperties;
+    }
 
     public KafkaStreams createStream(String host, String port, Topology topology) {
         final Properties props = new Properties();

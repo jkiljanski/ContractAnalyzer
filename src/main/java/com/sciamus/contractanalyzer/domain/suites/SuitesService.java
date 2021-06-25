@@ -1,7 +1,6 @@
 package com.sciamus.contractanalyzer.domain.suites;
 
 import com.sciamus.contractanalyzer.domain.reporting.suites.SuiteReport;
-import com.sciamus.contractanalyzer.domain.reporting.suites.SuiteReportMapper;
 import com.sciamus.contractanalyzer.domain.reporting.suites.SuitesReportsRepository;
 import io.vavr.CheckedFunction1;
 import io.vavr.Function1;
@@ -9,7 +8,6 @@ import io.vavr.Function2;
 import io.vavr.collection.List;
 import io.vavr.control.Try;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -17,11 +15,15 @@ import java.util.function.Predicate;
 
 public class SuitesService {
 
-    @Autowired
-    private SuitesReportsRepository suitesReportsRepository;
+    private final SuitesReportsRepository suitesReportsRepository;
+
+    private SuitesRepository suitesRepository;
 
     @Autowired
-    private SuitesRepository suitesRepository;
+    public SuitesService(SuitesReportsRepository suitesReportsRepository, SuitesRepository suitesRepository) {
+        this.suitesReportsRepository = suitesReportsRepository;
+        this.suitesRepository = suitesRepository;
+    }
 
     public Function2<String, URL, SuiteReport> suiteReportFunctionWithURL = (name, url) ->
             List.ofAll(suitesRepository.getCheckSuites().stream())
@@ -29,6 +31,8 @@ public class SuitesService {
                     .headOption()
                     .map(runSuiteReport(url))
                     .getOrElseThrow(() -> new SuiteNotFoundException(name));
+
+
 
 
     private Function1<CheckSuite, SuiteReport> runSuiteReport(URL url) {

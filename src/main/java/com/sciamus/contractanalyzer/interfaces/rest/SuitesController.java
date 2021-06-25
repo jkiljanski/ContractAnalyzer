@@ -12,11 +12,15 @@ import java.util.List;
 @RestController
 public class SuitesController {
 
-    @Autowired
-    private SuitesService suitesService;
+    private final SuitesService suitesService;
+
+    private final SuitesRepository suitesRepository;
 
     @Autowired
-    private SuitesRepository suitesRepository;
+    public SuitesController(SuitesService suitesService, SuitesRepository suitesRepository) {
+        this.suitesService = suitesService;
+        this.suitesRepository = suitesRepository;
+    }
 
     @RolesAllowed({"writer"})
     @PostMapping("/suites/{name}/run")

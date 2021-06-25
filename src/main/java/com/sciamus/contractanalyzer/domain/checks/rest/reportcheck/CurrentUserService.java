@@ -4,13 +4,15 @@ import org.keycloak.KeycloakSecurityContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 
-import java.sql.SQLOutput;
-
 public class CurrentUserService {
+
+    private final KeycloakSecurityContext keycloakSecurityContext;
 
     @Autowired
     @Lazy
-    private KeycloakSecurityContext keycloakSecurityContext;
+    public CurrentUserService(KeycloakSecurityContext keycloakSecurityContext) {
+        this.keycloakSecurityContext = keycloakSecurityContext;
+    }
 
     public String obtainUserName() {
         return keycloakSecurityContext.getToken().getPreferredUsername();

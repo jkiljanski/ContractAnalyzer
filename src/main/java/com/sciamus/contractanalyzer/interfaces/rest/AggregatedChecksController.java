@@ -13,8 +13,12 @@ import java.util.List;
 @RestController
 public class AggregatedChecksController {
 
+    private final AggregatedChecksService aggregatedChecksService;
+
     @Autowired
-    private AggregatedChecksService aggregatedChecksService;
+    public AggregatedChecksController(AggregatedChecksService aggregatedChecksService) {
+        this.aggregatedChecksService = aggregatedChecksService;
+    }
 
     @GetMapping("/aggregatedChecksReports")
     @ResponseBody

@@ -6,13 +6,16 @@ import com.sciamus.contractanalyzer.application.mapper.CheckReportMapper;
 import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReport;
 import io.vavr.collection.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 
 public class SuiteReportMapper {
 
+    private final CheckReportMapper checkReportMapper;
+
     @Autowired
-    private CheckReportMapper checkReportMapper;
+    public SuiteReportMapper(CheckReportMapper checkReportMapper) {
+        this.checkReportMapper = checkReportMapper;
+    }
 
     public SuiteReport mapFromDTO (SuiteReportDTO suiteReportDTO) {
 

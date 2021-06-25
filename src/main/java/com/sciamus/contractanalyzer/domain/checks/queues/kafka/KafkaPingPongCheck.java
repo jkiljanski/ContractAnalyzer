@@ -13,7 +13,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.util.Collections;
@@ -27,14 +26,18 @@ public class KafkaPingPongCheck implements KafkaContractCheck {
 
     final String name = "KafkaPingPongCheck";
 
-    @Autowired
-    private KafkaConsumFactory kafkaConsumFactory;
+    private final KafkaConsumFactory kafkaConsumFactory;
+
+    private final KafkaProducFactory kafkaProducFactory;
+
+    private final ReportService reportService;
 
     @Autowired
-    private KafkaProducFactory kafkaProducFactory;
-
-    @Autowired
-    private ReportService reportService;
+    public KafkaPingPongCheck(KafkaConsumFactory kafkaConsumFactory, KafkaProducFactory kafkaProducFactory, ReportService reportService) {
+        this.kafkaConsumFactory = kafkaConsumFactory;
+        this.kafkaProducFactory = kafkaProducFactory;
+        this.reportService = reportService;
+    }
 
     //2 strategie: albo assign() albo subscribe()
 

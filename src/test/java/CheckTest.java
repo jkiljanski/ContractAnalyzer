@@ -2,6 +2,8 @@ import com.sciamus.contractanalyzer.application.CheckReportDTO;
 import com.sciamus.contractanalyzer.application.ContractChecksService;
 import com.sciamus.contractanalyzer.application.mapper.CheckReportMapper;
 import com.sciamus.contractanalyzer.domain.checks.rest.CheckRepository;
+import com.sciamus.contractanalyzer.domain.checks.rest.RestContractCheck;
+import com.sciamus.contractanalyzer.domain.checks.rest.dummy.DummyRestContractCheck;
 import com.sciamus.contractanalyzer.domain.checks.rest.reportcheck.CurrentUserService;
 import com.sciamus.contractanalyzer.domain.reporting.checks.*;
 
@@ -19,12 +21,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.net.MalformedURLException;
+import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 public class CheckTest {
-
-    @Mock
-    private CheckReportBuilder checkReportBuilder;
 
     @Mock
     private KeycloakSecurityContext keycloakSecurityContextMock;
@@ -36,12 +36,13 @@ public class CheckTest {
 
     @BeforeEach
     public void init() {
-        final CurrentUserService currentUserService = new CurrentUserService();
-        ReportIdGenerator reportIdGenerator = new ReportIdGenerator();
-        final ReportService reportService = new ReportService();
-        final CheckReportMapper checkReportMapper = new CheckReportMapper();
-        final CheckRepository checkRepository = new CheckRepository();
-        contractChecksService = new ContractChecksService();
+        final CurrentUserService currentUserService = new CurrentUserService(keycloakSecurityContextMock);
+        final ReportIdGenerator reportIdGenerator = new ReportIdGenerator(reportRepositoryMock);
+        final ReportService reportService = new ReportService(reportRepositoryMock, reportIdGenerator);
+        final CheckReportMapper checkReportMapper = new CheckReportMapper(currentUserService);
+        List<RestContractCheck> restContractChecks = List.of(new DummyRestContractCheck());
+        final CheckRepository checkRepository = new CheckRepository(restContractChecks, currentUserService);
+        contractChecksService = new ContractChecksService(checkRepository, reportService, checkReportMapper);
     }
 
     @Test
@@ -55,16 +56,5 @@ public class CheckTest {
 
         // then
         assertThat(checkReportDTO).isNotNull();
-    }
-
-    @Test
-    @DisplayName("kot")
-    public void kot() {
-        //given
-
-        // when
-
-
-        // then
     }
 }

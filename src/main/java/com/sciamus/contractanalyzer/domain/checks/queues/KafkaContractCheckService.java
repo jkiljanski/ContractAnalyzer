@@ -10,8 +10,12 @@ import java.util.stream.Collectors;
 
 public class KafkaContractCheckService {
 
+    private final List<KafkaContractCheck> kafkaChecks;
+
     @Autowired
-    private List<KafkaContractCheck> kafkaChecks;
+    public KafkaContractCheckService(List<KafkaContractCheck> kafkaChecks) {
+        this.kafkaChecks = kafkaChecks;
+    }
 
     public CheckReport runKafkaCheck (String incomingTopic, String outgoingTopic, String host, String port, String name) {
 

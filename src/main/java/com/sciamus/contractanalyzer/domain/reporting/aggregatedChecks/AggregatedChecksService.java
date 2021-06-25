@@ -8,7 +8,6 @@ import com.sciamus.contractanalyzer.domain.reporting.checks.ReportResults;
 import com.sciamus.contractanalyzer.domain.reporting.checks.ReportService;
 import com.sciamus.contractanalyzer.domain.reporting.idGenerator.AggregatedReportIdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -18,20 +17,24 @@ import java.util.List;
 
 public class AggregatedChecksService {
 
-    @Autowired
-    private AggregatedReportIdGenerator aggregatedReportIdGenerator;
+    private final AggregatedReportIdGenerator aggregatedReportIdGenerator;
+
+    private final CurrentUserService currentUserService;
+
+    private final ReportService reportService;
+
+    private final CheckRepository checkRepository;
+
+    private final AggregatedChecksRepository aggregatedChecksRepository;
 
     @Autowired
-    private CurrentUserService currentUserService;
-
-    @Autowired
-    private ReportService reportService;
-
-    @Autowired
-    private CheckRepository checkRepository;
-
-    @Autowired
-    private AggregatedChecksRepository aggregatedChecksRepository;
+    public AggregatedChecksService(AggregatedReportIdGenerator aggregatedReportIdGenerator, CurrentUserService currentUserService, ReportService reportService, CheckRepository checkRepository, AggregatedChecksRepository aggregatedChecksRepository) {
+        this.aggregatedReportIdGenerator = aggregatedReportIdGenerator;
+        this.currentUserService = currentUserService;
+        this.reportService = reportService;
+        this.checkRepository = checkRepository;
+        this.aggregatedChecksRepository = aggregatedChecksRepository;
+    }
 
     public AggregatedChecksReport addAggregatedReportToRepository(String name, AggregatedChecksReport aggregatedChecksReport) {
         aggregatedChecksReport.addId(aggregatedReportIdGenerator.getNextID());
@@ -74,7 +77,7 @@ public class AggregatedChecksService {
                 .setTimestamp(aggregatedChecksReport.getTimestamp())
                 .setFailedTests(failedTestDTOS)
                 .setPassedPercentage(aggregatedChecksReport.getPassedPercentage())
-                .setFailedPercentage(aggregatedChecksReport.getPassedPercentage())
+                .setFailedPercentage(aggregatedChecksReport.getFailedPercentage())
                 .setUserName(aggregatedChecksReport.getUserName())
                 .build();
     }

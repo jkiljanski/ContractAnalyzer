@@ -24,14 +24,18 @@ public class KafkaMessagesCountCheck implements KafkaContractCheck {
 
     private final String name = "KafkaMessagesCountCheck";
 
-    @Autowired
-    private KafkaStreamFactory kafkaStreamFactory;
+    private final KafkaStreamFactory kafkaStreamFactory;
+
+    private final KafkaProducFactory kafkaProducFactory;
+
+    private final KafkaConsumFactory kafkaConsumFactory;
 
     @Autowired
-    private KafkaProducFactory kafkaProducFactory;
-
-    @Autowired
-    private KafkaConsumFactory kafkaConsumFactory;
+    public KafkaMessagesCountCheck(KafkaStreamFactory kafkaStreamFactory, KafkaProducFactory kafkaProducFactory, KafkaConsumFactory kafkaConsumFactory) {
+        this.kafkaStreamFactory = kafkaStreamFactory;
+        this.kafkaProducFactory = kafkaProducFactory;
+        this.kafkaConsumFactory = kafkaConsumFactory;
+    }
 
     @Override
     public CheckReport run(String incomingTopic, String outgoingTopic, String host, String port) {

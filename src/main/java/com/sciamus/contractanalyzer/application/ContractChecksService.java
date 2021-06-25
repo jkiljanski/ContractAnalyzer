@@ -11,14 +11,18 @@ import java.net.URL;
 
 public class ContractChecksService {
 
-    @Autowired
-    private CheckRepository checkRepository;
+    private final CheckRepository checkRepository;
+
+    private final ReportService reportService;
+
+    private final CheckReportMapper checkReportMapper;
 
     @Autowired
-    private ReportService reportService;
-
-    @Autowired
-    private CheckReportMapper checkReportMapper;
+    public ContractChecksService(CheckRepository checkRepository, ReportService reportService, CheckReportMapper checkReportMapper) {
+        this.checkRepository = checkRepository;
+        this.reportService = reportService;
+        this.checkReportMapper = checkReportMapper;
+    }
 
     public CheckReportDTO runAndGetSavedReportWithId(String name, String url) throws MalformedURLException {
 
