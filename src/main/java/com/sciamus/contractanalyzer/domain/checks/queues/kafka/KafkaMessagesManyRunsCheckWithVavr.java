@@ -6,6 +6,10 @@ import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReport;
 import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReportBuilder;
 import com.sciamus.contractanalyzer.domain.reporting.checks.ReportResults;
 import io.vavr.Tuple2;
+import io.vavr.collection.HashMap;
+import io.vavr.collection.List;
+import io.vavr.collection.Map;
+import io.vavr.collection.Set;
 import io.vavr.control.Try;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -16,26 +20,25 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
-import java.util.*;
+import java.util.Random;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 
 @Component
-public class KafkaMessagesManyRunsCheck implements KafkaContractCheck {
+public class KafkaMessagesManyRunsCheckWithVavr implements KafkaContractCheck {
 
     private static final int NUMBER_OF_CONCURRENT_RUNS = 10;
-    private final String name = "KafkaMessagesManyRunsCheck";
+    private final String name = "KafkaMessagesManyRunsCheckWithVavr";
     private final KafkaProducFactory kafkaProducFactory;
     private final KafkaConsumFactory kafkaConsumFactory;
     private CheckReportBuilder reportBuilder = new CheckReportBuilder();
 
 
-    public KafkaMessagesManyRunsCheck(KafkaProducFactory kafkaProducFactory, KafkaConsumFactory kafkaConsumFactory) {
+    public KafkaMessagesManyRunsCheckWithVavr(KafkaProducFactory kafkaProducFactory, KafkaConsumFactory kafkaConsumFactory) {
         this.kafkaProducFactory = kafkaProducFactory;
         this.kafkaConsumFactory = kafkaConsumFactory;
     }
@@ -71,7 +74,7 @@ public class KafkaMessagesManyRunsCheck implements KafkaContractCheck {
         return finalCheckResult
                 .map(v -> getPassedCheckReport(reportBuilder))
                 .recover(AssertionError.class, e -> createFailedCheckReport(e.getMessage(), reportBuilder))
-                .recover(Exception.class, e-> createFailedCheckReport("Unexpected Exception: "+e.getMessage(),reportBuilder))
+                .recover(Exception.class, e -> createFailedCheckReport("Unexpected Exception: " + e.getMessage(), reportBuilder))
                 .get();
 
 //
@@ -81,8 +84,7 @@ public class KafkaMessagesManyRunsCheck implements KafkaContractCheck {
 
     private Try<Void> assertResultsMatch(Map<String, String> results, Map<String, String> expectedResults) {
 
-        return Try.runRunnable(() -> assertThat(results).containsAllEntriesOf(expectedResults));
-
+        return Try.runRunnable(() -> assertThat(results).containsAll(expectedResults));
 
     }
 
@@ -102,9 +104,7 @@ public class KafkaMessagesManyRunsCheck implements KafkaContractCheck {
 
         consumer.close();
 
-        return StreamSupport.stream(records.spliterator(), false)
-                .peek(record -> logger.info("KROWA logging after poll: " + record))
-                .collect(Collectors.toMap(ConsumerRecord::key, ConsumerRecord::value));
+        return List.ofAll(records).toMap(ConsumerRecord::key, ConsumerRecord::value);
 
     }
 
@@ -120,14 +120,11 @@ public class KafkaMessagesManyRunsCheck implements KafkaContractCheck {
 
     private Map<String, String> computeExpectedResults(Map<String, List<String>> messagesToSend) {
 
-        Logger logger = getLogger();
 
-
-        return messagesToSend.entrySet().stream()
-                .peek(message -> logger.info("computing expected results: " + message))
-                .flatMap(stringListEntry -> stringListEntry.getValue().stream().map(string -> stringListEntry.getKey() + string))
-                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
-                .entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> "" + entry.getValue()));
+        return HashMap.ofAll(messagesToSend.
+                flatMap(s -> s._2().map(string -> s._1() + string))
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting())))
+                .map((k, v) -> new Tuple2<>(k, "" + v));
     }
 
 
@@ -144,12 +141,14 @@ public class KafkaMessagesManyRunsCheck implements KafkaContractCheck {
 
         KafkaTemplate<String, String> producer = createProducer(host, port);
 
-
-        messagesToSend.entrySet().stream()
-                .flatMap(stringListEntry -> stringListEntry.getValue().stream()
-                        .map(character -> new Tuple2<>(stringListEntry.getKey(), character)))
+        messagesToSend
+                .flatMap(this::assignEachMessageWithUUID)
                 .forEach(entry -> sendWithDelay(ofMillis, topic, producer, entry._1, entry._2));
+    }
 
+    private List<Tuple2<String, String>> assignEachMessageWithUUID(Tuple2<String, List<String>> tuple) {
+        return tuple._2
+                .map(number -> new Tuple2<>(tuple._1, number));
     }
 
     private void sendWithDelay(Long ofMillis, String topic, KafkaTemplate<String, String> producer, String key, String value) {
@@ -159,9 +158,9 @@ public class KafkaMessagesManyRunsCheck implements KafkaContractCheck {
         producer.send(topic, key, value);
     }
 
-    private Map<String, List<String>> createMessagesForXRuns(int numberOfConcurrentRuns) {
+    private io.vavr.collection.Map<String, List<String>> createMessagesForXRuns(int numberOfConcurrentRuns) {
 
-        Map<String, List<String>> results = new HashMap<>();
+        HashMap<String, List<String>> results = HashMap.empty();
 
 
         for (int i = 0; i < numberOfConcurrentRuns; i++) {
@@ -171,9 +170,8 @@ public class KafkaMessagesManyRunsCheck implements KafkaContractCheck {
             List<Integer> integersListToSendToOutsideProcessor = get10IntegersListToSendToOutsideProcessor();
 
             List<String> randomChars = integersListToSendToOutsideProcessor
-                    .stream()
                     .map(number -> "" + ('z' - number))
-                    .collect(Collectors.toList());
+                    .collect(List.collector());
 
             results.put(checkUniqueIdentifier, randomChars);
         }
@@ -195,7 +193,7 @@ public class KafkaMessagesManyRunsCheck implements KafkaContractCheck {
     }
 
     private Logger getLogger() {
-        return LogManager.getLogger(KafkaMessagesManyRunsCheck.class);
+        return LogManager.getLogger(KafkaMessagesManyRunsCheckWithVavr.class);
     }
 
     private CheckReport createFailedCheckReport(String message, CheckReportBuilder reportBuilder) {
@@ -218,14 +216,15 @@ public class KafkaMessagesManyRunsCheck implements KafkaContractCheck {
     }
 
     private String getCheckUniqueIdentifier() {
-        return UUID.randomUUID() + "--test--";
+        return java.util.UUID.randomUUID() + "--test--";
     }
 
     private List<Integer> get10IntegersListToSendToOutsideProcessor() {
+
         return Stream
                 .generate(() -> new Random().nextInt(10))
                 .limit(10)
-                .collect(Collectors.toList());
+                .collect(List.collector());
     }
 
     @Override

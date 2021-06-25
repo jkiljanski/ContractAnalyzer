@@ -55,6 +55,7 @@ public class BasicSuite extends CheckSuite {
                 .toStream()
                 .map(checkReportDTO -> checkReportMapper.mapFromDTO(checkReportDTO))
                 .collect(List.collector());
+
         SuiteReport suiteReport = new SuiteReport(checkReports.toJavaList());
         return suiteReport;
 

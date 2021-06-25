@@ -54,7 +54,6 @@ public class CommandListener {
 
         KStream<String, String> stream = builder.stream("count-topic");
         stream
-//                .filter((k, v) -> k.startsWith(uniqueKey))
                 .peek((k,v) -> System.out.println("From count-topic to output-topic: " +k+" :"+ v))
                 .to("output-topic");
 
