@@ -7,15 +7,14 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
-
-@Profile("!unsecured")
+@Profile("unsecured")
 @Configuration
-@EnableWebSecurity(debug = true)
-@EnableGlobalMethodSecurity(jsr250Enabled = true)
-public class KeycloakConfig {
+@EnableWebSecurity()
+public class KeycloakConfigUnsecuredProfile {
 
     @Bean
     public KeycloakSpringBootConfigResolver keycloakConfigResolver() {
         return new KeycloakSpringBootConfigResolver();
     }
+
 }

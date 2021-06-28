@@ -1,7 +1,7 @@
 package com.sciamus.contractanalyzer.application.mapper;
 
 
-import com.sciamus.contractanalyzer.domain.checks.rest.reportcheck.CurrentUserService;
+import com.sciamus.contractanalyzer.domain.checks.rest.reportcheck.CurrentUserServiceSecured;
 import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReport;
 import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReportBuilder;
 import com.sciamus.contractanalyzer.domain.reporting.checks.ReportResults;
@@ -10,10 +10,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CheckReportMapper {
-    private final CurrentUserService currentUserService;
+    private final CurrentUserServiceSecured currentUserServiceSecured;
 
-    public CheckReportMapper(CurrentUserService currentUserService) {
-        this.currentUserService = currentUserService;
+    public CheckReportMapper(CurrentUserServiceSecured currentUserServiceSecured) {
+        this.currentUserServiceSecured = currentUserServiceSecured;
     }
 
 //    private TestReport testReport;
@@ -34,7 +34,7 @@ public class CheckReportMapper {
                 .setReportBody(checkReportDTO.reportBody)
                 .setTimestamp(checkReportDTO.timestamp)
                 .setNameOfCheck(checkReportDTO.nameOfCheck)
-                .setUserName(currentUserService.obtainUserName())
+                .setUserName(currentUserServiceSecured.obtainUserName())
                 .build();
     }
 

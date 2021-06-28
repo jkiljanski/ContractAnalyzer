@@ -1,7 +1,6 @@
 package com.sciamus.contractanalyzer.domain.checks.rest;
 
-import com.sciamus.contractanalyzer.domain.checks.rest.reportcheck.CurrentUserService;
-import com.sciamus.contractanalyzer.domain.checks.rest.RestContractCheck;
+import com.sciamus.contractanalyzer.domain.checks.rest.reportcheck.CurrentUserServiceSecured;
 import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReport;
 import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReportBuilder;
 import com.sciamus.contractanalyzer.domain.exception.CheckNotFoundException;
@@ -15,12 +14,12 @@ import java.util.stream.Collectors;
 public class CheckRepository {
 
     private final List<RestContractCheck> restContractChecks;
-    private final CurrentUserService currentUserService;
+    private final CurrentUserServiceSecured currentUserServiceSecured;
 
 
-    public CheckRepository(List<RestContractCheck> restContractChecks, CurrentUserService currentUserService) {
+    public CheckRepository(List<RestContractCheck> restContractChecks, CurrentUserServiceSecured currentUserServiceSecured) {
         this.restContractChecks = restContractChecks;
-        this.currentUserService = currentUserService;
+        this.currentUserServiceSecured = currentUserServiceSecured;
     }
 
     public List<String> getAllChecks() {
@@ -32,7 +31,7 @@ public class CheckRepository {
         RestContractCheck restContractCheck = restContractChecks.stream()
                 .filter(s->s.getName().equals(name))
                 .findFirst().orElseThrow(()-> new CheckNotFoundException(name));
-        return restContractCheck.run(url, new CheckReportBuilder().setUserName(currentUserService.obtainUserName()));
+        return restContractCheck.run(url, new CheckReportBuilder().setUserName(currentUserServiceSecured.obtainUserName()));
     }
 
 

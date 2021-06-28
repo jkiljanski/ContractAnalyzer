@@ -26,7 +26,6 @@ import java.security.Principal;
 
 @KeycloakConfiguration
 
-
 public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
 
     @Override

@@ -2,7 +2,7 @@ package com.sciamus.contractanalyzer.domain.reporting.aggregatedChecks;
 
 import com.sciamus.contractanalyzer.application.FailedTestDTO;
 import com.sciamus.contractanalyzer.domain.checks.rest.CheckRepository;
-import com.sciamus.contractanalyzer.domain.checks.rest.reportcheck.CurrentUserService;
+import com.sciamus.contractanalyzer.domain.checks.rest.reportcheck.CurrentUserServiceSecured;
 import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReport;
 import com.sciamus.contractanalyzer.domain.reporting.checks.ReportResults;
 import com.sciamus.contractanalyzer.domain.reporting.checks.ReportService;
@@ -21,14 +21,14 @@ public class AggregatedChecksService {
     private final CheckRepository checkRepository;
     private final AggregatedChecksRepository aggregatedChecksRepository;
     private final AggregatedReportIdGenerator aggregatedReportIdGenerator;
-    private final CurrentUserService currentUserService;
+    private final CurrentUserServiceSecured currentUserServiceSecured;
     private final ReportService reportService;
 
-    public AggregatedChecksService(CheckRepository checkRepository, AggregatedChecksRepository aggregatedChecksRepository, AggregatedReportIdGenerator aggregatedReportIdGenerator, CurrentUserService currentUserService, ReportService reportService) {
+    public AggregatedChecksService(CheckRepository checkRepository, AggregatedChecksRepository aggregatedChecksRepository, AggregatedReportIdGenerator aggregatedReportIdGenerator, CurrentUserServiceSecured currentUserServiceSecured, ReportService reportService) {
         this.checkRepository = checkRepository;
         this.aggregatedChecksRepository = aggregatedChecksRepository;
         this.aggregatedReportIdGenerator = aggregatedReportIdGenerator;
-        this.currentUserService = currentUserService;
+        this.currentUserServiceSecured = currentUserServiceSecured;
         this.reportService = reportService;
     }
 
@@ -60,7 +60,7 @@ public class AggregatedChecksService {
 
         AggregatedChecksReport aggregatedChecksReport =
                 new AggregatedChecksReport(null, null, namesOfChecks, new Date(), failedTestsId,
-                        passedPercentage, failedPercentage, currentUserService.obtainUserName());
+                        passedPercentage, failedPercentage, currentUserServiceSecured.obtainUserName());
         addAggregatedReportToRepository(name, aggregatedChecksReport);
         return mapToDTO(aggregatedChecksReport, failedTests);
     }

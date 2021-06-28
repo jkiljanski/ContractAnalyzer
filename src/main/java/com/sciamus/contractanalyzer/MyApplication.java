@@ -26,7 +26,6 @@ import org.apache.logging.log4j.Logger;
 //(basePackages = "com.sciamus.contractanalyzer.domain.reporting")
 public class MyApplication {
 
-    private static final Logger logger = LogManager.getLogger(MyApplication.class);
 
     public static void main(String[] args) {
         SpringApplication.run(MyApplication.class, args);
