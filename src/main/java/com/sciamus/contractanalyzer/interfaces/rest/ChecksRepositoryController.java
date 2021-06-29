@@ -11,8 +11,7 @@ import javax.annotation.security.RolesAllowed;
 @RestController
 public class ChecksRepositoryController {
 
-    //TODO: dlaczego nie final
-    private CheckRepository checkRepository;
+    private final CheckRepository checkRepository;
 
     @Autowired
     public ChecksRepositoryController(CheckRepository checkRepository) {

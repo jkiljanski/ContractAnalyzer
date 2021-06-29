@@ -8,11 +8,9 @@ import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReportBuilder;
 import feign.Feign;
 import feign.RequestInterceptor;
 import feign.gson.GsonDecoder;
-import org.springframework.stereotype.Component;
 
 import java.net.URL;
 
-@Component
 public class GetListOfContractChecksCheck implements RestContractCheck {
 
     private final static String NAME = "Get List Of Checks Check";
@@ -20,11 +18,9 @@ public class GetListOfContractChecksCheck implements RestContractCheck {
 
     private final RequestInterceptor requestInterceptor;
 
-
     public GetListOfContractChecksCheck(RequestInterceptor requestInterceptor) {
         this.requestInterceptor = requestInterceptor;
     }
-
 
     @Override
     public CheckReport run(URL url, CheckReportBuilder builder) {

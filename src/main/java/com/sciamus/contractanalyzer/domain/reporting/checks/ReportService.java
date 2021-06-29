@@ -2,20 +2,18 @@ package com.sciamus.contractanalyzer.domain.reporting.checks;
 
 
 import com.sciamus.contractanalyzer.domain.reporting.idGenerator.ReportIdGenerator;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
 
-@Component
 public class ReportService {
 
     private final ReportRepository reportRepository;
 
     private final ReportIdGenerator reportIdGenerator;
 
-
-
+    @Autowired
     public ReportService(ReportRepository reportRepository, ReportIdGenerator reportIdGenerator) {
         this.reportRepository = reportRepository;
         this.reportIdGenerator = reportIdGenerator;

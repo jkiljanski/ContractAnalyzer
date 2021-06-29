@@ -10,15 +10,15 @@ import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
 
-
-@Component
 public class KafkaStreamsCountFun implements KafkaContractCheck {
 
     private final String name = "KafkaStreamsCount";
-    private KafkaStreamFactory kafkaStreamFactory;
 
+    private final KafkaStreamFactory kafkaStreamFactory;
+
+    @Autowired
     public KafkaStreamsCountFun(KafkaStreamFactory kafkaStreamFactory) {
         this.kafkaStreamFactory = kafkaStreamFactory;
     }

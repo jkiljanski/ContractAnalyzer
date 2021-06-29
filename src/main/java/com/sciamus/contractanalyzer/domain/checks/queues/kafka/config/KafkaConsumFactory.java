@@ -4,17 +4,16 @@ import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.TopicPartition;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.Properties;
 
-@Component
 public class KafkaConsumFactory {
-
 
     private final KafkaProperties kafkaProperties;
 
+    @Autowired
     public KafkaConsumFactory(KafkaProperties kafkaProperties) {
         this.kafkaProperties = kafkaProperties;
     }

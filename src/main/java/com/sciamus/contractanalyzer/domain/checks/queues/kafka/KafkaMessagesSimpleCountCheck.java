@@ -2,6 +2,7 @@ package com.sciamus.contractanalyzer.domain.checks.queues.kafka;
 
 import com.sciamus.contractanalyzer.domain.checks.queues.kafka.config.KafkaConsumFactory;
 import com.sciamus.contractanalyzer.domain.checks.queues.kafka.config.KafkaProducFactory;
+import com.sciamus.contractanalyzer.domain.checks.queues.kafka.config.KafkaStreamFactory;
 import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReport;
 import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReportBuilder;
 import com.sciamus.contractanalyzer.domain.reporting.checks.ReportResults;
@@ -10,8 +11,8 @@ import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.util.*;
@@ -19,18 +20,18 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-
-@Component
 public class KafkaMessagesSimpleCountCheck implements KafkaContractCheck {
 
     private final String name = "KafkaMessagesSimpleCountCheck";
+    private final KafkaStreamFactory kafkaStreamFactory;
     private final KafkaProducFactory kafkaProducFactory;
     private final KafkaConsumFactory kafkaConsumFactory;
 
 
 
-
-    public KafkaMessagesSimpleCountCheck(KafkaProducFactory kafkaProducFactory, KafkaConsumFactory kafkaConsumFactory) {
+    @Autowired
+    public KafkaMessagesSimpleCountCheck(KafkaStreamFactory kafkaStreamFactory, KafkaProducFactory kafkaProducFactory, KafkaConsumFactory kafkaConsumFactory) {
+        this.kafkaStreamFactory = kafkaStreamFactory;
         this.kafkaProducFactory = kafkaProducFactory;
         this.kafkaConsumFactory = kafkaConsumFactory;
     }

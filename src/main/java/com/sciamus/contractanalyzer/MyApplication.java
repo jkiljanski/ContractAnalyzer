@@ -19,13 +19,12 @@ import org.apache.logging.log4j.Logger;
 
 @SpringBootApplication()
 @EnableFeignClients
-@EnableMongoRepositories(basePackages = "com.sciamus.contractanalyzer.domain.reporting")
+@EnableMongoRepositories(basePackages = "com.sciamus.contractanalyzer.domain")
 @EnableConfigurationProperties
-
+//@Import(AppConfig.class)
 @EnableSwagger2
 //(basePackages = "com.sciamus.contractanalyzer.domain.reporting")
 public class MyApplication {
-
     private static final Logger logger = LogManager.getLogger(MyApplication.class);
 
     public static void main(String[] args) {

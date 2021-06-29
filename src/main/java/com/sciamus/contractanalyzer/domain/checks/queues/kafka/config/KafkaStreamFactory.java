@@ -4,15 +4,15 @@ package com.sciamus.contractanalyzer.domain.checks.queues.kafka.config;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.Topology;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Properties;
 
-@Component
 public class KafkaStreamFactory {
 
-    private KafkaProperties kafkaProperties;
+    private final KafkaProperties kafkaProperties;
 
+    @Autowired
     public KafkaStreamFactory(KafkaProperties kafkaProperties) {
         this.kafkaProperties = kafkaProperties;
     }

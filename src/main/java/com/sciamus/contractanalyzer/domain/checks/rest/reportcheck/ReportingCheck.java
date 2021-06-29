@@ -8,17 +8,17 @@ import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReportBuilder;
 import feign.Feign;
 import feign.RequestInterceptor;
 import feign.gson.GsonDecoder;
-import org.springframework.stereotype.Component;
 
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
-@Component
 public class ReportingCheck implements RestContractCheck {
 
     private final static String NAME = "Reporting Check";
+
     private final CheckReportMapper checkReportMapper;
+
     private final RequestInterceptor interceptor;
 
     public ReportingCheck(CheckReportMapper checkReportMapper, RequestInterceptor interceptor) {

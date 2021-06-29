@@ -4,11 +4,9 @@ import com.sciamus.contractanalyzer.domain.checks.rest.RestContractCheck;
 import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReport;
 import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReportBuilder;
 import com.sciamus.contractanalyzer.domain.reporting.checks.ReportResults;
-import org.springframework.stereotype.Component;
 
 import java.net.URL;
 
-@Component
 public class DummyRestContractCheck implements RestContractCheck {
 
 
@@ -16,7 +14,7 @@ public class DummyRestContractCheck implements RestContractCheck {
 
     public CheckReport run(URL url, CheckReportBuilder checkReportBuilder) {
 
-        return new CheckReportBuilder()
+        return checkReportBuilder
                 .setNameOfCheck(this.getName())
                 .setReportBody("This report is always PASSED;" + " Run on " + url)
                 .setResult(ReportResults.PASSED)

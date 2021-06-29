@@ -7,10 +7,9 @@ import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReport;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.Topology;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.stereotype.Component;
 
-@Component
 public class KafkaStreamsFun implements KafkaContractCheck {
 
     private final KafkaStreamFactory kafkaStreamFactory;
@@ -21,6 +20,7 @@ public class KafkaStreamsFun implements KafkaContractCheck {
 
     private final KafkaConsumFactory consumFactory;
 
+    @Autowired
     public KafkaStreamsFun(KafkaStreamFactory kafkaStreamFactory, KafkaProducFactory producFactory, KafkaConsumFactory consumFactory) {
         this.kafkaStreamFactory = kafkaStreamFactory;
         this.producFactory = producFactory;
