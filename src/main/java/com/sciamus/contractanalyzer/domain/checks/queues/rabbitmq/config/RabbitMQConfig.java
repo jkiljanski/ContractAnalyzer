@@ -1,5 +1,6 @@
 package com.sciamus.contractanalyzer.domain.checks.queues.rabbitmq.config;
 
+import com.sciamus.contractanalyzer.domain.checks.queues.rabbitmq.RabbitSimpleCheck;
 import org.springframework.amqp.core.Queue;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,7 +13,5 @@ public class RabbitMQConfig {
     public Queue myQueue() {
         return new Queue("queue", false);
     }
-
-
 
 }

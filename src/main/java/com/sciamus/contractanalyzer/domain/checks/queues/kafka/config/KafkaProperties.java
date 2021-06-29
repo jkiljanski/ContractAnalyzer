@@ -3,7 +3,6 @@ package com.sciamus.contractanalyzer.domain.checks.queues.kafka.config;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-@Component
 @ConfigurationProperties(prefix = "kafka")
 public class KafkaProperties {
 

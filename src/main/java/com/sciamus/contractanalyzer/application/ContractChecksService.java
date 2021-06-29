@@ -5,26 +5,20 @@ import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReport;
 import com.sciamus.contractanalyzer.domain.reporting.checks.ReportService;
 import com.sciamus.contractanalyzer.application.mapper.CheckReportMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
-@Service
 public class ContractChecksService {
 
-
-    private final CheckRepository checkRepository;
-    private final ReportService reportService;
-    private final CheckReportMapper checkReportMapper;
+    @Autowired
+    private CheckRepository checkRepository;
 
     @Autowired
-    public ContractChecksService(CheckRepository checkRepository, ReportService reportService, CheckReportMapper checkReportMapper) {
-        this.checkRepository = checkRepository;
-        this.reportService = reportService;
-        this.checkReportMapper = checkReportMapper;
-    }
+    private ReportService reportService;
 
+    @Autowired
+    private CheckReportMapper checkReportMapper;
 
     public CheckReportDTO runAndGetSavedReportWithId(String name, String url) throws MalformedURLException {
 

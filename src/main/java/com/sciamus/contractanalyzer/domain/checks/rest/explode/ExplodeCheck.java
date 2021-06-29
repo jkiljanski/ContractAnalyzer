@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 import java.net.URL;
 
-@Component
 public class ExplodeCheck implements RestContractCheck {
 
     private final String NAME = "Exploding Check";

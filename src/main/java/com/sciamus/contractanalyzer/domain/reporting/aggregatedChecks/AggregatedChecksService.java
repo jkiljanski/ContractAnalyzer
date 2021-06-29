@@ -2,11 +2,12 @@ package com.sciamus.contractanalyzer.domain.reporting.aggregatedChecks;
 
 import com.sciamus.contractanalyzer.application.FailedTestDTO;
 import com.sciamus.contractanalyzer.domain.checks.rest.CheckRepository;
-import com.sciamus.contractanalyzer.domain.checks.rest.reportcheck.CurrentUserServiceSecured;
+import com.sciamus.contractanalyzer.domain.checks.rest.reportcheck.CurrentUserService;
 import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReport;
 import com.sciamus.contractanalyzer.domain.reporting.checks.ReportResults;
 import com.sciamus.contractanalyzer.domain.reporting.checks.ReportService;
 import com.sciamus.contractanalyzer.domain.reporting.idGenerator.AggregatedReportIdGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.net.MalformedURLException;
@@ -15,22 +16,22 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Service
 public class AggregatedChecksService {
 
-    private final CheckRepository checkRepository;
-    private final AggregatedChecksRepository aggregatedChecksRepository;
-    private final AggregatedReportIdGenerator aggregatedReportIdGenerator;
-    private final CurrentUserServiceSecured currentUserServiceSecured;
-    private final ReportService reportService;
+    @Autowired
+    private AggregatedReportIdGenerator aggregatedReportIdGenerator;
 
-    public AggregatedChecksService(CheckRepository checkRepository, AggregatedChecksRepository aggregatedChecksRepository, AggregatedReportIdGenerator aggregatedReportIdGenerator, CurrentUserServiceSecured currentUserServiceSecured, ReportService reportService) {
-        this.checkRepository = checkRepository;
-        this.aggregatedChecksRepository = aggregatedChecksRepository;
-        this.aggregatedReportIdGenerator = aggregatedReportIdGenerator;
-        this.currentUserServiceSecured = currentUserServiceSecured;
-        this.reportService = reportService;
-    }
+    @Autowired
+    private CurrentUserService currentUserService;
+
+    @Autowired
+    private ReportService reportService;
+
+    @Autowired
+    private CheckRepository checkRepository;
+
+    @Autowired
+    private AggregatedChecksRepository aggregatedChecksRepository;
 
     public AggregatedChecksReport addAggregatedReportToRepository(String name, AggregatedChecksReport aggregatedChecksReport) {
         aggregatedChecksReport.addId(aggregatedReportIdGenerator.getNextID());
@@ -60,7 +61,7 @@ public class AggregatedChecksService {
 
         AggregatedChecksReport aggregatedChecksReport =
                 new AggregatedChecksReport(null, null, namesOfChecks, new Date(), failedTestsId,
-                        passedPercentage, failedPercentage, currentUserServiceSecured.obtainUserName());
+                        passedPercentage, failedPercentage, currentUserService.obtainUserName());
         addAggregatedReportToRepository(name, aggregatedChecksReport);
         return mapToDTO(aggregatedChecksReport, failedTests);
     }

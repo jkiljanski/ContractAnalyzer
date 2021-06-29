@@ -11,6 +11,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
@@ -22,26 +23,20 @@ import java.util.Set;
 import java.util.stream.StreamSupport;
 
 
-@Component
 public class KafkaPingPongCheck implements KafkaContractCheck {
 
     final String name = "KafkaPingPongCheck";
 
-    private final KafkaConsumFactory kafkaConsumFactory;
+    @Autowired
+    private KafkaConsumFactory kafkaConsumFactory;
 
+    @Autowired
+    private KafkaProducFactory kafkaProducFactory;
 
-    private final KafkaProducFactory kafkaProducFactory;
-
-    private final ReportService reportService;
+    @Autowired
+    private ReportService reportService;
 
     //2 strategie: albo assign() albo subscribe()
-
-
-    public KafkaPingPongCheck(KafkaConsumFactory kafkaConsumFactory, KafkaProducFactory kafkaProducFactory, ReportService reportService) {
-        this.kafkaConsumFactory = kafkaConsumFactory;
-        this.kafkaProducFactory = kafkaProducFactory;
-        this.reportService = reportService;
-    }
 
 
     @Override
