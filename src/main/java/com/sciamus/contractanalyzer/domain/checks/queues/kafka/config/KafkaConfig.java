@@ -4,10 +4,7 @@ import com.sciamus.contractanalyzer.domain.checks.queues.kafka.KafkaMessagesCoun
 import com.sciamus.contractanalyzer.domain.checks.queues.kafka.KafkaPingPongCheck;
 import com.sciamus.contractanalyzer.domain.checks.queues.kafka.KafkaStreamsCountFun;
 import com.sciamus.contractanalyzer.domain.checks.queues.kafka.KafkaStreamsFun;
-import com.sciamus.contractanalyzer.domain.checks.queues.kafka.config.KafkaConsumFactory;
-import com.sciamus.contractanalyzer.domain.checks.queues.kafka.config.KafkaProducFactory;
-import com.sciamus.contractanalyzer.domain.checks.queues.kafka.config.KafkaProperties;
-import com.sciamus.contractanalyzer.domain.checks.queues.kafka.config.KafkaStreamFactory;
+import com.sciamus.contractanalyzer.domain.reporting.checks.ReportService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,12 +13,12 @@ public class KafkaConfig {
 
     @Bean
     public KafkaConsumFactory kafkaConsumFactory(){
-        return new KafkaConsumFactory();
+        return new KafkaConsumFactory(kafkaProperties());
     }
 
     @Bean
     public KafkaProducFactory kafkaProducFactory(){
-        return new KafkaProducFactory();
+        return new KafkaProducFactory(kafkaProperties());
     }
 
     @Bean
@@ -31,26 +28,26 @@ public class KafkaConfig {
 
     @Bean
     public KafkaStreamFactory kafkaStreamFactory(){
-        return new KafkaStreamFactory();
+        return new KafkaStreamFactory(kafkaProperties());
     }
 
     @Bean
     public KafkaMessagesCountCheck kafkaMessagesCountCheck(){
-        return new KafkaMessagesCountCheck();
+        return new KafkaMessagesCountCheck(kafkaStreamFactory(), kafkaProducFactory(), kafkaConsumFactory());
     }
 
     @Bean
-    public KafkaPingPongCheck kafkaPingPongCheck(){
-        return new KafkaPingPongCheck();
+    public KafkaPingPongCheck kafkaPingPongCheck(ReportService reportService){
+        return new KafkaPingPongCheck(kafkaConsumFactory(), kafkaProducFactory(), reportService);
     }
 
     @Bean
     public KafkaStreamsCountFun kafkaStreamsCountFun(){
-        return new KafkaStreamsCountFun();
+        return new KafkaStreamsCountFun(kafkaStreamFactory());
     }
 
     @Bean
     public KafkaStreamsFun kafkaStreamsFun(){
-        return new KafkaStreamsFun();
+        return new KafkaStreamsFun(kafkaStreamFactory(), kafkaProducFactory(), kafkaConsumFactory());
     }
 }

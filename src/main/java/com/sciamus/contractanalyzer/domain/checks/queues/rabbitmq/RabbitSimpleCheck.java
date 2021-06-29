@@ -11,8 +11,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class RabbitSimpleCheck {
 
+    private final RabbitTemplate rabbitTemplate;
+
     @Autowired
-    private  RabbitTemplate rabbitTemplate;
+    public RabbitSimpleCheck(RabbitTemplate rabbitTemplate) {
+        this.rabbitTemplate = rabbitTemplate;
+    }
 
     @GetMapping("/rabbit-simple")
     public void sendToQueue() {

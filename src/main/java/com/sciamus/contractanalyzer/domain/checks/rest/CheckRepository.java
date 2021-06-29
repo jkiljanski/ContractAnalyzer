@@ -12,11 +12,15 @@ import java.util.stream.Collectors;
 
 public class CheckRepository {
 
-    @Autowired
-    private List<RestContractCheck> restContractChecks;
+    private final List<RestContractCheck> restContractChecks;
+
+    private final CurrentUserService currentUserService;
 
     @Autowired
-    private CurrentUserService currentUserService;
+    public CheckRepository(List<RestContractCheck> restContractChecks, CurrentUserService currentUserService) {
+        this.restContractChecks = restContractChecks;
+        this.currentUserService = currentUserService;
+    }
 
     public List<String> getAllChecks() {
         return restContractChecks.stream().map(RestContractCheck::getName).collect(Collectors.toList());

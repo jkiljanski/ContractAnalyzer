@@ -5,8 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class SuitesRepository {
 
-    @Autowired
     private java.util.List<CheckSuite> checkSuites;
+
+    @Autowired
+    public SuitesRepository(java.util.List<CheckSuite> checkSuites) {
+        this.checkSuites = checkSuites;
+    }
 
     public java.util.List<CheckSuite> getCheckSuites() {
         return this.checkSuites;

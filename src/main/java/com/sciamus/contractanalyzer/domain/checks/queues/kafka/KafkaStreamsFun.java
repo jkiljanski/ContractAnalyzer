@@ -9,20 +9,23 @@ import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.Topology;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.stereotype.Component;
 
 public class KafkaStreamsFun implements KafkaContractCheck {
 
-    @Autowired
-    private KafkaStreamFactory kafkaStreamFactory;
+    private final KafkaStreamFactory kafkaStreamFactory;
 
     private final String name = "KafkaStreamsFun";
 
-    @Autowired
-    private KafkaProducFactory producFactory;
+    private final KafkaProducFactory producFactory;
+
+    private final KafkaConsumFactory consumFactory;
 
     @Autowired
-    private KafkaConsumFactory consumFactory;
+    public KafkaStreamsFun(KafkaStreamFactory kafkaStreamFactory, KafkaProducFactory producFactory, KafkaConsumFactory consumFactory) {
+        this.kafkaStreamFactory = kafkaStreamFactory;
+        this.producFactory = producFactory;
+        this.consumFactory = consumFactory;
+    }
 
     @Override
     public CheckReport run(String incomingTopic, String outgoingTopic, String host, String port) {

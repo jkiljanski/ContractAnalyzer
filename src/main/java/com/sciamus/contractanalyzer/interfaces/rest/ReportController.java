@@ -15,8 +15,12 @@ import java.util.List;
 @RestController
 public class ReportController {
 
+    private final ReportService reportService;
+
     @Autowired
-    private ReportService reportService;
+    public ReportController(ReportService reportService) {
+        this.reportService = reportService;
+    }
 
     @RolesAllowed("reader")
     @GetMapping("/reports/{id}")

@@ -11,12 +11,11 @@ public abstract class CheckSuite {
 
     private String name;
 
-    @Autowired
     private List<RestContractCheck> restContractChecks;
 
-    public CheckSuite() {
+    public CheckSuite(){}
 
-    }
+    public CheckSuite(List<RestContractCheck> restContractChecks) {}
 
     abstract SuiteReport run(URL url);
 

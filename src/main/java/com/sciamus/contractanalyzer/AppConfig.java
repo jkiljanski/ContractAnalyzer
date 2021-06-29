@@ -2,7 +2,9 @@ package com.sciamus.contractanalyzer;
 
 import com.sciamus.contractanalyzer.application.ContractChecksService;
 import com.sciamus.contractanalyzer.application.mapper.CheckReportMapper;
+import com.sciamus.contractanalyzer.domain.checks.rest.CheckRepository;
 import com.sciamus.contractanalyzer.domain.checks.rest.reportcheck.CurrentUserService;
+import com.sciamus.contractanalyzer.domain.reporting.checks.ReportService;
 import org.keycloak.KeycloakSecurityContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,27 +12,18 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class AppConfig {
 
-    public AppConfig(){
-        System.out.println("App Config created!!!");
+    @Bean
+    public CheckReportMapper checkReportMapper(KeycloakSecurityContext keycloakSecurityContext){
+        return new CheckReportMapper(currentUserService(keycloakSecurityContext));
     }
 
     @Bean
-    public CheckReportMapper checkReportMapper(){
-        return new CheckReportMapper();
+    public CurrentUserService currentUserService(KeycloakSecurityContext keycloakSecurityContext) {
+        return new CurrentUserService(keycloakSecurityContext);
     }
 
     @Bean
-    public CurrentUserService currentUserService() {
-        return new CurrentUserService();
-    }
-
-    @Bean
-    public KeycloakSecurityContext keycloakSecurityContext() {
-        return new KeycloakSecurityContext();
-    }
-
-    @Bean
-    public ContractChecksService contractChecksService(){
-        return new ContractChecksService();
+    public ContractChecksService contractChecksService(CheckRepository checkRepository, ReportService reportService, CheckReportMapper checkReportMapper){
+        return new ContractChecksService(checkRepository, reportService, checkReportMapper);
     }
 }

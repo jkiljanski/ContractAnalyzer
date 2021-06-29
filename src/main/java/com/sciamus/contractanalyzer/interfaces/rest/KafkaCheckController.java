@@ -10,8 +10,12 @@ import java.util.List;
 @RestController
 public class KafkaCheckController {
 
+    private final KafkaContractCheckService kafkaContractCheckService;
+
     @Autowired
-    private KafkaContractCheckService kafkaContractCheckService;
+    public KafkaCheckController(KafkaContractCheckService kafkaContractCheckService) {
+        this.kafkaContractCheckService = kafkaContractCheckService;
+    }
 
     //add parameters
     @PostMapping("/kafkaCheck/{name}/run")

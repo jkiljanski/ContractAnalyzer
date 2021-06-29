@@ -1,8 +1,6 @@
 package com.sciamus.contractanalyzer.domain.reporting.config;
 
-import com.sciamus.contractanalyzer.application.mapper.CheckReportMapper;
 import com.sciamus.contractanalyzer.domain.checks.rest.CheckRepository;
-import com.sciamus.contractanalyzer.domain.checks.rest.RestContractCheck;
 import com.sciamus.contractanalyzer.domain.checks.rest.reportcheck.CurrentUserService;
 import com.sciamus.contractanalyzer.domain.reporting.aggregatedChecks.AggregatedChecksReport;
 import com.sciamus.contractanalyzer.domain.reporting.aggregatedChecks.AggregatedChecksRepository;
@@ -18,22 +16,22 @@ import org.springframework.context.annotation.Configuration;
 public class ReportingConfig {
 
     @Bean
-    public ReportService reportService(){
-        return new ReportService();
+    public ReportService reportService(ReportRepository reportRepository){
+        return new ReportService(reportRepository, reportIdGenerator(reportRepository));
     }
 
     @Bean
-    public ReportIdGenerator reportIdGenerator(){
-        return new ReportIdGenerator();
+    public ReportIdGenerator reportIdGenerator(ReportRepository reportRepository){
+        return new ReportIdGenerator(reportRepository);
     }
 
     @Bean
-    public AggregatedReportIdGenerator aggregatedReportIdGenerator(){
-        return new AggregatedReportIdGenerator();
+    public AggregatedReportIdGenerator aggregatedReportIdGenerator(AggregatedChecksRepository aggregatedChecksRepository){
+        return new AggregatedReportIdGenerator(aggregatedChecksRepository);
     }
 
     @Bean
-    public AggregatedChecksService aggregatedChecksService(){
-        return new AggregatedChecksService();
+    public AggregatedChecksService aggregatedChecksService(CurrentUserService currentUserService, CheckRepository checkRepository, AggregatedChecksRepository aggregatedChecksRepository, ReportRepository reportRepository){
+        return new AggregatedChecksService(aggregatedReportIdGenerator(aggregatedChecksRepository), currentUserService, reportService(reportRepository), checkRepository, aggregatedChecksRepository);
     }
 }
