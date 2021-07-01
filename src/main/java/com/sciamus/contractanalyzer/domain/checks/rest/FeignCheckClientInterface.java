@@ -10,10 +10,9 @@ import org.springframework.cloud.openfeign.FeignClient;
 
 import java.net.URL;
 
-@FeignClient(value = "ReportingCheckClient", configuration = FeignClientsConfig.class)
+@FeignClient(value = "ReportingCheckClient")
 public interface ReportingCheckClient {
 
-    //czy nie lepiej skorzystać z dedykowanego klienta, żeby nie dublować kodu?
 
     @RequestLine(value = "GET /restContractChecks")
     ListOfChecksDTO getAvailableChecks();
