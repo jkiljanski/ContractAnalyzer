@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
 
 import static java.util.Arrays.asList;
 
+
 @Configuration
 public class VavrCustomConverter {
 

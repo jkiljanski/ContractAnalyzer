@@ -1,8 +1,8 @@
 package com.sciamus.contractanalyzer.domain.checks.rest;
 
 
-import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReport;
-import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReportBuilder;
+import com.sciamus.contractanalyzer.domain.checks.reports.CheckReport;
+import com.sciamus.contractanalyzer.domain.checks.reports.CheckReportBuilder;
 
 import java.net.URL;
 

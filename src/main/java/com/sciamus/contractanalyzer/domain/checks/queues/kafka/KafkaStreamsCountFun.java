@@ -1,7 +1,8 @@
 package com.sciamus.contractanalyzer.domain.checks.queues.kafka;
 
 import com.sciamus.contractanalyzer.domain.checks.queues.kafka.config.KafkaStreamFactory;
-import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReport;
+import com.sciamus.contractanalyzer.domain.checks.reports.CheckReport;
+import io.vavr.control.Try;
 import lombok.SneakyThrows;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
@@ -45,7 +46,8 @@ public class KafkaStreamsCountFun implements KafkaContractCheck {
         application.start();
 
 
-        Thread.sleep(30000);
+        Try.run(()-> Thread.sleep(30_000)).onFailure(InterruptedException.class, exception -> exception.printStackTrace());
+
 
         application.close();
 

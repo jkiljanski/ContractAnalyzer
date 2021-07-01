@@ -1,8 +1,10 @@
 package com.example.kafkapingponger.kafka;
 
 import com.example.kafkapingponger.kafka.config.KafkaStreamFactory;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
+import org.apache.kafka.streams.kstream.KStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -20,19 +22,23 @@ public class CommandListener {
 
     private KafkaStreamFactory factory;
 
-    @KafkaListener(topics = "command-topic", groupId="1")
-    public void listenToCommand(String command) {
+    @KafkaListener(topics = "command-topic", groupId = "#{T(java.util.UUID).randomUUID().toString()}")
+    public void listenToCommand(ConsumerRecord<String, String> record) {
+
+        String command = "compute";
+
+        logger.info("The krowa command is " + record.key());
 
 
-        logger.info("The krowa command is " + command);
+        if (record.key().endsWith(command)) {
 
+            String uniqueKey = record.key().replace(command, "");
 
-        if (command.contains("compute")) {
+            KafkaStreams application = createKafkaStreams(uniqueKey);
 
-            KafkaStreams application = createKafkaStreams();
 
             try {
-                Thread.sleep(30000);
+                Thread.sleep(15_000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -43,14 +49,21 @@ public class CommandListener {
 
     }
 
-    private KafkaStreams createKafkaStreams() {
+    private KafkaStreams createKafkaStreams(String uniqueKey) {
         StreamsBuilder builder = new StreamsBuilder();
-        builder.stream("count-topic").to("output-topic");
-        KafkaStreams stream = factory.createStream(builder.build());
-        stream.start();
-        return stream;
+
+        KStream<String, String> stream = builder.stream("count-topic");
+        stream
+                .peek((k,v) -> System.out.println("From count-topic to output-topic: " +k+" :"+ v))
+                .to("output-topic");
+
+
+        KafkaStreams application = factory.createStream(builder.build());
+        application.start();
+        return application;
     }
 
 
-
 }
+
+//#{T(java.util.UUID).randomUUID().toString()}

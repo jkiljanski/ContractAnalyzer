@@ -37,6 +37,9 @@ public class KafkaConsConfig {
         props.put(
                 ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
                 StringDeserializer.class);
+//        props.put(
+//                ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "100");
+
         return new DefaultKafkaConsumerFactory<>(props);
     }
 

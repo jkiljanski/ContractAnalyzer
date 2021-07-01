@@ -6,6 +6,8 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "kafka")
 public class KafkaProperties {
 
+
+
     public Consum consum;
     public Produc produc;
     public Streams streams;

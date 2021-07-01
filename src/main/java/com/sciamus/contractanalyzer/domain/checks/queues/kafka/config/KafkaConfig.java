@@ -1,10 +1,10 @@
 package com.sciamus.contractanalyzer.domain.checks.queues.kafka.config;
 
-import com.sciamus.contractanalyzer.domain.checks.queues.kafka.KafkaMessagesCountCheck;
+import com.sciamus.contractanalyzer.domain.checks.queues.kafka.KafkaMessagesSimpleCountCheck;
 import com.sciamus.contractanalyzer.domain.checks.queues.kafka.KafkaPingPongCheck;
 import com.sciamus.contractanalyzer.domain.checks.queues.kafka.KafkaStreamsCountFun;
 import com.sciamus.contractanalyzer.domain.checks.queues.kafka.KafkaStreamsFun;
-import com.sciamus.contractanalyzer.domain.reporting.checks.ReportService;
+import com.sciamus.contractanalyzer.domain.checks.reports.ReportService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -32,8 +32,8 @@ public class KafkaConfig {
     }
 
     @Bean
-    public KafkaMessagesCountCheck kafkaMessagesCountCheck(){
-        return new KafkaMessagesCountCheck(kafkaStreamFactory(), kafkaProducFactory(), kafkaConsumFactory());
+    public KafkaMessagesSimpleCountCheck kafkaMessagesCountCheck(){
+        return new KafkaMessagesSimpleCountCheck(kafkaStreamFactory(), kafkaProducFactory(), kafkaConsumFactory());
     }
 
     @Bean

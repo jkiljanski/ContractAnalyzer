@@ -26,7 +26,7 @@ import java.security.Principal;
 
 @KeycloakConfiguration
 
-
+//TODO: make this and other Configs to be imported in a main config
 public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
 
     @Override

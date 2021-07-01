@@ -1,10 +1,9 @@
 package com.sciamus.contractanalyzer.domain.checks.rest.explode;
 
 import com.sciamus.contractanalyzer.domain.checks.rest.RestContractCheck;
-import com.sciamus.contractanalyzer.domain.reporting.checks.ReportResults;
-import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReport;
-import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReportBuilder;
-import org.springframework.stereotype.Component;
+import com.sciamus.contractanalyzer.domain.checks.reports.ReportResults;
+import com.sciamus.contractanalyzer.domain.checks.reports.CheckReport;
+import com.sciamus.contractanalyzer.domain.checks.reports.CheckReportBuilder;
 
 import java.net.URL;
 

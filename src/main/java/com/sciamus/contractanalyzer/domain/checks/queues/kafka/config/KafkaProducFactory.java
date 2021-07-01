@@ -35,6 +35,8 @@ public class KafkaProducFactory {
         configProps.put(
                 ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
                 kafkaProperties.getProduc().getValueSerializer());
+//        configProps.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "true");
+
 
         ProducerFactory<String,String> factory = new DefaultKafkaProducerFactory<> (configProps);
         final KafkaTemplate<String,String> template = new KafkaTemplate<>(factory);

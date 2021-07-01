@@ -1,8 +1,8 @@
 package com.sciamus.contractanalyzer.domain.checks.queues;
 
 import com.sciamus.contractanalyzer.domain.checks.queues.kafka.KafkaContractCheck;
-import com.sciamus.contractanalyzer.domain.exception.CheckNotFoundException;
-import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReport;
+import com.sciamus.contractanalyzer.domain.checks.exception.CheckNotFoundException;
+import com.sciamus.contractanalyzer.domain.checks.reports.CheckReport;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -12,7 +12,6 @@ public class KafkaContractCheckService {
 
     private final List<KafkaContractCheck> kafkaChecks;
 
-    @Autowired
     public KafkaContractCheckService(List<KafkaContractCheck> kafkaChecks) {
         this.kafkaChecks = kafkaChecks;
     }

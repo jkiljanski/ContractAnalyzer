@@ -1,10 +1,10 @@
 package com.sciamus.contractanalyzer.domain.checks.rest.reportcheck;
 
 import com.sciamus.contractanalyzer.domain.checks.rest.RestContractCheck;
-import com.sciamus.contractanalyzer.domain.reporting.checks.ReportResults;
-import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReport;
+import com.sciamus.contractanalyzer.domain.checks.reports.ReportResults;
+import com.sciamus.contractanalyzer.domain.checks.reports.CheckReport;
 import com.sciamus.contractanalyzer.application.mapper.CheckReportMapper;
-import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReportBuilder;
+import com.sciamus.contractanalyzer.domain.checks.reports.CheckReportBuilder;
 import feign.Feign;
 import feign.RequestInterceptor;
 import feign.gson.GsonDecoder;

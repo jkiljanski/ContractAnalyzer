@@ -1,9 +1,8 @@
 package com.sciamus.contractanalyzer.interfaces.rest;
 
-import com.sciamus.contractanalyzer.domain.reporting.aggregatedChecks.AggregatedChecksDTO;
-import com.sciamus.contractanalyzer.domain.reporting.aggregatedChecks.AggregatedChecksReport;
-import com.sciamus.contractanalyzer.domain.reporting.aggregatedChecks.AggregatedChecksService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.sciamus.contractanalyzer.application.AggregatedCheckFacade;
+import com.sciamus.contractanalyzer.domain.checks.aggregatedChecks.AggregatedChecksDTO;
+import com.sciamus.contractanalyzer.domain.checks.aggregatedChecks.AggregatedChecksReport;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
@@ -13,17 +12,16 @@ import java.util.List;
 @RestController
 public class AggregatedChecksController {
 
-    private final AggregatedChecksService aggregatedChecksService;
+    private final AggregatedCheckFacade aggregatedCheckFacade;
 
-    @Autowired
-    public AggregatedChecksController(AggregatedChecksService aggregatedChecksService) {
-        this.aggregatedChecksService = aggregatedChecksService;
+    public AggregatedChecksController(AggregatedCheckFacade aggregatedCheckFacade) {
+        this.aggregatedCheckFacade = aggregatedCheckFacade;
     }
 
     @GetMapping("/aggregatedChecksReports")
     @ResponseBody
     public List<AggregatedChecksReport> getAggregatedChecksReports() {
-        return aggregatedChecksService.getAggregatedChecksReports();
+        return aggregatedCheckFacade.getAggregatedChecksReports();
     }
 
     @RolesAllowed("writer")
@@ -33,6 +31,6 @@ public class AggregatedChecksController {
             @RequestParam List<String> namesOfChecks,
             @RequestParam(name = "url") String url,
             @RequestParam(required = false, name = "name") String name) throws MalformedURLException {
-        return aggregatedChecksService.runAndSaveAggregatedChecks(name, namesOfChecks, url);
+        return aggregatedCheckFacade.runAndSaveAggregatedChecks(name, namesOfChecks, url);
     }
 }
