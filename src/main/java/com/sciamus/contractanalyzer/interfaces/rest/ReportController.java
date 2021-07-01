@@ -1,9 +1,9 @@
 package com.sciamus.contractanalyzer.interfaces.rest;
 
 
-import com.sciamus.contractanalyzer.domain.reporting.checks.ReportNotFoundException;
-import com.sciamus.contractanalyzer.domain.reporting.checks.ReportService;
-import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReport;
+import com.sciamus.contractanalyzer.domain.checks.reports.ReportNotFoundException;
+import com.sciamus.contractanalyzer.domain.checks.reports.ReportService;
+import com.sciamus.contractanalyzer.domain.checks.reports.CheckReport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +15,7 @@ import java.util.List;
 @RestController
 public class ReportController {
 
+    //TODO: fix me: this cannot use domain object directly -> it always must got through application layer
     private final ReportService reportService;
 
     @Autowired

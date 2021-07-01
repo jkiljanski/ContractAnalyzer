@@ -4,7 +4,7 @@ import com.sciamus.contractanalyzer.domain.checks.queues.kafka.KafkaMessagesSimp
 import com.sciamus.contractanalyzer.domain.checks.queues.kafka.KafkaPingPongCheck;
 import com.sciamus.contractanalyzer.domain.checks.queues.kafka.KafkaStreamsCountFun;
 import com.sciamus.contractanalyzer.domain.checks.queues.kafka.KafkaStreamsFun;
-import com.sciamus.contractanalyzer.domain.reporting.checks.ReportService;
+import com.sciamus.contractanalyzer.domain.checks.reports.ReportService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

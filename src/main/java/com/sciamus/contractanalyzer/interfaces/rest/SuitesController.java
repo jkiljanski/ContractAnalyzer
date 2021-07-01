@@ -1,8 +1,8 @@
 package com.sciamus.contractanalyzer.interfaces.rest;
 
-import com.sciamus.contractanalyzer.domain.reporting.suites.SuiteReport;
-import com.sciamus.contractanalyzer.domain.suites.SuitesRepository;
-import com.sciamus.contractanalyzer.domain.suites.SuitesService;
+import com.sciamus.contractanalyzer.domain.checks.suites.reports.SuiteReport;
+import com.sciamus.contractanalyzer.domain.checks.suites.SuitesRepository;
+import com.sciamus.contractanalyzer.domain.checks.suites.SuitesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,8 +12,10 @@ import java.util.List;
 @RestController
 public class SuitesController {
 
+    //TODO: fix me: this cannot use domain object directly -> it always must got through application layer
     private final SuitesService suitesService;
 
+    //TODO: fix me: this cannot use domain object directly -> it always must got through application layer
     private final SuitesRepository suitesRepository;
 
     @Autowired

@@ -1,16 +1,18 @@
 import com.sciamus.contractanalyzer.application.CheckReportDTO;
-import com.sciamus.contractanalyzer.application.ContractChecksService;
+import com.sciamus.contractanalyzer.application.ContractChecksFacade;
 import com.sciamus.contractanalyzer.application.mapper.CheckReportMapper;
+import com.sciamus.contractanalyzer.infrastructure.port.ReportRepository;
+import com.sciamus.contractanalyzer.domain.checks.reports.ReportService;
 import com.sciamus.contractanalyzer.domain.checks.rest.CheckRepository;
 import com.sciamus.contractanalyzer.domain.checks.rest.RestContractCheck;
 import com.sciamus.contractanalyzer.domain.checks.rest.dummy.DummyRestContractCheck;
 import com.sciamus.contractanalyzer.domain.checks.rest.reportcheck.CurrentUserService;
-import com.sciamus.contractanalyzer.domain.reporting.checks.*;
+import com.sciamus.contractanalyzer.domain.checks.reports.checks.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
-import com.sciamus.contractanalyzer.domain.reporting.idGenerator.ReportIdGenerator;
+import com.sciamus.contractanalyzer.domain.checks.reports.ReportIdGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,7 +34,7 @@ public class CheckTest {
     @Mock
     private ReportRepository reportRepositoryMock;
 
-    private ContractChecksService contractChecksService;
+    private ContractChecksFacade contractChecksFacade;
 
     @BeforeEach
     public void init() {
@@ -42,7 +44,7 @@ public class CheckTest {
         final CheckReportMapper checkReportMapper = new CheckReportMapper(currentUserService);
         List<RestContractCheck> restContractChecks = List.of(new DummyRestContractCheck());
         final CheckRepository checkRepository = new CheckRepository(restContractChecks, currentUserService);
-        contractChecksService = new ContractChecksService(checkRepository, reportService, checkReportMapper);
+        contractChecksFacade = new ContractChecksFacade(checkRepository, reportService, checkReportMapper);
     }
 
     @Test
@@ -52,7 +54,7 @@ public class CheckTest {
         given (keycloakSecurityContextMock.getToken()).willReturn(new AccessToken());
 
         // when
-        CheckReportDTO checkReportDTO = contractChecksService.runAndGetSavedReportWithId("Dummy Check", "http://localhost:1212/dummyUrl");
+        CheckReportDTO checkReportDTO = contractChecksFacade.runAndGetSavedReportWithId("Dummy Check", "http://localhost:1212/dummyUrl");
 
         // then
         assertThat(checkReportDTO).isNotNull();

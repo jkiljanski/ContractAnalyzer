@@ -1,7 +1,7 @@
 package com.sciamus.contractanalyzer.domain.checks.queues.kafka;
 
 import com.sciamus.contractanalyzer.domain.checks.queues.kafka.config.KafkaStreamFactory;
-import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReport;
+import com.sciamus.contractanalyzer.domain.checks.reports.CheckReport;
 import io.vavr.control.Try;
 import lombok.SneakyThrows;
 import org.apache.kafka.streams.KafkaStreams;

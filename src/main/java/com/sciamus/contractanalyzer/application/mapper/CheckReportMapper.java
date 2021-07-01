@@ -2,9 +2,9 @@ package com.sciamus.contractanalyzer.application.mapper;
 
 
 import com.sciamus.contractanalyzer.domain.checks.rest.reportcheck.CurrentUserService;
-import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReport;
-import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReportBuilder;
-import com.sciamus.contractanalyzer.domain.reporting.checks.ReportResults;
+import com.sciamus.contractanalyzer.domain.checks.reports.CheckReport;
+import com.sciamus.contractanalyzer.domain.checks.reports.CheckReportBuilder;
+import com.sciamus.contractanalyzer.domain.checks.reports.ReportResults;
 import com.sciamus.contractanalyzer.application.CheckReportDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 
