@@ -71,7 +71,7 @@ public class KafkaMessagesManyRunsCheck implements KafkaContractCheck {
         return finalCheckResult
                 .map(v -> getPassedCheckReport(reportBuilder))
                 .recover(AssertionError.class, e -> createFailedCheckReport(e.getMessage(), reportBuilder))
-                .recover(Exception.class, e-> createFailedCheckReport("Unexpected Exception: "+e.getMessage(),reportBuilder))
+                .recover(Exception.class, e -> createFailedCheckReport("Unexpected Exception: " + e.getMessage(), reportBuilder))
                 .get();
 
 //

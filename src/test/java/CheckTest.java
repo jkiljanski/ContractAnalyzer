@@ -5,6 +5,7 @@ import com.sciamus.contractanalyzer.domain.checks.rest.CheckRepository;
 import com.sciamus.contractanalyzer.domain.checks.rest.RestContractCheck;
 import com.sciamus.contractanalyzer.domain.checks.rest.dummy.DummyRestContractCheck;
 import com.sciamus.contractanalyzer.domain.checks.rest.reportcheck.CurrentUserService;
+import com.sciamus.contractanalyzer.domain.checks.rest.reportcheck.CurrentUserServiceSecured;
 import com.sciamus.contractanalyzer.domain.reporting.checks.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,7 +37,7 @@ public class CheckTest {
 
     @BeforeEach
     public void init() {
-        final CurrentUserService currentUserService = new CurrentUserService(keycloakSecurityContextMock);
+        final CurrentUserService currentUserService = new CurrentUserServiceSecured(keycloakSecurityContextMock);
         final ReportIdGenerator reportIdGenerator = new ReportIdGenerator(reportRepositoryMock);
         final ReportService reportService = new ReportService(reportRepositoryMock, reportIdGenerator);
         final CheckReportMapper checkReportMapper = new CheckReportMapper(currentUserService);

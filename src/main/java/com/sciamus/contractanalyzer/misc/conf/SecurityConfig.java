@@ -10,6 +10,7 @@ import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurer
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -37,6 +38,7 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
         http.csrf().disable();
     }
 
+    @Profile("!unsecured")
     @Bean
     @Scope(scopeName = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
     public KeycloakSecurityContext provideKeycloakSecurityContext() {
@@ -57,6 +59,17 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
 
         return null;
     }
+
+    @Profile("unsecured")
+    @Bean
+    KeycloakSecurityContext keycloakSecurityContextStub() {
+
+        KeycloakSecurityContext context = new KeycloakSecurityContext();
+
+        return context;
+    }
+
+
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {

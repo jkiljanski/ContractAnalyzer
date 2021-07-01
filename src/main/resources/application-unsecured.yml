@@ -11,9 +11,9 @@ server:
 spring:
   data:
     mongodb:
-      #      uri: "mongodb+srv://m001-student:Orixa1911@sandbox.opih2.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
-      #      uri: "mongodb://root:root@localhost:8085/"
-      uri: "mongodb://root:root@db:27017/"
+      uri: "mongodb+srv://m001-student:Orixa1911@sandbox.opih2.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+#      uri: "mongodb://root:root@localhost:8085/"
+#      uri: "mongodb://root:root@db:27017/"
       database: reporting
   rabbitmq:
     host: rabbit
@@ -35,13 +35,3 @@ kafka:
     key-serde: org.apache.kafka.common.serialization.Serdes$StringSerde
     value-serde: org.apache.kafka.common.serialization.Serdes$StringSerde
 
-keycloak:
-  auth-server-url: http://keycloak:8090/auth
-  #  auth-server-url: http://security:8080/auth
-  realm: contractAnalyzer
-  resource: contract-analyzer-backend
-  public-client: true
-  ssl-required: external
-  #  use-resource-role-mappings: true
-  confidential-port: 0
-#  enabled: off

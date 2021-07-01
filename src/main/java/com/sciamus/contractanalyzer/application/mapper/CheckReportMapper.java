@@ -12,23 +12,10 @@ public class CheckReportMapper {
 
     private final CurrentUserService currentUserService;
 
-    @Autowired
     public CheckReportMapper(CurrentUserService currentUserService) {
         this.currentUserService = currentUserService;
     }
 
-
-//    private TestReport testReport;
-//    private TestReportDTO testReportDTO;
-//
-//
-//
-//    public TestReportMapper(TestReport testReport, TestReportDTO testReportDTO) {
-//        this.testReport = testReport;
-//        this.testReportDTO = testReportDTO;
-//    }
-
-    //review pls:
 
     public CheckReport mapFromDTO(CheckReportDTO checkReportDTO) {
         return new CheckReportBuilder().setId(checkReportDTO.id)

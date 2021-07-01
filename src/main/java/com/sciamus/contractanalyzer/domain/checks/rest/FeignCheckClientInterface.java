@@ -1,4 +1,4 @@
-package com.sciamus.contractanalyzer.domain.checks.rest.reportcheck;
+package com.sciamus.contractanalyzer.domain.checks.rest;
 
 
 import com.sciamus.contractanalyzer.misc.conf.FeignClientsConfig;
@@ -11,7 +11,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import java.net.URL;
 
 @FeignClient(value = "ReportingCheckClient")
-public interface ReportingCheckClient {
+public interface FeignCheckClientInterface {
 
 
     @RequestLine(value = "GET /restContractChecks")

@@ -1,7 +1,7 @@
 package com.sciamus.contractanalyzer.domain.checks.rest.getlistof;
 
 import com.sciamus.contractanalyzer.domain.checks.rest.RestContractCheck;
-import com.sciamus.contractanalyzer.domain.checks.rest.reportcheck.ReportingCheckClient;
+import com.sciamus.contractanalyzer.domain.checks.rest.FeignCheckClientInterface;
 import com.sciamus.contractanalyzer.domain.reporting.checks.ReportResults;
 import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReport;
 import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReportBuilder;
@@ -27,7 +27,7 @@ public class GetListOfContractChecksCheck implements RestContractCheck {
 
         urlSubjectToTest = url;
 
-        ReportingCheckClient testClient = feignClient(url);
+        FeignCheckClientInterface testClient = feignClient(url);
 
         ListOfChecksDTO responseDTO;
 
@@ -42,11 +42,11 @@ public class GetListOfContractChecksCheck implements RestContractCheck {
         return getFailedTestReport(builder);
     }
 
-    private ReportingCheckClient feignClient(URL url) {
+    private FeignCheckClientInterface feignClient(URL url) {
         return Feign.builder()
                 .decoder(new GsonDecoder())
                 .requestInterceptor(requestInterceptor)
-                .target(ReportingCheckClient.class, url.toString());
+                .target(FeignCheckClientInterface.class, url.toString());
     }
 
 // there are no cases in which this test fails.

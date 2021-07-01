@@ -3,6 +3,7 @@ import com.sciamus.contractanalyzer.application.mapper.CheckReportMapper;
 import com.sciamus.contractanalyzer.domain.checks.rest.CheckRepository;
 import com.sciamus.contractanalyzer.domain.checks.rest.RestContractCheck;
 import com.sciamus.contractanalyzer.domain.checks.rest.reportcheck.CurrentUserService;
+import com.sciamus.contractanalyzer.domain.checks.rest.reportcheck.CurrentUserServiceSecured;
 import com.sciamus.contractanalyzer.domain.reporting.checks.ReportRepository;
 import com.sciamus.contractanalyzer.domain.reporting.checks.ReportService;
 import com.sciamus.contractanalyzer.domain.reporting.idGenerator.ReportIdGenerator;
@@ -47,7 +48,7 @@ public class SuiteTest {
     @BeforeEach
     public void init() {
 
-        final CurrentUserService currentUserService = new CurrentUserService(keycloakSecurityContextMock);
+        final CurrentUserService currentUserService = new CurrentUserServiceSecured(keycloakSecurityContextMock);
         List<RestContractCheck> restContractChecks = new ArrayList<>();
         final CheckRepository checkRepository = new CheckRepository(restContractChecks, currentUserService);
         final CheckReportMapper checkReportMapper = new CheckReportMapper(currentUserService);

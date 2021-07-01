@@ -1,5 +1,6 @@
 package com.sciamus.contractanalyzer.domain.checks.rest.reportcheck;
 
+import com.sciamus.contractanalyzer.domain.checks.rest.FeignCheckClientInterface;
 import com.sciamus.contractanalyzer.domain.checks.rest.RestContractCheck;
 import com.sciamus.contractanalyzer.domain.reporting.checks.ReportResults;
 import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReport;
@@ -28,21 +29,21 @@ public class ReportingCheck implements RestContractCheck {
 
     @Override
     public CheckReport run(URL url, CheckReportBuilder reportBuilder) {
-        ReportingCheckClient reportingCheckClient = Feign.builder()
+        FeignCheckClientInterface feignCheckClientInterface = Feign.builder()
                 .decoder(new GsonDecoder())
                 .requestInterceptor(interceptor)
-                .target(ReportingCheckClient.class, url.toString());
+                .target(FeignCheckClientInterface.class, url.toString());
 
-        String checkToRun = URLEncoder.encode(reportingCheckClient
+        String checkToRun = URLEncoder.encode(feignCheckClientInterface
                 .getAvailableChecks()
                 .listOfChecks.get(0), StandardCharsets.UTF_8)
                 .replace("+", "%20");
 
         CheckReport reportSentToDatabase = checkReportMapper.
-                mapFromDTO(reportingCheckClient.autogenerate(checkToRun, url));
+                mapFromDTO(feignCheckClientInterface.autogenerate(checkToRun, url));
 
         CheckReport reportFetchedFromDatabase = checkReportMapper.
-                mapFromDTO(reportingCheckClient.getReportById(reportSentToDatabase.getId()));
+                mapFromDTO(feignCheckClientInterface.getReportById(reportSentToDatabase.getId()));
 
         reportBuilder.setNameOfCheck(this.getName())
                 .setReportBody("Run on: " +url)
