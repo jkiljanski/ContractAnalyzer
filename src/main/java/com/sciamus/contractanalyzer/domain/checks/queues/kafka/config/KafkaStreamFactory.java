@@ -12,7 +12,6 @@ public class KafkaStreamFactory {
 
     private final KafkaProperties kafkaProperties;
 
-    @Autowired
     public KafkaStreamFactory(KafkaProperties kafkaProperties) {
         this.kafkaProperties = kafkaProperties;
     }

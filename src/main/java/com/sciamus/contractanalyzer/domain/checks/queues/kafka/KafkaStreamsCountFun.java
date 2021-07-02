@@ -1,7 +1,7 @@
 package com.sciamus.contractanalyzer.domain.checks.queues.kafka;
 
 import com.sciamus.contractanalyzer.domain.checks.queues.kafka.config.KafkaStreamFactory;
-import com.sciamus.contractanalyzer.domain.checks.reports.CheckReport;
+import com.sciamus.contractanalyzer.domain.checks.reports.Report;
 import io.vavr.control.Try;
 import lombok.SneakyThrows;
 import org.apache.kafka.streams.KafkaStreams;
@@ -10,22 +10,20 @@ import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 
-public class KafkaStreamsCountFun implements KafkaContractCheck {
+public class KafkaStreamsCountFun implements KafkaCheck {
 
     private final String name = "KafkaStreamsCount";
 
     private final KafkaStreamFactory kafkaStreamFactory;
 
-    @Autowired
     public KafkaStreamsCountFun(KafkaStreamFactory kafkaStreamFactory) {
         this.kafkaStreamFactory = kafkaStreamFactory;
     }
 
     @SneakyThrows
     @Override
-    public CheckReport run(String incomingTopic, String outgoingTopic, String host, String port) {
+    public Report run(String incomingTopic, String outgoingTopic, String host, String port) {
 
         StreamsBuilder streamsBuilder = new StreamsBuilder();
 

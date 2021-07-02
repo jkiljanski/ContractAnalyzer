@@ -3,7 +3,7 @@ package com.sciamus.contractanalyzer.interfaces.rest;
 
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportNotFoundException;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportService;
-import com.sciamus.contractanalyzer.domain.checks.reports.CheckReport;
+import com.sciamus.contractanalyzer.domain.checks.reports.Report;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +26,7 @@ public class ReportController {
     @RolesAllowed("reader")
     @GetMapping("/reports/{id}")
     @ResponseBody
-    public CheckReport GetReportById(
+    public Report GetReportById(
             @PathVariable("id") String id) {
         return reportService.getReportByID(id);
     }
@@ -36,7 +36,7 @@ public class ReportController {
     @ResponseBody
 
     //refactor to DTO:
-    public List<CheckReport> getAllReports() {
+    public List<Report> getAllReports() {
         return reportService.getAllReports();
     }
 

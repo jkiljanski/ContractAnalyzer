@@ -1,6 +1,6 @@
 package com.sciamus.contractanalyzer.domain.checks.suites;
 
-import com.sciamus.contractanalyzer.domain.checks.rest.RestContractCheck;
+import com.sciamus.contractanalyzer.domain.checks.rest.RestCheck;
 import com.sciamus.contractanalyzer.domain.checks.suites.reports.SuiteReport;
 
 import java.net.URL;
@@ -10,11 +10,11 @@ public abstract class CheckSuite {
 
     private String name;
 
-    private List<RestContractCheck> restContractChecks;
+    private List<RestCheck> restChecks;
 
     public CheckSuite(){}
 
-    public CheckSuite(List<RestContractCheck> restContractChecks) {}
+    public CheckSuite(List<RestCheck> restChecks) {}
 
     abstract SuiteReport run(URL url);
 

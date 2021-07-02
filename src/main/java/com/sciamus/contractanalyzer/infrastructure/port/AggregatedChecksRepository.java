@@ -1,7 +1,10 @@
 package com.sciamus.contractanalyzer.infrastructure.port;
 
-import com.sciamus.contractanalyzer.domain.checks.aggregatedChecks.AggregatedChecksReport;
+import com.sciamus.contractanalyzer.domain.checks.aggregatedChecks.AggregatedReport;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-public interface AggregatedChecksRepository extends MongoRepository<AggregatedChecksReport,String> {
+public interface AggregatedChecksRepository extends MongoRepository<AggregatedReport,String>, RepositoryConfigurable {
+
+
+
 }

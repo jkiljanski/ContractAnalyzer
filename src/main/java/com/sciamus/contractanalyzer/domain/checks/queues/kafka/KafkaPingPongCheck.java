@@ -2,8 +2,8 @@ package com.sciamus.contractanalyzer.domain.checks.queues.kafka;
 
 import com.sciamus.contractanalyzer.domain.checks.queues.kafka.config.KafkaConsumFactory;
 import com.sciamus.contractanalyzer.domain.checks.queues.kafka.config.KafkaProducFactory;
-import com.sciamus.contractanalyzer.domain.checks.reports.CheckReport;
-import com.sciamus.contractanalyzer.domain.checks.reports.CheckReportBuilder;
+import com.sciamus.contractanalyzer.domain.checks.reports.Report;
+import com.sciamus.contractanalyzer.domain.checks.reports.ReportBuilder;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportResults;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportService;
 import org.apache.kafka.clients.consumer.Consumer;
@@ -11,7 +11,6 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 
 import java.time.Duration;
@@ -22,7 +21,7 @@ import java.util.Set;
 import java.util.stream.StreamSupport;
 
 
-public class KafkaPingPongCheck implements KafkaContractCheck {
+public class KafkaPingPongCheck implements KafkaCheck {
 
     final String name = "KafkaPingPongCheck";
 
@@ -32,7 +31,6 @@ public class KafkaPingPongCheck implements KafkaContractCheck {
 
     private final ReportService reportService;
 
-    @Autowired
     public KafkaPingPongCheck(KafkaConsumFactory kafkaConsumFactory, KafkaProducFactory kafkaProducFactory, ReportService reportService) {
         this.kafkaConsumFactory = kafkaConsumFactory;
         this.kafkaProducFactory = kafkaProducFactory;
@@ -43,7 +41,7 @@ public class KafkaPingPongCheck implements KafkaContractCheck {
 
 
     @Override
-    public CheckReport run(String incomingTopic, String outgoingTopic, String host, String port) {
+    public Report run(String incomingTopic, String outgoingTopic, String host, String port) {
 
 
         final Logger logger = getLogger();
@@ -60,7 +58,7 @@ public class KafkaPingPongCheck implements KafkaContractCheck {
         //        logger.info("consumer position is " + getConsumerPosition(consumer, partitionSet));
 
 
-        CheckReportBuilder reportBuilder = getCheckReportBuilder();
+        ReportBuilder reportBuilder = getCheckReportBuilder();
 
         KafkaTemplate<String, String> producer = getProducer(host, port);
 
@@ -103,7 +101,7 @@ public class KafkaPingPongCheck implements KafkaContractCheck {
         }
     }
 
-    private void addTopicInfoToReport(String incomingTopic, String outgoingTopic, CheckReportBuilder reportBuilder) {
+    private void addTopicInfoToReport(String incomingTopic, String outgoingTopic, ReportBuilder reportBuilder) {
         String additionalReportInfo = "incoming topic: " + incomingTopic + " outgoing topic: " + outgoingTopic + " ";
 
         reportBuilder.setReportBody(additionalReportInfo);
@@ -142,8 +140,8 @@ public class KafkaPingPongCheck implements KafkaContractCheck {
         return producer;
     }
 
-    private CheckReportBuilder getCheckReportBuilder() {
-        CheckReportBuilder reportBuilder = new CheckReportBuilder();
+    private ReportBuilder getCheckReportBuilder() {
+        ReportBuilder reportBuilder = new ReportBuilder();
         reportBuilder.setNameOfCheck("kafka check").createTimestamp();
         return reportBuilder;
     }

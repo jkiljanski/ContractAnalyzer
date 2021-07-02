@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import java.util.Date;
 
 @AllArgsConstructor
-public class CheckReportDTO {
+public class ReportDTO {
 
     public String id;
     public String result;

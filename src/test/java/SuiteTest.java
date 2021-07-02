@@ -1,7 +1,7 @@
-import com.sciamus.contractanalyzer.application.ContractChecksFacade;
-import com.sciamus.contractanalyzer.application.mapper.CheckReportMapper;
-import com.sciamus.contractanalyzer.domain.checks.rest.CheckRepository;
-import com.sciamus.contractanalyzer.domain.checks.rest.RestContractCheck;
+import com.sciamus.contractanalyzer.application.ChecksFacade;
+import com.sciamus.contractanalyzer.application.mapper.ReportMapper;
+import com.sciamus.contractanalyzer.domain.checks.rest.RestCheckRepository;
+import com.sciamus.contractanalyzer.domain.checks.rest.RestCheck;
 import com.sciamus.contractanalyzer.domain.checks.rest.reportcheck.CurrentUserService;
 import com.sciamus.contractanalyzer.infrastructure.port.ReportRepository;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportService;
@@ -9,6 +9,7 @@ import com.sciamus.contractanalyzer.domain.checks.reports.ReportIdGenerator;
 import com.sciamus.contractanalyzer.domain.checks.suites.reports.SuiteReport;
 import com.sciamus.contractanalyzer.infrastructure.port.SuitesReportsRepository;
 import com.sciamus.contractanalyzer.domain.checks.suites.*;
+import com.sciamus.contractanalyzer.misc.conf.SecurityConfigurable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,19 +43,27 @@ public class SuiteTest {
 
     private SuitesService suitesService;
 
+    @Mock
+    private SecurityConfigurable securityConfigMock;
+
     @BeforeEach
     public void init() {
 
+        given(securityConfigMock.provideKeycloakSecurityContext()).willReturn(keycloakSecurityContextMock);
+
+
         final CurrentUserService currentUserService = new CurrentUserService(keycloakSecurityContextMock);
-        List<RestContractCheck> restContractChecks = new ArrayList<>();
-        final CheckRepository checkRepository = new CheckRepository(restContractChecks, currentUserService);
-        final CheckReportMapper checkReportMapper = new CheckReportMapper(currentUserService);
+        List<RestCheck> restChecks = new ArrayList<>();
+        final RestCheckRepository restCheckRepository = new RestCheckRepository(restChecks, currentUserService);
+        final ReportMapper reportMapper = new ReportMapper(currentUserService);
         final ReportIdGenerator reportIdGenerator = new ReportIdGenerator(reportRepositoryMock);
         final ReportService reportService = new ReportService(reportRepositoryMock, reportIdGenerator);
-        final ContractChecksFacade contractChecksFacade = new ContractChecksFacade(checkRepository, reportService, checkReportMapper);
-        List<CheckSuite> checkSuites = List.of(new BasicSuite(contractChecksFacade, checkRepository, checkReportMapper));
+        final ChecksFacade checksFacade = new ChecksFacade(restCheckRepository, reportService, reportMapper);
+        List<CheckSuite> checkSuites = List.of(new BasicSuite(checksFacade, restCheckRepository, reportMapper));
         final SuitesRepository suitesRepository = new SuitesRepository(checkSuites);
         suitesService = new SuitesService(suitesReportsRepositoryMock, suitesRepository);
+
+
     }
 
     @Test

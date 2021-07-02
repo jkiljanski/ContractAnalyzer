@@ -3,15 +3,14 @@ package com.sciamus.contractanalyzer.domain.checks.queues.kafka;
 import com.sciamus.contractanalyzer.domain.checks.queues.kafka.config.KafkaConsumFactory;
 import com.sciamus.contractanalyzer.domain.checks.queues.kafka.config.KafkaProducFactory;
 import com.sciamus.contractanalyzer.domain.checks.queues.kafka.config.KafkaStreamFactory;
-import com.sciamus.contractanalyzer.domain.checks.reports.CheckReport;
-import com.sciamus.contractanalyzer.domain.checks.reports.CheckReportBuilder;
+import com.sciamus.contractanalyzer.domain.checks.reports.Report;
+import com.sciamus.contractanalyzer.domain.checks.reports.ReportBuilder;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportResults;
 import io.vavr.control.Try;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 
 import java.time.Duration;
@@ -20,7 +19,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class KafkaMessagesSimpleCountCheck implements KafkaContractCheck {
+public class KafkaMessagesSimpleCountCheck implements KafkaCheck {
 
     private final String name = "KafkaMessagesSimpleCountCheck";
     private final KafkaStreamFactory kafkaStreamFactory;
@@ -28,8 +27,6 @@ public class KafkaMessagesSimpleCountCheck implements KafkaContractCheck {
     private final KafkaConsumFactory kafkaConsumFactory;
 
 
-
-    @Autowired
     public KafkaMessagesSimpleCountCheck(KafkaStreamFactory kafkaStreamFactory, KafkaProducFactory kafkaProducFactory, KafkaConsumFactory kafkaConsumFactory) {
         this.kafkaStreamFactory = kafkaStreamFactory;
         this.kafkaProducFactory = kafkaProducFactory;
@@ -38,7 +35,7 @@ public class KafkaMessagesSimpleCountCheck implements KafkaContractCheck {
 
 
     @Override
-    public CheckReport run(String incomingTopic, String outgoingTopic, String host, String port) {
+    public Report run(String incomingTopic, String outgoingTopic, String host, String port) {
 
 
         //given:
@@ -47,7 +44,7 @@ public class KafkaMessagesSimpleCountCheck implements KafkaContractCheck {
         Consumer<String, String> consumer = Consumer(incomingTopic, host, port);
         String checkUniqueIdentifier = getCheckUniqueIdentifier();
         List<Integer> integersListToSendToOutsideProcessor = getIntegersListToSendToOutsideProcessor();
-        CheckReportBuilder reportBuilder = new CheckReportBuilder();
+        ReportBuilder reportBuilder = new ReportBuilder();
 
 
         //when:
@@ -69,7 +66,7 @@ public class KafkaMessagesSimpleCountCheck implements KafkaContractCheck {
         return getFailedCheckReport(expectedAnswer, actualAnswer, reportBuilder);
     }
 
-    private void setUpReportBuilder(CheckReportBuilder reportBuilder) {
+    private void setUpReportBuilder(ReportBuilder reportBuilder) {
         reportBuilder.createTimestamp().setNameOfCheck(getName());
     }
 
@@ -89,7 +86,7 @@ public class KafkaMessagesSimpleCountCheck implements KafkaContractCheck {
         return logger;
     }
 
-    private CheckReport getFailedCheckReport(Map<String, Long> expectedAnswer, Map<String, Long> answerToCheck, CheckReportBuilder reportBuilder) {
+    private Report getFailedCheckReport(Map<String, Long> expectedAnswer, Map<String, Long> answerToCheck, ReportBuilder reportBuilder) {
         return reportBuilder
                 .setResult(ReportResults.FAILED)
                 .setReportBody("Sorry, please have another shot. " +
@@ -98,7 +95,7 @@ public class KafkaMessagesSimpleCountCheck implements KafkaContractCheck {
                 .build();
     }
 
-    private CheckReport getPassedCheckReport(CheckReportBuilder reportBuilder) {
+    private Report getPassedCheckReport(ReportBuilder reportBuilder) {
         return reportBuilder
                 .setResult(ReportResults.PASSED)
                 .setReportBody("Your system produced a good answer. You deserve a hug.")
@@ -147,7 +144,7 @@ public class KafkaMessagesSimpleCountCheck implements KafkaContractCheck {
         sendMessagesToIgnore(outgoingTopic, producer);
         sendMessagesToBeChecked(outgoingTopic, producer, checkUniqueKey, Collections.singletonList("compute"));
 
-        Try.run(()-> Thread.sleep(30_000)).onFailure(InterruptedException.class, Throwable::printStackTrace);
+        Try.run(() -> Thread.sleep(30_000)).onFailure(InterruptedException.class, Throwable::printStackTrace);
 
 
     }
@@ -158,7 +155,7 @@ public class KafkaMessagesSimpleCountCheck implements KafkaContractCheck {
 
             producer.send(outgoingTopic, checkUniqueKey, String.valueOf(element));
 
-            Try.run(()-> Thread.sleep(30_000)).onFailure(InterruptedException.class, Throwable::printStackTrace);
+            Try.run(() -> Thread.sleep(30_000)).onFailure(InterruptedException.class, Throwable::printStackTrace);
 
         }
     }

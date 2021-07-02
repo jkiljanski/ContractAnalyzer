@@ -1,7 +1,7 @@
 package com.sciamus.contractanalyzer.domain.checks.queues.kafka.config;
 
-import com.sciamus.contractanalyzer.domain.checks.queues.KafkaContractCheckService;
-import com.sciamus.contractanalyzer.domain.checks.queues.kafka.KafkaContractCheck;
+import com.sciamus.contractanalyzer.domain.checks.queues.KafkaCheckService;
+import com.sciamus.contractanalyzer.domain.checks.queues.kafka.KafkaCheck;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -11,8 +11,8 @@ import java.util.List;
 public class KafkaContractCheckServiceConfig {
 
     @Bean
-    public KafkaContractCheckService kafkaContractCheckService(List<KafkaContractCheck> kafkaChecks){
-        return new KafkaContractCheckService(kafkaChecks);
+    public KafkaCheckService kafkaContractCheckService(List<KafkaCheck> kafkaChecks){
+        return new KafkaCheckService(kafkaChecks);
     }
 
 }

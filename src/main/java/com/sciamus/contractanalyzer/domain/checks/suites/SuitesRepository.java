@@ -1,13 +1,11 @@
 package com.sciamus.contractanalyzer.domain.checks.suites;
 
 import io.vavr.collection.List;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class SuitesRepository {
 
     private java.util.List<CheckSuite> checkSuites;
 
-    @Autowired
     public SuitesRepository(java.util.List<CheckSuite> checkSuites) {
         this.checkSuites = checkSuites;
     }

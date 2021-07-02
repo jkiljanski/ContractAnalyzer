@@ -1,29 +1,29 @@
 package com.sciamus.contractanalyzer.domain.checks.rest.getlistof;
 
-import com.sciamus.contractanalyzer.domain.checks.rest.RestContractCheck;
+import com.sciamus.contractanalyzer.domain.checks.rest.RestCheck;
 import com.sciamus.contractanalyzer.domain.checks.rest.reportcheck.ReportingCheckClient;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportResults;
-import com.sciamus.contractanalyzer.domain.checks.reports.CheckReport;
-import com.sciamus.contractanalyzer.domain.checks.reports.CheckReportBuilder;
+import com.sciamus.contractanalyzer.domain.checks.reports.Report;
+import com.sciamus.contractanalyzer.domain.checks.reports.ReportBuilder;
 import feign.Feign;
 import feign.RequestInterceptor;
 import feign.gson.GsonDecoder;
 
 import java.net.URL;
 
-public class GetListOfContractChecksCheck implements RestContractCheck {
+public class GetListOfChecksCheck implements RestCheck {
 
     private final static String NAME = "Get List Of Checks Check";
     URL urlSubjectToTest;
 
     private final RequestInterceptor requestInterceptor;
 
-    public GetListOfContractChecksCheck(RequestInterceptor requestInterceptor) {
+    public GetListOfChecksCheck(RequestInterceptor requestInterceptor) {
         this.requestInterceptor = requestInterceptor;
     }
 
     @Override
-    public CheckReport run(URL url, CheckReportBuilder builder) {
+    public Report run(URL url, ReportBuilder builder) {
 
         urlSubjectToTest = url;
 
@@ -35,7 +35,7 @@ public class GetListOfContractChecksCheck implements RestContractCheck {
 
         builder.setReportBody("Run on "+ urlSubjectToTest).createTimestamp().setNameOfCheck(this.getName());
 
-        if (responseDTO.listOfChecks.size() > 0 && responseDTO.listOfChecks.contains(GetListOfContractChecksCheck.NAME)) {
+        if (responseDTO.listOfChecks.size() > 0 && responseDTO.listOfChecks.contains(GetListOfChecksCheck.NAME)) {
 
             return getPassedTestReport(builder);
         }
@@ -51,14 +51,14 @@ public class GetListOfContractChecksCheck implements RestContractCheck {
 
 // there are no cases in which this test fails.
 
-    private CheckReport getFailedTestReport(CheckReportBuilder builder) {
+    private Report getFailedTestReport(ReportBuilder builder) {
         return builder
                 .addTextToBody("We couldn't get list of checks")
                 .setResult(ReportResults.FAILED)
                 .build();
     }
 
-    private CheckReport getPassedTestReport(CheckReportBuilder builder) {
+    private Report getPassedTestReport(ReportBuilder builder) {
         return builder
                 .setResult(ReportResults.PASSED)
                 .build();

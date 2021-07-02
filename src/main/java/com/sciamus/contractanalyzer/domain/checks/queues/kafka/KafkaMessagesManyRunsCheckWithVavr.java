@@ -2,8 +2,8 @@ package com.sciamus.contractanalyzer.domain.checks.queues.kafka;
 
 import com.sciamus.contractanalyzer.domain.checks.queues.kafka.config.KafkaConsumFactory;
 import com.sciamus.contractanalyzer.domain.checks.queues.kafka.config.KafkaProducFactory;
-import com.sciamus.contractanalyzer.domain.checks.reports.CheckReport;
-import com.sciamus.contractanalyzer.domain.checks.reports.CheckReportBuilder;
+import com.sciamus.contractanalyzer.domain.checks.reports.Report;
+import com.sciamus.contractanalyzer.domain.checks.reports.ReportBuilder;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportResults;
 import io.vavr.Tuple2;
 import io.vavr.collection.HashMap;
@@ -17,7 +17,6 @@ import org.apache.kafka.common.TopicPartition;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.util.Random;
@@ -28,14 +27,13 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-@Component
-public class KafkaMessagesManyRunsCheckWithVavr implements KafkaContractCheck {
+public class KafkaMessagesManyRunsCheckWithVavr implements KafkaCheck {
 
     private static final int NUMBER_OF_CONCURRENT_RUNS = 10;
     private final String name = "KafkaMessagesManyRunsCheckWithVavr";
     private final KafkaProducFactory kafkaProducFactory;
     private final KafkaConsumFactory kafkaConsumFactory;
-    private CheckReportBuilder reportBuilder = new CheckReportBuilder();
+    private ReportBuilder reportBuilder = new ReportBuilder();
 
 
     public KafkaMessagesManyRunsCheckWithVavr(KafkaProducFactory kafkaProducFactory, KafkaConsumFactory kafkaConsumFactory) {
@@ -44,7 +42,7 @@ public class KafkaMessagesManyRunsCheckWithVavr implements KafkaContractCheck {
     }
 
     @Override
-    public CheckReport run(String incomingTopic, String outgoingTopic, String host, String port) {
+    public Report run(String incomingTopic, String outgoingTopic, String host, String port) {
 
         //given
         Map<String, List<String>> messagesToSend = createMessagesForXRuns(NUMBER_OF_CONCURRENT_RUNS); //Multimap
@@ -178,7 +176,7 @@ public class KafkaMessagesManyRunsCheckWithVavr implements KafkaContractCheck {
         return results;
     }
 
-    private void setUpReportBuilder(CheckReportBuilder reportBuilder) {
+    private void setUpReportBuilder(ReportBuilder reportBuilder) {
         reportBuilder.createTimestamp().setNameOfCheck(getName());
     }
 
@@ -196,14 +194,14 @@ public class KafkaMessagesManyRunsCheckWithVavr implements KafkaContractCheck {
         return LogManager.getLogger(KafkaMessagesManyRunsCheckWithVavr.class);
     }
 
-    private CheckReport createFailedCheckReport(String message, CheckReportBuilder reportBuilder) {
+    private Report createFailedCheckReport(String message, ReportBuilder reportBuilder) {
         return reportBuilder
                 .setResult(ReportResults.FAILED)
                 .setReportBody("Sorry, please have another shot. Assertion details: \n" + message)
                 .build();
     }
 
-    private CheckReport getPassedCheckReport(CheckReportBuilder reportBuilder) {
+    private Report getPassedCheckReport(ReportBuilder reportBuilder) {
         return reportBuilder
                 .setResult(ReportResults.PASSED)
                 .setReportBody("Your system produced a good answer. You deserve a hug.")

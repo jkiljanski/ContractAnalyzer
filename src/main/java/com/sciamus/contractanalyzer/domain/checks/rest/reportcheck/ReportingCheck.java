@@ -1,10 +1,10 @@
 package com.sciamus.contractanalyzer.domain.checks.rest.reportcheck;
 
-import com.sciamus.contractanalyzer.domain.checks.rest.RestContractCheck;
+import com.sciamus.contractanalyzer.domain.checks.rest.RestCheck;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportResults;
-import com.sciamus.contractanalyzer.domain.checks.reports.CheckReport;
-import com.sciamus.contractanalyzer.application.mapper.CheckReportMapper;
-import com.sciamus.contractanalyzer.domain.checks.reports.CheckReportBuilder;
+import com.sciamus.contractanalyzer.domain.checks.reports.Report;
+import com.sciamus.contractanalyzer.application.mapper.ReportMapper;
+import com.sciamus.contractanalyzer.domain.checks.reports.ReportBuilder;
 import feign.Feign;
 import feign.RequestInterceptor;
 import feign.gson.GsonDecoder;
@@ -13,21 +13,21 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
-public class ReportingCheck implements RestContractCheck {
+public class ReportingCheck implements RestCheck {
 
     private final static String NAME = "Reporting Check";
 
-    private final CheckReportMapper checkReportMapper;
+    private final ReportMapper reportMapper;
 
     private final RequestInterceptor interceptor;
 
-    public ReportingCheck(CheckReportMapper checkReportMapper, RequestInterceptor interceptor) {
-        this.checkReportMapper = checkReportMapper;
+    public ReportingCheck(ReportMapper reportMapper, RequestInterceptor interceptor) {
+        this.reportMapper = reportMapper;
         this.interceptor = interceptor;
     }
 
     @Override
-    public CheckReport run(URL url, CheckReportBuilder reportBuilder) {
+    public Report run(URL url, ReportBuilder reportBuilder) {
         ReportingCheckClient reportingCheckClient = Feign.builder()
                 .decoder(new GsonDecoder())
                 .requestInterceptor(interceptor)
@@ -38,10 +38,10 @@ public class ReportingCheck implements RestContractCheck {
                 .listOfChecks.get(0), StandardCharsets.UTF_8)
                 .replace("+", "%20");
 
-        CheckReport reportSentToDatabase = checkReportMapper.
+        Report reportSentToDatabase = reportMapper.
                 mapFromDTO(reportingCheckClient.autogenerate(checkToRun, url));
 
-        CheckReport reportFetchedFromDatabase = checkReportMapper.
+        Report reportFetchedFromDatabase = reportMapper.
                 mapFromDTO(reportingCheckClient.getReportById(reportSentToDatabase.getId()));
 
         reportBuilder.setNameOfCheck(this.getName())

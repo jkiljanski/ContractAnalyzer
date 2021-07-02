@@ -1,19 +1,19 @@
 package com.sciamus.contractanalyzer.domain.checks.rest.explode;
 
-import com.sciamus.contractanalyzer.domain.checks.rest.RestContractCheck;
+import com.sciamus.contractanalyzer.domain.checks.rest.RestCheck;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportResults;
-import com.sciamus.contractanalyzer.domain.checks.reports.CheckReport;
-import com.sciamus.contractanalyzer.domain.checks.reports.CheckReportBuilder;
+import com.sciamus.contractanalyzer.domain.checks.reports.Report;
+import com.sciamus.contractanalyzer.domain.checks.reports.ReportBuilder;
 
 import java.net.URL;
 
-public class ExplodeCheck implements RestContractCheck {
+public class ExplodeCheck implements RestCheck {
 
     private final String NAME = "Exploding Check";
 
     @Override
-    public CheckReport run(URL url, CheckReportBuilder checkReportBuilder) {
-        return checkReportBuilder
+    public Report run(URL url, ReportBuilder reportBuilder) {
+        return reportBuilder
                 .setNameOfCheck(this.getName())
                 .setReportBody("This report always fails; " + "Run on "+url)
                 .setResult(ReportResults.FAILED)

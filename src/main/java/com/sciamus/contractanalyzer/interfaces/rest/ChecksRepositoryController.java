@@ -1,8 +1,7 @@
 package com.sciamus.contractanalyzer.interfaces.rest;
 
-import com.sciamus.contractanalyzer.domain.checks.rest.CheckRepository;
+import com.sciamus.contractanalyzer.domain.checks.rest.RestCheckRepository;
 import com.sciamus.contractanalyzer.domain.checks.rest.getlistof.ListOfChecksDTO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -12,11 +11,10 @@ import javax.annotation.security.RolesAllowed;
 public class ChecksRepositoryController {
 
     //TODO: fix me: this cannot use domain object directly -> it always must got through application layer
-    private final CheckRepository checkRepository;
+    private final RestCheckRepository restCheckRepository;
 
-    @Autowired
-    public ChecksRepositoryController(CheckRepository checkRepository) {
-        this.checkRepository = checkRepository;
+    public ChecksRepositoryController(RestCheckRepository restCheckRepository) {
+        this.restCheckRepository = restCheckRepository;
     }
 
     @RolesAllowed("reader")
@@ -24,7 +22,7 @@ public class ChecksRepositoryController {
     public ListOfChecksDTO getRestContractCheckList() {
 
         ListOfChecksDTO responseDTO = new ListOfChecksDTO();
-        responseDTO.listOfChecks = checkRepository.getAllChecks();
+        responseDTO.listOfChecks = restCheckRepository.getAllChecks();
         return responseDTO;
 
     }

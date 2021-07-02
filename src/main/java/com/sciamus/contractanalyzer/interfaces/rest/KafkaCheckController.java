@@ -1,7 +1,7 @@
 package com.sciamus.contractanalyzer.interfaces.rest;
 
-import com.sciamus.contractanalyzer.domain.checks.queues.KafkaContractCheckService;
-import com.sciamus.contractanalyzer.domain.checks.reports.CheckReport;
+import com.sciamus.contractanalyzer.domain.checks.queues.KafkaCheckService;
+import com.sciamus.contractanalyzer.domain.checks.reports.Report;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,27 +11,27 @@ import java.util.List;
 public class KafkaCheckController {
 
     //TODO: fix me: this cannot use domain object directly -> it always must got through application layer
-    private final KafkaContractCheckService kafkaContractCheckService;
+    private final KafkaCheckService kafkaCheckService;
 
     @Autowired
-    public KafkaCheckController(KafkaContractCheckService kafkaContractCheckService) {
-        this.kafkaContractCheckService = kafkaContractCheckService;
+    public KafkaCheckController(KafkaCheckService kafkaCheckService) {
+        this.kafkaCheckService = kafkaCheckService;
     }
 
     //add parameters
     @PostMapping("/kafkaCheck/{name}/run")
-    CheckReport runKafka(@PathVariable("name") String name,
-                         @RequestParam("incomingTopic") String firstTopic,
-                         @RequestParam("outgoingTopic") String secondTopic,
-                         @RequestParam("host") String host,
-                         @RequestParam("port") String port) {
+    Report runKafka(@PathVariable("name") String name,
+                    @RequestParam("incomingTopic") String firstTopic,
+                    @RequestParam("outgoingTopic") String secondTopic,
+                    @RequestParam("host") String host,
+                    @RequestParam("port") String port) {
 
-        return kafkaContractCheckService.runKafkaCheck(firstTopic, secondTopic, host, port,name);
+        return kafkaCheckService.runKafkaCheck(firstTopic, secondTopic, host, port,name);
     }
 
     @GetMapping("/kafkaCheck/")
     List<String> getAllChecks() {
-       return kafkaContractCheckService.getAllChecks();
+       return kafkaCheckService.getAllChecks();
     }
 
 

@@ -3,14 +3,14 @@ package com.sciamus.contractanalyzer.domain.checks.queues.kafka;
 import com.sciamus.contractanalyzer.domain.checks.queues.kafka.config.KafkaConsumFactory;
 import com.sciamus.contractanalyzer.domain.checks.queues.kafka.config.KafkaProducFactory;
 import com.sciamus.contractanalyzer.domain.checks.queues.kafka.config.KafkaStreamFactory;
-import com.sciamus.contractanalyzer.domain.checks.reports.CheckReport;
+import com.sciamus.contractanalyzer.domain.checks.reports.Report;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.Topology;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 
-public class KafkaStreamsFun implements KafkaContractCheck {
+public class KafkaStreamsFun implements KafkaCheck {
 
     private final KafkaStreamFactory kafkaStreamFactory;
 
@@ -28,7 +28,7 @@ public class KafkaStreamsFun implements KafkaContractCheck {
     }
 
     @Override
-    public CheckReport run(String incomingTopic, String outgoingTopic, String host, String port) {
+    public Report run(String incomingTopic, String outgoingTopic, String host, String port) {
 
         KafkaTemplate<String, String> producer = producFactory.createProducer(host, port);
 

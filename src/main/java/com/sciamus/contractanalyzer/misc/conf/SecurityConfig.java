@@ -27,7 +27,7 @@ import java.security.Principal;
 @KeycloakConfiguration
 
 //TODO: make this and other Configs to be imported in a main config
-public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
+public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter implements SecurityConfigurable {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -38,6 +38,7 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
         http.csrf().disable();
     }
 
+    @Override
     @Bean
     @Scope(scopeName = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
     public KeycloakSecurityContext provideKeycloakSecurityContext() {

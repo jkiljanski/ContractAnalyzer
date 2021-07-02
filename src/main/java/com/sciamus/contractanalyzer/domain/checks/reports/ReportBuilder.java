@@ -2,7 +2,7 @@ package com.sciamus.contractanalyzer.domain.checks.reports;
 
 import java.util.Date;
 
-public class CheckReportBuilder {
+public class ReportBuilder {
     private String id;
     private ReportResults result;
     private String reportBody;
@@ -11,48 +11,48 @@ public class CheckReportBuilder {
     private String nameOfCheck;
     private String userName;
 
-    public CheckReportBuilder setId(String id) {
+    public ReportBuilder setId(String id) {
         this.id = id;
         return this;
     }
 
-    public CheckReportBuilder setResult(ReportResults result) {
+    public ReportBuilder setResult(ReportResults result) {
         this.result = result;
         return this;
     }
 
-    public CheckReportBuilder setReportBody(String reportBody) {
+    public ReportBuilder setReportBody(String reportBody) {
         this.reportBody = reportBody;
         return this;
     }
 
-    public CheckReportBuilder createTimestamp(){
+    public ReportBuilder createTimestamp(){
         this.timestamp = new Date(System.currentTimeMillis());
         return this;
     }
 
-    public CheckReportBuilder setTimestamp(Date timestamp) {
+    public ReportBuilder setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
         return this;
     }
 
-    public CheckReportBuilder setNameOfCheck(String nameOfCheck) {
+    public ReportBuilder setNameOfCheck(String nameOfCheck) {
         this.nameOfCheck = nameOfCheck;
         return this;
     }
 
-    public CheckReportBuilder setUserName(String userName) {
+    public ReportBuilder setUserName(String userName) {
         this.userName = userName;
         return this;
     }
 
 
-    public CheckReportBuilder addTextToBody(String text) {
+    public ReportBuilder addTextToBody(String text) {
         this.reportBody = reportBody +text;
         return this;
     }
 
-    public CheckReport build() {
-        return new CheckReport(id, result, reportBody, timestamp, nameOfCheck, userName);
+    public Report build() {
+        return new Report(id, result, reportBody, timestamp, nameOfCheck, userName);
     }
 }

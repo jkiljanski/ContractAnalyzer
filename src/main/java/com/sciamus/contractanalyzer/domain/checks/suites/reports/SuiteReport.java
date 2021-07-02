@@ -1,6 +1,6 @@
 package com.sciamus.contractanalyzer.domain.checks.suites.reports;
 
-import com.sciamus.contractanalyzer.domain.checks.reports.CheckReport;
+import com.sciamus.contractanalyzer.domain.checks.reports.Report;
 import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -15,14 +15,14 @@ public class SuiteReport {
 
 
     @PersistenceConstructor
-    public SuiteReport(List<CheckReport> reportList) {
+    public SuiteReport(List<Report> reportList) {
         this.reportList = reportList;
     }
 
     @DBRef
-    final private List<CheckReport> reportList;
+    final private List<Report> reportList;
 
-    public io.vavr.collection.List<CheckReport> getReportList() {
+    public io.vavr.collection.List<Report> getReportList() {
         return io.vavr.collection.List.ofAll(reportList);
     }
 

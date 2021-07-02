@@ -1,54 +1,51 @@
 package com.sciamus.contractanalyzer;
 
-import com.sciamus.contractanalyzer.application.ContractChecksFacade;
-import com.sciamus.contractanalyzer.application.mapper.CheckReportMapper;
+import com.sciamus.contractanalyzer.application.ChecksFacade;
+import com.sciamus.contractanalyzer.application.mapper.ReportMapper;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportService;
-import com.sciamus.contractanalyzer.domain.checks.rest.CheckRepository;
-import com.sciamus.contractanalyzer.domain.checks.rest.config.RestChecksConfig;
+import com.sciamus.contractanalyzer.domain.checks.reports.ReportsConfig;
+import com.sciamus.contractanalyzer.domain.checks.rest.RestCheckRepository;
+import com.sciamus.contractanalyzer.domain.checks.rest.RestChecksConfig;
 import com.sciamus.contractanalyzer.domain.checks.rest.reportcheck.CurrentUserService;
+import com.sciamus.contractanalyzer.infrastructure.port.RepositoryConfigurable;
 import com.sciamus.contractanalyzer.misc.conf.SecurityConfig;
+import com.sciamus.contractanalyzer.misc.conf.SecurityConfigurable;
 import io.vavr.jackson.datatype.VavrModule;
-import org.keycloak.KeycloakSecurityContext;
 import org.springframework.boot.SpringBootConfiguration;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-
+//ASK: dlaczego nie samo configuration???
 @SpringBootConfiguration
-@EnableAutoConfiguration
-//TODO: move to specific config
-@EnableFeignClients
-//TODO: move to specific config
-@EnableMongoRepositories(basePackages = "com.sciamus.contractanalyzer.infrastructure.port")
 @EnableConfigurationProperties
-//TODO: move to specific config
-@EnableSwagger2
-//TODO: import other configs (auto scan doesn't work)
 
-@Import({SecurityConfig.class, RestChecksConfig.class, })
+@Import({SecurityConfig.class, RestChecksConfig.class, ReportsConfig.class})
 public class AppConfig {
 
+
+
+    private final SecurityConfigurable securityConfigurable;
+
+
+    public AppConfig(SecurityConfigurable securityConfigurable) {
+        this.securityConfigurable = securityConfigurable;
+    }
+
+
     @Bean
-    public CheckReportMapper checkReportMapper(KeycloakSecurityContext keycloakSecurityContext){
-        return new CheckReportMapper(currentUserService(keycloakSecurityContext));
+    public ReportMapper checkReportMapper() {
+        return new ReportMapper(currentUserService());
     }
 
     @Bean
-    public CurrentUserService currentUserService(KeycloakSecurityContext keycloakSecurityContext) {
-        return new CurrentUserService(keycloakSecurityContext);
+    public CurrentUserService currentUserService() {
+        return new CurrentUserService(securityConfigurable.provideKeycloakSecurityContext());
     }
 
     @Bean
-    public ContractChecksFacade contractChecksService(CheckRepository checkRepository, ReportService reportService, CheckReportMapper checkReportMapper){
-        return new ContractChecksFacade(checkRepository, reportService, checkReportMapper);
+    public ChecksFacade contractChecksFacade(RestCheckRepository restCheckRepository, ReportService reportService) {
+        return new ChecksFacade(restCheckRepository, reportService, checkReportMapper());
     }
 
     @Bean
@@ -56,9 +53,5 @@ public class AppConfig {
         return new VavrModule();
     }
 
-    @Bean
-    public Docket productApi() {
-        return new Docket(DocumentationType.SWAGGER_2).select()
-                .apis(RequestHandlerSelectors.basePackage("com.sciamus.contractanalyzer")).build();
-    }
+
 }

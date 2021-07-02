@@ -1,6 +1,6 @@
 package com.sciamus.contractanalyzer.domain.checks.aggregatedChecks;
 
-import com.sciamus.contractanalyzer.domain.checks.reports.CheckReport;
+import com.sciamus.contractanalyzer.domain.checks.reports.Report;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
@@ -15,7 +15,7 @@ import java.util.List;
 @Document(collection = "aggregatedCheckReports")
 @TypeAlias("aggregated_check_report")
 @Getter
-public class AggregatedChecksReport {
+public class AggregatedReport {
 
         @Id
         private String id;
@@ -35,7 +35,7 @@ public class AggregatedChecksReport {
 
         @DBRef
         @Field("failedTestsId")
-        private final List<CheckReport> failedTestsId;
+        private final List<Report> failedTestsId;
 
         @Field("passedPercentage")
         private final String passedPercentage;
@@ -48,7 +48,7 @@ public class AggregatedChecksReport {
 
 
         @PersistenceConstructor
-        public AggregatedChecksReport(String id, String aggregatedReportName, List<String> namesOfChecks, Date timestamp, List<CheckReport> failedTestsId, String passedPercentage, String failedPercentage, String userName) {
+        public AggregatedReport(String id, String aggregatedReportName, List<String> namesOfChecks, Date timestamp, List<Report> failedTestsId, String passedPercentage, String failedPercentage, String userName) {
             this.id = id;
             this.aggregatedReportName = aggregatedReportName;
             this.namesOfChecks = namesOfChecks;

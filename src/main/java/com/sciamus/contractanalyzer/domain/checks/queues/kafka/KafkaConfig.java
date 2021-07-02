@@ -1,13 +1,17 @@
-package com.sciamus.contractanalyzer.domain.checks.queues.kafka.config;
+package com.sciamus.contractanalyzer.domain.checks.queues.kafka;
 
-import com.sciamus.contractanalyzer.domain.checks.queues.kafka.KafkaMessagesSimpleCountCheck;
-import com.sciamus.contractanalyzer.domain.checks.queues.kafka.KafkaPingPongCheck;
-import com.sciamus.contractanalyzer.domain.checks.queues.kafka.KafkaStreamsCountFun;
-import com.sciamus.contractanalyzer.domain.checks.queues.kafka.KafkaStreamsFun;
+import com.sciamus.contractanalyzer.domain.checks.queues.kafka.*;
+import com.sciamus.contractanalyzer.domain.checks.queues.kafka.config.KafkaConsumFactory;
+import com.sciamus.contractanalyzer.domain.checks.queues.kafka.config.KafkaProducFactory;
+import com.sciamus.contractanalyzer.domain.checks.queues.kafka.config.KafkaProperties;
+import com.sciamus.contractanalyzer.domain.checks.queues.kafka.config.KafkaStreamFactory;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportService;
+import com.sciamus.contractanalyzer.domain.checks.reports.ReportsConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
+@Import(ReportsConfig.class)
 @Configuration
 public class KafkaConfig {
 
@@ -50,4 +54,22 @@ public class KafkaConfig {
     public KafkaStreamsFun kafkaStreamsFun(){
         return new KafkaStreamsFun(kafkaStreamFactory(), kafkaProducFactory(), kafkaConsumFactory());
     }
+    @Bean KafkaMessagesSimpleCountCheck kafkaMessagesSimpleCountCheck() {
+        return new KafkaMessagesSimpleCountCheck(kafkaStreamFactory(),kafkaProducFactory(),kafkaConsumFactory());
+    }
+
+    @Bean
+    KafkaMessagesManyRunsCheck kafkaMessagesManyRunsCheck(){
+        return new KafkaMessagesManyRunsCheck(kafkaProducFactory(),kafkaConsumFactory());
+
+    }
+    @Bean
+    KafkaMessagesManyRunsCheckWithVavr kafkaMessagesManyRunsCheckWithVavr(){
+        return new KafkaMessagesManyRunsCheckWithVavr(kafkaProducFactory(),kafkaConsumFactory());
+    }
+
+
+
+
+
 }

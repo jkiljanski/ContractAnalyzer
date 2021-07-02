@@ -1,32 +1,32 @@
 package com.sciamus.contractanalyzer.domain.checks.suites.reports;
 
 
-import com.sciamus.contractanalyzer.application.CheckReportDTO;
-import com.sciamus.contractanalyzer.application.mapper.CheckReportMapper;
-import com.sciamus.contractanalyzer.domain.checks.reports.CheckReport;
+import com.sciamus.contractanalyzer.application.ReportDTO;
+import com.sciamus.contractanalyzer.application.mapper.ReportMapper;
+import com.sciamus.contractanalyzer.domain.checks.reports.Report;
 import io.vavr.collection.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
 public class SuiteReportMapper {
 
-    private final CheckReportMapper checkReportMapper;
+    private final ReportMapper reportMapper;
 
     @Autowired
-    public SuiteReportMapper(CheckReportMapper checkReportMapper) {
-        this.checkReportMapper = checkReportMapper;
+    public SuiteReportMapper(ReportMapper reportMapper) {
+        this.reportMapper = reportMapper;
     }
 
     public SuiteReport mapFromDTO (SuiteReportDTO suiteReportDTO) {
 
-        List<CheckReport> checkReportList = suiteReportDTO.testReportDTOList.map(checkReportMapper::mapFromDTO);
+        List<Report> checkReportList = suiteReportDTO.testReportDTOList.map(reportMapper::mapFromDTO);
 
         return new SuiteReport(checkReportList.toJavaList());
     }
 
     public SuiteReportDTO mapToDTO (SuiteReport suiteReport) {
 
-        List<CheckReportDTO> testReportDTOList = suiteReport.getReportList().map(checkReportMapper::mapToDTO);
+        List<ReportDTO> testReportDTOList = suiteReport.getReportList().map(reportMapper::mapToDTO);
 
         SuiteReportDTO suiteReportDTO = new SuiteReportDTO();
 
