@@ -20,7 +20,6 @@ spring:
     port: 5672
 
 
-
 kafka:
     app-name: contract-analyzer
     bootstrap-servers: kafka:29092
@@ -36,13 +35,8 @@ kafka:
 
 
 
-
-
-
-
 keycloak:
   auth-server-url: http://keycloak:8090/auth
-  #  auth-server-url: http://security:8080/auth
   realm: contractAnalyzer
   resource: contract-analyzer-backend
   public-client: true

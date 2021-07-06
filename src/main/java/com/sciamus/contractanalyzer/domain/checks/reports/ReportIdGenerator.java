@@ -1,14 +1,14 @@
 package com.sciamus.contractanalyzer.domain.checks.reports;
 
-import com.sciamus.contractanalyzer.infrastructure.port.ReportRepository;
+import com.sciamus.contractanalyzer.infrastructure.port.ReportsRepository;
 
 public class ReportIdGenerator {
 
-    private final ReportRepository repository;
+    private final ReportsRepository repository;
 
     private String nextID;
 
-    public ReportIdGenerator(ReportRepository repository) {
+    public ReportIdGenerator(ReportsRepository repository) {
         this.repository = repository;
     }
 

@@ -20,7 +20,7 @@ public class ChecksServiceController {
         this.checksFacade = checksFacade;
     }
 
-    @RolesAllowed("writer")
+//    @RolesAllowed("writer")
     @PostMapping("/checks/{name}/run")
     @ResponseBody
     public ReportDTO runAndGetReportWithId(

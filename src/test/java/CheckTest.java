@@ -1,12 +1,12 @@
 import com.sciamus.contractanalyzer.application.ReportDTO;
 import com.sciamus.contractanalyzer.application.ChecksFacade;
-import com.sciamus.contractanalyzer.application.mapper.ReportMapper;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportService;
 import com.sciamus.contractanalyzer.domain.checks.rest.RestCheckRepository;
 import com.sciamus.contractanalyzer.domain.checks.rest.RestCheck;
 import com.sciamus.contractanalyzer.domain.checks.rest.dummy.DummyRestCheck;
 import com.sciamus.contractanalyzer.domain.checks.rest.reportcheck.CurrentUserService;
-import com.sciamus.contractanalyzer.infrastructure.port.ReportRepository;
+import com.sciamus.contractanalyzer.infrastructure.adapter.RepositoryConfigurable;
+import com.sciamus.contractanalyzer.infrastructure.port.ReportsRepository;
 import com.sciamus.contractanalyzer.misc.conf.SecurityConfigurable;
 import config.TestContextFactory;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,30 +33,28 @@ public class CheckTest {
     private KeycloakSecurityContext keycloakSecurityContextMock;
 
     @Mock
-    private ReportRepository reportRepositoryMock;
-
+    private ReportsRepository reportsRepositoryMock;
 
     private ChecksFacade checksFacade;
 
     @Mock
     private SecurityConfigurable securityConfigMock;
 
+    @Mock
+    private RepositoryConfigurable repositoryConfigurableMock;
+
 
     @BeforeEach
     public void init() {
 
         given(securityConfigMock.provideKeycloakSecurityContext()).willReturn(keycloakSecurityContextMock);
+        given(repositoryConfigurableMock.getReportsRepository()).willReturn(reportsRepositoryMock);
 
-        TestContextFactory testContextFactory = new TestContextFactory(securityConfigMock);
-
-
-        final CurrentUserService currentUserService =  testContextFactory.getAppConfig().currentUserService();
-        final ReportService reportService = testContextFactory.getReportsConfig().reportService(reportRepositoryMock);
-
+        TestContextFactory testContextFactory = new TestContextFactory(securityConfigMock, repositoryConfigurableMock);
 
         List<RestCheck> restChecks = List.of(new DummyRestCheck());
-        final RestCheckRepository restCheckRepository = testContextFactory.getRestChecksConfig().checkRepository(restChecks, currentUserService);
-        checksFacade = testContextFactory.getAppConfig().contractChecksFacade(restCheckRepository, reportService);
+
+        checksFacade = testContextFactory.getChecksFacade(restChecks);
 
     }
 

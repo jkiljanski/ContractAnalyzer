@@ -1,21 +1,21 @@
 package com.sciamus.contractanalyzer.domain.checks.aggregatedChecks;
 
-import com.sciamus.contractanalyzer.infrastructure.port.AggregatedChecksRepository;
+import com.sciamus.contractanalyzer.infrastructure.port.AggregatedReportsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class AggregatedReportIdGenerator {
 
-    private final AggregatedChecksRepository aggregatedChecksRepository;
+    private final AggregatedReportsRepository aggregatedReportsRepository;
 
     private String nextID;
 
     @Autowired
-    public AggregatedReportIdGenerator(AggregatedChecksRepository aggregatedChecksRepository) {
-        this.aggregatedChecksRepository = aggregatedChecksRepository;
+    public AggregatedReportIdGenerator(AggregatedReportsRepository aggregatedReportsRepository) {
+        this.aggregatedReportsRepository = aggregatedReportsRepository;
     }
 
     public String getNextID() {
-        nextID = aggregatedChecksRepository.count() + 1 + "";
+        nextID = aggregatedReportsRepository.count() + 1 + "";
         return nextID;
     }
 }

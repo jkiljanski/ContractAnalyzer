@@ -6,7 +6,7 @@ import com.sciamus.contractanalyzer.domain.checks.rest.reportcheck.CurrentUserSe
 import com.sciamus.contractanalyzer.domain.checks.reports.Report;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportResults;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportService;
-import com.sciamus.contractanalyzer.infrastructure.port.AggregatedChecksRepository;
+import com.sciamus.contractanalyzer.infrastructure.port.AggregatedReportsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.net.MalformedURLException;
@@ -25,25 +25,25 @@ public class AggregatedReportService {
 
     private final RestCheckRepository restCheckRepository;
 
-    private final AggregatedChecksRepository aggregatedChecksRepository;
+    private final AggregatedReportsRepository aggregatedReportsRepository;
 
     @Autowired
-    public AggregatedReportService(AggregatedReportIdGenerator aggregatedReportIdGenerator, CurrentUserService currentUserService, ReportService reportService, RestCheckRepository restCheckRepository, AggregatedChecksRepository aggregatedChecksRepository) {
+    public AggregatedReportService(AggregatedReportIdGenerator aggregatedReportIdGenerator, CurrentUserService currentUserService, ReportService reportService, RestCheckRepository restCheckRepository, AggregatedReportsRepository aggregatedReportsRepository) {
         this.aggregatedReportIdGenerator = aggregatedReportIdGenerator;
         this.currentUserService = currentUserService;
         this.reportService = reportService;
         this.restCheckRepository = restCheckRepository;
-        this.aggregatedChecksRepository = aggregatedChecksRepository;
+        this.aggregatedReportsRepository = aggregatedReportsRepository;
     }
 
     public AggregatedReport addAggregatedReportToRepository(String name, AggregatedReport aggregatedReport) {
         aggregatedReport.addId(aggregatedReportIdGenerator.getNextID());
         aggregatedReport.addName(name != null ? name : "Aggregated report#" + aggregatedReport.getId());
-        return aggregatedChecksRepository.save(aggregatedReport);
+        return aggregatedReportsRepository.save(aggregatedReport);
     }
 
     public List<AggregatedReport> getAggregatedChecksReports() {
-        return aggregatedChecksRepository.findAll();
+        return aggregatedReportsRepository.findAll();
     }
 
     public AggregatedReportDTO runAndSaveAggregatedChecks(String name, List<String> namesOfChecks, String url) throws MalformedURLException {
