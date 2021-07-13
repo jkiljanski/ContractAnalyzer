@@ -38,28 +38,18 @@ public class TestContextFactory {
         return new AppConfig(securityConfigurable);
     }
 
-    //to Refactor:
-    private ReportsConfig getReportsConfig() {
-        return reportsConfig;
-    }
-
-    private RestChecksConfig getRestChecksConfig() {
-        return restChecksConfig;
-    }
-
 
     // listę zapodać do RestChecksConfig
     public RestCheckRepository getRestCheckRepository(List<RestCheck> restCheckList) {
-        return getRestChecksConfig().checkRepository(restCheckList, getCurrentUserService());
+        return restChecksConfig.checkRepository(restCheckList, getCurrentUserService());
     }
-
 
     private CurrentUserService getCurrentUserService() {
         return getAppConfig().currentUserService();
     }
 
     private ReportService getReportsService() {
-        return getReportsConfig().reportService(repositoryConfigurable);
+        return reportsConfig.reportService(repositoryConfigurable);
     }
 
 
