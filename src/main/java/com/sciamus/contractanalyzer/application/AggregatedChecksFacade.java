@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import java.net.MalformedURLException;
 import java.util.List;
 
-@Service
 public class AggregatedChecksFacade {
 
     private final AggregatedReportService aggregatedReportService;

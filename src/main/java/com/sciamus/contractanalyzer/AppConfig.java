@@ -1,7 +1,9 @@
 package com.sciamus.contractanalyzer;
 
+import com.sciamus.contractanalyzer.application.AggregatedChecksFacade;
 import com.sciamus.contractanalyzer.application.ChecksFacade;
 import com.sciamus.contractanalyzer.application.mapper.ReportMapper;
+import com.sciamus.contractanalyzer.domain.checks.aggregatedChecks.AggregatedReportService;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportService;
 import com.sciamus.contractanalyzer.domain.checks.rest.RestCheckRepository;
 import com.sciamus.contractanalyzer.domain.checks.rest.reportcheck.CurrentUserService;
@@ -17,7 +19,7 @@ import org.springframework.context.annotation.Import;
 @SpringBootApplication
 @EnableConfigurationProperties
 
-@Import({SecurityConfig.class, ReportService.class})
+@Import({SecurityConfig.class, ReportService.class, AggregatedReportService.class})
 public class AppConfig {
 
 
@@ -41,6 +43,11 @@ public class AppConfig {
     public ChecksFacade contractChecksFacade(RestCheckRepository restCheckRepository, ReportService reportService) {
         return new ChecksFacade(restCheckRepository, reportService, checkReportMapper());
     }
+    @Bean
+    public AggregatedChecksFacade aggregatedChecksFacade(AggregatedReportService aggregatedReportService) {
+        return new AggregatedChecksFacade(aggregatedReportService);
+    }
+
 
     @Bean
     VavrModule vavrModule() {

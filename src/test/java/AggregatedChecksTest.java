@@ -1,9 +1,9 @@
-import com.sciamus.contractanalyzer.application.ChecksFacade;
-import com.sciamus.contractanalyzer.application.ReportDTO;
+import com.sciamus.contractanalyzer.application.AggregatedChecksFacade;
+import com.sciamus.contractanalyzer.domain.checks.aggregatedChecks.AggregatedReportDTO;
 import com.sciamus.contractanalyzer.domain.checks.rest.RestCheck;
 import com.sciamus.contractanalyzer.domain.checks.rest.dummy.DummyRestCheck;
 import com.sciamus.contractanalyzer.infrastructure.adapter.RepositoryConfigurable;
-import com.sciamus.contractanalyzer.infrastructure.port.ReportsRepository;
+import com.sciamus.contractanalyzer.infrastructure.port.AggregatedReportsRepository;
 import com.sciamus.contractanalyzer.misc.conf.SecurityConfigurable;
 import config.TestContextFactory;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,17 +21,18 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
+
 @ExtendWith(MockitoExtension.class)
-public class CheckTest {
+public class AggregatedChecksTest {
 
 
     @Mock
     private KeycloakSecurityContext keycloakSecurityContextMock;
 
     @Mock
-    private ReportsRepository reportsRepositoryMock;
+    private AggregatedReportsRepository aggregatedReportsRepositoryMock;
 
-    private ChecksFacade checksFacade;
+    private AggregatedChecksFacade aggregatedChecksFacade;
 
     @Mock
     private SecurityConfigurable securityConfigMock;
@@ -44,13 +45,14 @@ public class CheckTest {
     public void init() {
 
         given(securityConfigMock.provideKeycloakSecurityContext()).willReturn(keycloakSecurityContextMock);
-        given(repositoryConfigurableMock.getReportsRepository()).willReturn(reportsRepositoryMock);
+        given(repositoryConfigurableMock.getAggregatedReportsRepository()).willReturn(aggregatedReportsRepositoryMock);
+
 
         TestContextFactory testContextFactory = new TestContextFactory(securityConfigMock, repositoryConfigurableMock);
 
         List<RestCheck> restChecks = List.of(new DummyRestCheck());
 
-        checksFacade = testContextFactory.getChecksFacade(restChecks);
+        aggregatedChecksFacade = testContextFactory.getAggregatedChecksFacade(restChecks);
 
     }
 
@@ -61,7 +63,7 @@ public class CheckTest {
         given(keycloakSecurityContextMock.getToken()).willReturn(new AccessToken());
 
         // when
-        ReportDTO reportDTO = checksFacade.runAndGetSavedReportWithId("Dummy Check", "http://localhost:1212/dummyUrl");
+        AggregatedReportDTO reportDTO = aggregatedChecksFacade.runAndSaveAggregatedChecks("something", List.of("Dummy Check"), "http://localhost:1212/dummyUrl");
 
         // then
         assertThat(reportDTO).isNotNull();

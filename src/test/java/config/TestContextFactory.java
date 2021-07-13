@@ -1,7 +1,10 @@
 package config;
 
 import com.sciamus.contractanalyzer.AppConfig;
+import com.sciamus.contractanalyzer.application.AggregatedChecksFacade;
 import com.sciamus.contractanalyzer.application.ChecksFacade;
+import com.sciamus.contractanalyzer.domain.checks.aggregatedChecks.AggregatedReportConfig;
+import com.sciamus.contractanalyzer.domain.checks.aggregatedChecks.AggregatedReportService;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportService;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportsConfig;
 import com.sciamus.contractanalyzer.domain.checks.rest.RestCheck;
@@ -27,6 +30,7 @@ public class TestContextFactory {
 
     ReportsConfig reportsConfig = new ReportsConfig();
     RestChecksConfig restChecksConfig = new RestChecksConfig();
+    AggregatedReportConfig aggregatedReportConfig = new AggregatedReportConfig();
 
 
     private AppConfig getAppConfig() {
@@ -45,6 +49,8 @@ public class TestContextFactory {
     }
 
 
+
+
     // listę zapodać do RestChecksConfig
     public RestCheckRepository getRestCheckRepository(List<RestCheck> restCheckList) {
         return getRestChecksConfig().checkRepository(restCheckList, getCurrentUserService());
@@ -59,9 +65,15 @@ public class TestContextFactory {
         return getReportsConfig().reportService(repositoryConfigurable);
     }
 
+
     public ChecksFacade getChecksFacade(List<RestCheck> restCheckList) {
 
         return getAppConfig().contractChecksFacade(getRestCheckRepository(restCheckList), getReportsService());
+    }
+
+    public AggregatedChecksFacade getAggregatedChecksFacade (List<RestCheck> restCheckList) {
+
+       return getAppConfig().aggregatedChecksFacade(aggregatedReportConfig.aggregatedChecksService(getCurrentUserService(),getRestCheckRepository(restCheckList), repositoryConfigurable.getAggregatedReportsRepository(), getReportsService()));
     }
 
 
