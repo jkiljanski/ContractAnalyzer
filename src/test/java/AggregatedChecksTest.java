@@ -4,6 +4,7 @@ import com.sciamus.contractanalyzer.domain.checks.rest.RestCheck;
 import com.sciamus.contractanalyzer.domain.checks.rest.dummy.DummyRestCheck;
 import com.sciamus.contractanalyzer.infrastructure.adapter.RepositoryConfigurable;
 import com.sciamus.contractanalyzer.infrastructure.port.AggregatedReportsRepository;
+import com.sciamus.contractanalyzer.infrastructure.port.ReportsRepository;
 import com.sciamus.contractanalyzer.misc.conf.SecurityConfigurable;
 import config.TestContextFactory;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.keycloak.KeycloakSecurityContext;
 import org.keycloak.representations.AccessToken;
+import org.mockito.AdditionalAnswers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -19,6 +21,7 @@ import java.net.MalformedURLException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 
@@ -31,6 +34,9 @@ public class AggregatedChecksTest {
 
     @Mock
     private AggregatedReportsRepository aggregatedReportsRepositoryMock;
+
+    @Mock
+    private ReportsRepository reportsRepositoryMock;
 
     private AggregatedChecksFacade aggregatedChecksFacade;
 
@@ -46,6 +52,7 @@ public class AggregatedChecksTest {
 
         given(securityConfigMock.provideKeycloakSecurityContext()).willReturn(keycloakSecurityContextMock);
         given(repositoryConfigurableMock.getAggregatedReportsRepository()).willReturn(aggregatedReportsRepositoryMock);
+        given(repositoryConfigurableMock.getReportsRepository()).willReturn(reportsRepositoryMock);
 
 
         TestContextFactory testContextFactory = new TestContextFactory(securityConfigMock, repositoryConfigurableMock);
@@ -58,14 +65,24 @@ public class AggregatedChecksTest {
 
     @Test
     @DisplayName("Creates report")
-    public void checkReportCreationTest() throws MalformedURLException {
+    public void aggregatedCheckReportCreationTest() throws MalformedURLException {
         //given
+
         given(keycloakSecurityContextMock.getToken()).willReturn(new AccessToken());
+        given(reportsRepositoryMock.save(any())).willAnswer(AdditionalAnswers.returnsFirstArg());
+        given(aggregatedReportsRepositoryMock.save(any())).willAnswer(AdditionalAnswers.returnsFirstArg());
+
 
         // when
-        AggregatedReportDTO reportDTO = aggregatedChecksFacade.runAndSaveAggregatedChecks("something", List.of("Dummy Check"), "http://localhost:1212/dummyUrl");
+        AggregatedReportDTO reportDTO = aggregatedChecksFacade.runAndSaveAggregatedChecks(null,List.of("Dummy Check"), "http://localhost:1212/dummyUrl");
 
         // then
         assertThat(reportDTO).isNotNull();
     }
+
+
+
+
+
+
 }

@@ -48,6 +48,8 @@ public class SuiteTest {
         given(securityConfigMock.provideKeycloakSecurityContext()).willReturn(keycloakSecurityContextMock);
         given(repositoryConfigurableMock.getReportsRepository()).willReturn(reportsRepositoryMock);
 
+
+
 //
 //        final CurrentUserService currentUserService = new CurrentUserService(keycloakSecurityContextMock);
 //        List<RestCheck> restChecks = new ArrayList<>();
