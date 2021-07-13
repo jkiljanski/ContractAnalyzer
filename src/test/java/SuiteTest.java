@@ -1,3 +1,6 @@
+import com.sciamus.contractanalyzer.domain.checks.rest.RestCheck;
+import com.sciamus.contractanalyzer.domain.checks.suites.BasicSuite;
+import com.sciamus.contractanalyzer.domain.checks.suites.CheckSuite;
 import com.sciamus.contractanalyzer.domain.checks.suites.SuiteNotFoundException;
 import com.sciamus.contractanalyzer.domain.checks.suites.SuitesService;
 import com.sciamus.contractanalyzer.domain.checks.suites.reports.SuiteReport;
@@ -5,6 +8,7 @@ import com.sciamus.contractanalyzer.infrastructure.adapter.RepositoryConfigurabl
 import com.sciamus.contractanalyzer.infrastructure.port.ReportsRepository;
 import com.sciamus.contractanalyzer.infrastructure.port.SuitesReportsRepository;
 import com.sciamus.contractanalyzer.misc.conf.SecurityConfigurable;
+import config.TestContextFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,6 +20,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -37,7 +43,7 @@ public class SuiteTest {
     private SuitesService suitesService;
 
     @Mock
-    private SecurityConfigurable securityConfigMock;
+    private SecurityConfigurable securityConfigurableMock;
 
     @Mock
     ReportsRepository reportsRepositoryMock;
@@ -45,24 +51,21 @@ public class SuiteTest {
     @BeforeEach
     public void init() {
 
-        given(securityConfigMock.provideKeycloakSecurityContext()).willReturn(keycloakSecurityContextMock);
+        given(securityConfigurableMock.provideKeycloakSecurityContext()).willReturn(keycloakSecurityContextMock);
+        given(repositoryConfigurableMock.getSuitesReportsRepository()).willReturn(suitesReportsRepositoryMock);
+
         given(repositoryConfigurableMock.getReportsRepository()).willReturn(reportsRepositoryMock);
 
+        TestContextFactory testContextFactory = new TestContextFactory(securityConfigurableMock, repositoryConfigurableMock);
 
+        List<RestCheck> restChecks = new ArrayList<>();
 
-//
-//        final CurrentUserService currentUserService = new CurrentUserService(keycloakSecurityContextMock);
-//        List<RestCheck> restChecks = new ArrayList<>();
-//        final RestCheckRepository restCheckRepository = new RestCheckRepository(restChecks, currentUserService);
-//        final ReportMapper reportMapper = new ReportMapper(currentUserService);
-//        final ReportIdGenerator reportIdGenerator = new ReportIdGenerator(reportsRepositoryMock);
-//        final ReportService reportService = new ReportService(reportsRepositoryMock, reportIdGenerator);
-//        final ChecksFacade checksFacade = new ChecksFacade(restCheckRepository, reportService, reportMapper);
-//        List<CheckSuite> checkSuites = List.of(new BasicSuite(checksFacade, restCheckRepository, reportMapper));
-//        final SuitesRepository suitesRepository = new SuitesRepository(checkSuites);
-//        suitesService = new SuitesService(suitesReportsRepositoryMock, suitesRepository);
+        //kompletna aberracja - Basic Suite do wywalenia - ma w sobie pół systemu
+        List<CheckSuite> checkSuites = List.of(new BasicSuite(testContextFactory.getChecksFacade(restChecks),
+                testContextFactory.restChecksConfig.checkRepository(restChecks,testContextFactory.getAppConfig().currentUserService()),
+                testContextFactory.getAppConfig().checkReportMapper()));
 
-
+        suitesService = testContextFactory.getSuitesService(checkSuites);
     }
 
     @Test
