@@ -10,6 +10,9 @@ import com.sciamus.contractanalyzer.domain.checks.rest.RestCheck;
 import com.sciamus.contractanalyzer.domain.checks.rest.RestCheckRepository;
 import com.sciamus.contractanalyzer.domain.checks.rest.RestChecksConfig;
 import com.sciamus.contractanalyzer.domain.checks.rest.reportcheck.CurrentUserService;
+import com.sciamus.contractanalyzer.domain.checks.suites.CheckSuite;
+import com.sciamus.contractanalyzer.domain.checks.suites.SuitesConfig;
+import com.sciamus.contractanalyzer.domain.checks.suites.SuitesService;
 import com.sciamus.contractanalyzer.infrastructure.adapter.RepositoryConfigurable;
 import com.sciamus.contractanalyzer.misc.conf.SecurityConfigurable;
 
@@ -28,11 +31,12 @@ public class TestContextFactory {
 
 
     ReportsConfig reportsConfig = new ReportsConfig();
-    RestChecksConfig restChecksConfig = new RestChecksConfig();
+    public RestChecksConfig restChecksConfig = new RestChecksConfig();
     AggregatedReportConfig aggregatedReportConfig = new AggregatedReportConfig();
+    SuitesConfig suitesConfig = new SuitesConfig();
 
 
-    private AppConfig getAppConfig() {
+    public AppConfig getAppConfig() {
 
         //może to jeszcze gdzieś wyekspediować
         return new AppConfig(securityConfigurable);
@@ -40,7 +44,7 @@ public class TestContextFactory {
 
 
     // listę zapodać do RestChecksConfig
-    public RestCheckRepository getRestCheckRepository(List<RestCheck> restCheckList) {
+    private RestCheckRepository getRestCheckRepository(List<RestCheck> restCheckList) {
         return restChecksConfig.checkRepository(restCheckList, getCurrentUserService());
     }
 
@@ -63,6 +67,10 @@ public class TestContextFactory {
         return getAppConfig().aggregatedChecksFacade(aggregatedReportConfig.aggregatedChecksService(getCurrentUserService(), getRestCheckRepository(restCheckList), repositoryConfigurable.getAggregatedReportsRepository(), getReportsService()));
 
 
+    }
+
+    public SuitesService getSuitesService(List<CheckSuite> suites) {
+        return  suitesConfig.suitesService(repositoryConfigurable.getSuitesReportsRepository(),suites);
     }
 
 
