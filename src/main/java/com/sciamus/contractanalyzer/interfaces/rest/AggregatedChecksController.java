@@ -24,6 +24,8 @@ public class AggregatedChecksController {
         return aggregatedChecksFacade.getAggregatedChecksReports();
     }
 
+
+    @CrossOrigin("*")
     @RolesAllowed("writer")
     @PostMapping("/aggregatedChecks/run")
     @ResponseBody

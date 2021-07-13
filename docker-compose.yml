@@ -60,7 +60,7 @@ services:
         - ./conf/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
 
   keycloak:
-    image: jboss/keycloak:13.0.1
+    image: wizzn/keycloak:12
     ports:
       - "8090:8090"
     volumes:

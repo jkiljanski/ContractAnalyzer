@@ -21,6 +21,8 @@ public class ChecksServiceController {
     }
 
 //    @RolesAllowed("writer")
+
+    @CrossOrigin("*")
     @PostMapping("/checks/{name}/run")
     @ResponseBody
     public ReportDTO runAndGetReportWithId(

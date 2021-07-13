@@ -21,8 +21,10 @@ import org.springframework.security.web.authentication.session.SessionAuthentica
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.cors.CorsConfiguration;
 
 import java.security.Principal;
+import java.util.List;
 
 @KeycloakConfiguration
 
@@ -35,8 +37,8 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter impleme
         http.authorizeRequests()
                 .anyRequest()
                 .permitAll();
-        http.csrf().disable();
-    }
+//        http.csrf().disable();
+        ;}
 
     @Override
     @Bean
