@@ -37,7 +37,7 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter impleme
         http.authorizeRequests()
                 .anyRequest()
                 .permitAll();
-//        http.csrf().disable();
+        http.csrf().disable();
         ;}
 
     @Override

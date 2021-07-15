@@ -1,9 +1,8 @@
 package com.sciamus.contractanalyzer.application;
 
-import com.sciamus.contractanalyzer.domain.checks.aggregatedChecks.AggregatedReportDTO;
 import com.sciamus.contractanalyzer.domain.checks.aggregatedChecks.AggregatedReport;
+import com.sciamus.contractanalyzer.domain.checks.aggregatedChecks.AggregatedReportDTO;
 import com.sciamus.contractanalyzer.domain.checks.aggregatedChecks.AggregatedReportService;
-import org.springframework.stereotype.Service;
 
 import java.net.MalformedURLException;
 import java.util.List;

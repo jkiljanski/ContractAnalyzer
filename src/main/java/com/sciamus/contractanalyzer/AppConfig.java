@@ -19,7 +19,7 @@ import org.springframework.context.annotation.Import;
 @SpringBootApplication
 @EnableConfigurationProperties
 
-@Import({SecurityConfig.class, ReportService.class, AggregatedReportService.class})
+@Import({SecurityConfig.class, ReportService.class})
 public class AppConfig {
 
 
@@ -43,6 +43,7 @@ public class AppConfig {
     public ChecksFacade contractChecksFacade(RestCheckRepository restCheckRepository, ReportService reportService) {
         return new ChecksFacade(restCheckRepository, reportService, checkReportMapper());
     }
+
     @Bean
     public AggregatedChecksFacade aggregatedChecksFacade(AggregatedReportService aggregatedReportService) {
         return new AggregatedChecksFacade(aggregatedReportService);

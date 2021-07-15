@@ -3,12 +3,10 @@ package com.sciamus.contractanalyzer.infrastructure.adapter;
 import com.sciamus.contractanalyzer.infrastructure.port.AggregatedReportsRepository;
 import com.sciamus.contractanalyzer.infrastructure.port.ReportsRepository;
 import com.sciamus.contractanalyzer.infrastructure.port.SuitesReportsRepository;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
-@Configuration
+
 @EnableMongoRepositories(basePackages = "com.sciamus.contractanalyzer.infrastructure.port")
 public class MongoConfig implements RepositoryConfigurable {
 
