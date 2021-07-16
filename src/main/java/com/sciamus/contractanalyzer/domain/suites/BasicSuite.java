@@ -40,7 +40,7 @@ public class BasicSuite extends CheckSuite {
     public SuiteReport run(URL url) {
 
 
-        List<CheckReportDTO> checkReportDTOS = List.ofAll(checkRepository.getAllChecks().stream())
+        List<CheckReportDTO> checkReportDTOS = List.ofAll(checkRepository.getAllChecks().toStream())
                 .take(3)
                 .peek(System.out::println)
                 .map(s -> Try.of(()-> contractChecksService

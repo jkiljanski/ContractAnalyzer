@@ -15,7 +15,7 @@ public class AggregatedReportIdGenerator {
     }
 
     public String getNextID() {
-        nextID = aggregatedChecksRepository.count() + 1 + "";
+        nextID = Long.toString(aggregatedChecksRepository.count() + 1);
         return nextID;
     }
 }

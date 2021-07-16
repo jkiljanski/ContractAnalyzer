@@ -12,6 +12,9 @@ import feign.gson.GsonDecoder;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.function.Predicate;
+
+import static io.vavr.API.*;
 
 public class ReportingCheck implements RestContractCheck {
 
@@ -48,14 +51,16 @@ public class ReportingCheck implements RestContractCheck {
                 .setReportBody("Run on: " +url)
                 .createTimestamp();
 
-        if (reportSentToDatabase.getTimestamp().equals(reportFetchedFromDatabase.getTimestamp())) {
-            return reportBuilder
-                    .setResult(ReportResults.PASSED)
-                    .build();
-        }
-        return  reportBuilder
-                .setResult(ReportResults.FAILED)
-                .build();
+        return Match(reportSentToDatabase.getTimestamp()).of(
+                Case($(Predicate.isEqual(reportFetchedFromDatabase.getTimestamp())),
+                        reportBuilder
+                        .setResult(ReportResults.PASSED)
+                        .build()),
+                Case($(),
+                        reportBuilder
+                        .setResult(ReportResults.FAILED)
+                        .build())
+        );
     }
 
     @Override

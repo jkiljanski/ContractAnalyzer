@@ -4,6 +4,8 @@ import com.sciamus.contractanalyzer.domain.checks.queues.kafka.config.KafkaConsu
 import com.sciamus.contractanalyzer.domain.checks.queues.kafka.config.KafkaProducFactory;
 import com.sciamus.contractanalyzer.domain.checks.queues.kafka.config.KafkaStreamFactory;
 import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReport;
+import io.vavr.control.Option;
+import io.vavr.control.Try;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.Topology;
@@ -47,11 +49,11 @@ public class KafkaStreamsFun implements KafkaContractCheck {
 
         stream.start();
 
-        try {
-            Thread.sleep(30000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        Try.of(() -> {
+            Thread.sleep(3000);
+            return null;
         }
+        ).onFailure(e -> e.printStackTrace());
 
         stream.close();
 

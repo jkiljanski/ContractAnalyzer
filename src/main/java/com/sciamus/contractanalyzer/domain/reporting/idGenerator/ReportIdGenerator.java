@@ -17,10 +17,8 @@ public class ReportIdGenerator {
     // the method should check repository count every time since there can be db drops during the runtime of the application
 
     public String getNextID() {
-
-        nextID = repository.count() + 1 + "";
+        nextID = Long.toString(repository.count() + 1);
         return nextID;
-
     }
 
 

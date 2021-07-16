@@ -163,6 +163,7 @@ public class KafkaMessagesManyRunsCheckWithVavr implements KafkaContractCheck {
         HashMap<String, List<String>> results = HashMap.empty();
 
 
+
         for (int i = 0; i < numberOfConcurrentRuns; i++) {
 
             String checkUniqueIdentifier = getCheckUniqueIdentifier();

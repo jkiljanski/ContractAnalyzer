@@ -1,15 +1,14 @@
 package com.sciamus.contractanalyzer.domain.checks.queues.kafka.config;
 
 
+import io.vavr.collection.HashMap;
+import io.vavr.collection.Map;
 import lombok.experimental.Accessors;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class KafkaProducFactory {
 
@@ -24,7 +23,7 @@ public class KafkaProducFactory {
 
     public KafkaTemplate<String,String> createProducer(String host, String port) {
 
-        Map<String, Object> configProps = new HashMap<>();
+        Map<String, Object> configProps = HashMap.empty();
 
         configProps.put(
                 ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
@@ -38,7 +37,7 @@ public class KafkaProducFactory {
 //        configProps.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "true");
 
 
-        ProducerFactory<String,String> factory = new DefaultKafkaProducerFactory<> (configProps);
+        ProducerFactory<String,String> factory = new DefaultKafkaProducerFactory<> (configProps.toJavaMap());
         final KafkaTemplate<String,String> template = new KafkaTemplate<>(factory);
 
 

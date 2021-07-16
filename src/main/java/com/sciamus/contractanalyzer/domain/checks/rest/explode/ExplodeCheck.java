@@ -4,7 +4,6 @@ import com.sciamus.contractanalyzer.domain.checks.rest.RestContractCheck;
 import com.sciamus.contractanalyzer.domain.reporting.checks.ReportResults;
 import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReport;
 import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReportBuilder;
-import org.springframework.stereotype.Component;
 
 import java.net.URL;
 

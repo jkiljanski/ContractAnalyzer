@@ -6,6 +6,7 @@ import com.sciamus.contractanalyzer.domain.checks.queues.kafka.config.KafkaStrea
 import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReport;
 import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReportBuilder;
 import com.sciamus.contractanalyzer.domain.reporting.checks.ReportResults;
+import io.vavr.collection.Array;
 import io.vavr.control.Try;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -153,17 +154,19 @@ public class KafkaMessagesSimpleCountCheck implements KafkaContractCheck {
     }
 
     private void sendMessagesToBeChecked(String outgoingTopic, KafkaTemplate<String, String> producer, String checkUniqueKey, List<? super Integer> toSendToTopic) {
-        for (Object element : toSendToTopic) {
 
+        toSendToTopic.forEach(element -> {
 
             producer.send(outgoingTopic, checkUniqueKey, String.valueOf(element));
 
-            Try.run(()-> Thread.sleep(30_000)).onFailure(InterruptedException.class, Throwable::printStackTrace);
-
-        }
+            Try.run(() -> Thread.sleep(30_000)).onFailure(InterruptedException.class, Throwable::printStackTrace);
+        });
     }
 
     private void sendMessagesToIgnore(String outgoingTopic, KafkaTemplate<String, String> producer) {
+//        Array<Integer> count = Array.range(0, 5);
+//        count.forEach(c -> producer.send(outgoingTopic, "to be ignored"));
+
         for (int i = 0; i < 5; i++) {
             producer.send(outgoingTopic, "to be ignored");
         }

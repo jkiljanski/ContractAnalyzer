@@ -34,8 +34,8 @@ public class AggregatedChecksReport {
 //        private final List<Check> failedTestsId;
 
         @DBRef
-        @Field("failedTestsId")
-        private final List<CheckReport> failedTestsId;
+        @Field("failedTestsReport")
+        private final List<CheckReport> failedTestsReport;
 
         @Field("passedPercentage")
         private final String passedPercentage;
@@ -46,14 +46,13 @@ public class AggregatedChecksReport {
         @Field("userName")
         private final String userName;
 
-
         @PersistenceConstructor
-        public AggregatedChecksReport(String id, String aggregatedReportName, List<String> namesOfChecks, Date timestamp, List<CheckReport> failedTestsId, String passedPercentage, String failedPercentage, String userName) {
+        public AggregatedChecksReport(String id, String aggregatedReportName, List<String> namesOfChecks, Date timestamp, List<CheckReport> failedTestsReport, String passedPercentage, String failedPercentage, String userName) {
             this.id = id;
             this.aggregatedReportName = aggregatedReportName;
             this.namesOfChecks = namesOfChecks;
             this.timestamp = timestamp;
-            this.failedTestsId = failedTestsId;
+            this.failedTestsReport = failedTestsReport;
             this.passedPercentage = passedPercentage;
             this.failedPercentage = failedPercentage;
             this.userName = userName;
@@ -74,7 +73,7 @@ public class AggregatedChecksReport {
                     ", aggregatedReportName=" + aggregatedReportName +
                     ", namesOfChecks='" + namesOfChecks + '\'' +
                     ", timestamp=" + timestamp + '\'' +
-                    ", failedTestsId='" + failedTestsId + '\'' +
+                    ", failedTestsReport='" + failedTestsReport + '\'' +
                     ", passedPercentage='" + passedPercentage + '\'' +
                     ", failedPercentage='" + failedPercentage + '\'' +
                     ", userName='" + userName +

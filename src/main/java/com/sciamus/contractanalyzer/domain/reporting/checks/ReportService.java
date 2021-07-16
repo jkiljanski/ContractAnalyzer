@@ -2,9 +2,8 @@ package com.sciamus.contractanalyzer.domain.reporting.checks;
 
 
 import com.sciamus.contractanalyzer.domain.reporting.idGenerator.ReportIdGenerator;
+import io.vavr.collection.List;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
 
 
 public class ReportService {
@@ -34,12 +33,12 @@ public class ReportService {
     //watchout: żeby nie zaciągnęło całej bazy danych, to trzeba zrobić jakieś warunki
     public List<CheckReport> getAllReports() {
 
-        return reportRepository.findAll();
+        return List.ofAll(reportRepository.findAll());
 
     }
 
     public List<CheckReport> findAllByName(String name) {
-        return reportRepository.findAllByNameOfCheck(name);
+        return List.ofAll(reportRepository.findAllByNameOfCheck(name));
     }
 
 }

@@ -7,13 +7,19 @@ import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReport;
 import com.sciamus.contractanalyzer.domain.reporting.checks.ReportResults;
 import com.sciamus.contractanalyzer.domain.reporting.checks.ReportService;
 import com.sciamus.contractanalyzer.domain.reporting.idGenerator.AggregatedReportIdGenerator;
+import io.vavr.Function2;
+import io.vavr.collection.List;
+import io.vavr.control.Try;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Predicate;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+
+import static io.vavr.API.*;
 
 public class AggregatedChecksService {
 
@@ -21,9 +27,11 @@ public class AggregatedChecksService {
 
     private final CurrentUserService currentUserService;
 
-    private final ReportService reportService;
+    //TODO final
+    private ReportService reportService;
 
-    private final CheckRepository checkRepository;
+    //TODO final
+    private CheckRepository checkRepository;
 
     private final AggregatedChecksRepository aggregatedChecksRepository;
 
@@ -42,40 +50,58 @@ public class AggregatedChecksService {
         return aggregatedChecksRepository.save(aggregatedChecksReport);
     }
 
-    public List<AggregatedChecksReport> getAggregatedChecksReports() {
+    public java.util.List<AggregatedChecksReport> getAggregatedChecksReports() {
         return aggregatedChecksRepository.findAll();
     }
 
-    public AggregatedChecksDTO runAndSaveAggregatedChecks(String name, List<String> namesOfChecks, String url) throws MalformedURLException {
-        double failedTestsNumber = 0;
-        ArrayList<CheckReport> failedTestsId = new ArrayList<>();
-        ArrayList<FailedTestDTO> failedTests = new ArrayList<>();
-        for (String nameOfCheck: namesOfChecks) {
-            CheckReport toSave = checkRepository.runCheck(nameOfCheck, new URL(url));
-            CheckReport savedReport = reportService.addReportToRepository(toSave);
-            if (savedReport.getResult() == ReportResults.FAILED) {
-                failedTestsNumber++;
-                failedTestsId.add(savedReport);
-                failedTests.add(new FailedTestDTO(savedReport.getId(), savedReport.getNameOfCheck(), savedReport.getReportBody()));
-            }
-        }
-        String passedPercentage = Math.round((1 - failedTestsNumber / namesOfChecks.size())*100) + "%";
-        String failedPercentage = Math.round((failedTestsNumber / namesOfChecks.size())*100) + "%";
-
-        AggregatedChecksReport aggregatedChecksReport =
-                new AggregatedChecksReport(null, null, namesOfChecks, new Date(), failedTestsId,
-                        passedPercentage, failedPercentage, currentUserService.obtainUserName());
-        addAggregatedReportToRepository(name, aggregatedChecksReport);
-        return mapToDTO(aggregatedChecksReport, failedTests);
+    public CheckReport saveReportToRepository(CheckReport checkReport) throws RuntimeException {
+        return reportService.addReportToRepository(checkReport);
     }
 
-    public AggregatedChecksDTO mapToDTO(AggregatedChecksReport aggregatedChecksReport, List<FailedTestDTO> failedTestDTOS) {
+    public Function2<String, String, CheckReport> runAndSaveCheckToRepository = (name, stringUrl) ->
+                    saveReportToRepository(checkRepository.runCheck(name, generateURL(stringUrl)));
+
+    private URL generateURL(String stringUrl) throws IllegalArgumentException {
+        return Try.of(() -> new URL(stringUrl)).
+                getOrElseThrow(() -> new IllegalArgumentException("Bad URL!"));
+    }
+
+    public AggregatedChecksDTO runAndSaveAggregatedChecks(String name, java.util.List<String> namesOfChecks, String url)  throws RuntimeException {
+
+        AggregatedChecksStatistics statistics = List.ofAll(namesOfChecks)
+                .map(nameOfCheck -> runAndSaveCheckToRepository.apply(nameOfCheck, url))
+                .collect(AggregatedChecksStatistics::new,
+                        new AggregatedChecksAccumulator(),
+                        AggregatedChecksStatistics::merge);
+
+        AggregatedChecksReport aggregatedChecksReport = getAggregatedChecksReport(namesOfChecks, statistics.getFailedTestReports().size(), statistics.getFailedTestReports());
+        addAggregatedReportToRepository(name, aggregatedChecksReport);
+        return mapToDTO(aggregatedChecksReport, statistics.getFailedTestReports());
+    }
+
+    private AggregatedChecksReport getAggregatedChecksReport(java.util.List<String> namesOfChecks, int failedTestsNumber, List<CheckReport> failedTestsReport) {
+        String passedPercentage = Math.round((1 - (double) failedTestsNumber / namesOfChecks.size())*100) + "%";
+        String failedPercentage = Math.round(( (double) failedTestsNumber / namesOfChecks.size())*100) + "%";
+
+        AggregatedChecksReport aggregatedChecksReport =
+                new AggregatedChecksReport(null, null, namesOfChecks, new Date(), failedTestsReport.toJavaList(),
+                        passedPercentage, failedPercentage, currentUserService.obtainUserName());
+        return aggregatedChecksReport;
+    }
+
+    public List<FailedTestDTO> mapFailedTests(List<CheckReport> failedTestReports) {
+        return List.ofAll(failedTestReports.map(failedTestReport ->
+            new FailedTestDTO(failedTestReport.getId(), failedTestReport.getNameOfCheck(), failedTestReport.getReportBody())
+        ).collect(Collectors.toList()));
+    }
+
+    public AggregatedChecksDTO mapToDTO(AggregatedChecksReport aggregatedChecksReport, List<CheckReport> failedTestReports) {
         return new AggregatedChecksBuilder()
                 .setAggregatedReportId(aggregatedChecksReport.getId())
                 .setAggregatedReportName(aggregatedChecksReport.getAggregatedReportName())
-                .setNamesOfChecks(aggregatedChecksReport.getNamesOfChecks())
+                .setNamesOfChecks(List.ofAll(aggregatedChecksReport.getNamesOfChecks()))
                 .setTimestamp(aggregatedChecksReport.getTimestamp())
-                .setFailedTests(failedTestDTOS)
+                .setFailedTests(mapFailedTests(failedTestReports))
                 .setPassedPercentage(aggregatedChecksReport.getPassedPercentage())
                 .setFailedPercentage(aggregatedChecksReport.getFailedPercentage())
                 .setUserName(aggregatedChecksReport.getUserName())

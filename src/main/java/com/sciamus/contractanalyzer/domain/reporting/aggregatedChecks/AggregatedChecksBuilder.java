@@ -1,9 +1,9 @@
 package com.sciamus.contractanalyzer.domain.reporting.aggregatedChecks;
 
 import com.sciamus.contractanalyzer.application.FailedTestDTO;
+import io.vavr.collection.List;
 
 import java.util.Date;
-import java.util.List;
 
 public class AggregatedChecksBuilder {
     private String id;
