@@ -10,4 +10,6 @@ public interface ReportsRepository extends MongoRepository<Report, String> {
 
     List<Report> findAllByNameOfCheck(String name);
 
+    List<Report> findReportsByIdIsWithin(String idFrom, String idTo);
+
 }

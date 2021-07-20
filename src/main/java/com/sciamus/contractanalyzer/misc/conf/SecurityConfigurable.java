@@ -11,5 +11,4 @@ public interface SecurityConfigurable {
     @Scope(scopeName = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
     KeycloakSecurityContext provideKeycloakSecurityContext();
 
-
 }

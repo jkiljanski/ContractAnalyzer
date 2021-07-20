@@ -4,4 +4,6 @@ node_modules/
 *.iml
 /KafkaPingPonger/.mvn/
 keycloak-db/*
+keycloak-db/keycloak.mv.db
+keycloak-db/keycloak.trace.db
 

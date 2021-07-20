@@ -45,22 +45,10 @@ public class KafkaConfig {
         return new KafkaPingPongCheck(kafkaConsumFactory(), kafkaProducFactory(), reportService);
     }
 
-    @Bean
-    public KafkaStreamsCountFun kafkaStreamsCountFun(){
-        return new KafkaStreamsCountFun(kafkaStreamFactory());
-    }
-
-    @Bean
-    public KafkaStreamsFun kafkaStreamsFun(){
-        return new KafkaStreamsFun(kafkaStreamFactory(), kafkaProducFactory(), kafkaConsumFactory());
-    }
-    @Bean KafkaMessagesSimpleCountCheck kafkaMessagesSimpleCountCheck() {
-        return new KafkaMessagesSimpleCountCheck(kafkaStreamFactory(),kafkaProducFactory(),kafkaConsumFactory());
-    }
 
     @Bean
     KafkaMessagesManyRunsCheck kafkaMessagesManyRunsCheck(){
-        return new KafkaMessagesManyRunsCheck(kafkaProducFactory(),kafkaConsumFactory());
+        return new KafkaMessagesManyRunsCheck(kafkaPgroducFactory(),kafkaConsumFactory());
 
     }
     @Bean
