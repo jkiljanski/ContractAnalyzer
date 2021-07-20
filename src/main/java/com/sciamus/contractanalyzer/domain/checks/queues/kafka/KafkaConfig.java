@@ -48,7 +48,7 @@ public class KafkaConfig {
 
     @Bean
     KafkaMessagesManyRunsCheck kafkaMessagesManyRunsCheck(){
-        return new KafkaMessagesManyRunsCheck(kafkaPgroducFactory(),kafkaConsumFactory());
+        return new KafkaMessagesManyRunsCheck(kafkaProducFactory(),kafkaConsumFactory());
 
     }
     @Bean
