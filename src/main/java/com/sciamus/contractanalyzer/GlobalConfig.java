@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Import;
 
 
 @Import({SecurityConfig.class, DomainConfig.class, InfrastructureConfig.class, ApplicationConfig.class})
-public class AppConfig {
+public class GlobalConfig {
 
 
 }
