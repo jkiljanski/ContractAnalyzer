@@ -2,12 +2,10 @@ package com.sciamus.contractanalyzer.domain.checks.aggregatedChecks;
 
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportService;
 import com.sciamus.contractanalyzer.domain.checks.rest.RestCheckRepository;
-import com.sciamus.contractanalyzer.domain.checks.rest.RestChecksConfig;
-import com.sciamus.contractanalyzer.domain.checks.rest.reportcheck.CurrentUserService;
+import com.sciamus.contractanalyzer.misc.CurrentUserService;
 import com.sciamus.contractanalyzer.infrastructure.port.AggregatedReportsRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 
 @Configuration
 public class AggregatedReportConfig {

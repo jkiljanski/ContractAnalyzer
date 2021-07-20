@@ -3,7 +3,7 @@ package com.sciamus.contractanalyzer.domain.checks.rest;
 import com.sciamus.contractanalyzer.domain.checks.exception.CheckNotFoundException;
 import com.sciamus.contractanalyzer.domain.checks.reports.Report;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportBuilder;
-import com.sciamus.contractanalyzer.domain.checks.rest.reportcheck.CurrentUserService;
+import com.sciamus.contractanalyzer.misc.CurrentUserService;
 
 import java.net.URL;
 import java.util.List;

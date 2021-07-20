@@ -1,11 +1,9 @@
 package com.sciamus.contractanalyzer.domain.checks.rest;
 
-import com.sciamus.contractanalyzer.AppConfig;
-import com.sciamus.contractanalyzer.application.mapper.ReportMapper;
 import com.sciamus.contractanalyzer.domain.checks.rest.dummy.DummyRestCheck;
 import com.sciamus.contractanalyzer.domain.checks.rest.explode.ExplodeCheck;
 import com.sciamus.contractanalyzer.domain.checks.rest.getlistof.GetListOfChecksCheck;
-import com.sciamus.contractanalyzer.domain.checks.rest.reportcheck.CurrentUserService;
+import com.sciamus.contractanalyzer.misc.CurrentUserService;
 import com.sciamus.contractanalyzer.domain.checks.rest.reportcheck.ReportingCheck;
 import com.sciamus.contractanalyzer.misc.conf.FeignClientsConfig;
 import feign.RequestInterceptor;
@@ -31,8 +29,8 @@ public class RestChecksConfig {
     }
 
     @Bean
-    public RestCheck reportingCheck(ReportMapper reportMapper, RequestInterceptor requestInterceptor) {
-        return new ReportingCheck(reportMapper, requestInterceptor);
+    public RestCheck reportingCheck(RequestInterceptor requestInterceptor) {
+        return new ReportingCheck(requestInterceptor);
     }
 
     @Bean

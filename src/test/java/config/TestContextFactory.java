@@ -1,7 +1,7 @@
 package config;
 
-import com.sciamus.contractanalyzer.AppConfig;
 import com.sciamus.contractanalyzer.application.AggregatedChecksFacade;
+import com.sciamus.contractanalyzer.application.ApplicationConfig;
 import com.sciamus.contractanalyzer.application.ChecksFacade;
 import com.sciamus.contractanalyzer.domain.checks.aggregatedChecks.AggregatedReportConfig;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportService;
@@ -9,7 +9,7 @@ import com.sciamus.contractanalyzer.domain.checks.reports.ReportsConfig;
 import com.sciamus.contractanalyzer.domain.checks.rest.RestCheck;
 import com.sciamus.contractanalyzer.domain.checks.rest.RestCheckRepository;
 import com.sciamus.contractanalyzer.domain.checks.rest.RestChecksConfig;
-import com.sciamus.contractanalyzer.domain.checks.rest.reportcheck.CurrentUserService;
+import com.sciamus.contractanalyzer.misc.CurrentUserService;
 import com.sciamus.contractanalyzer.domain.checks.suites.CheckSuite;
 import com.sciamus.contractanalyzer.domain.checks.suites.SuitesConfig;
 import com.sciamus.contractanalyzer.domain.checks.suites.SuitesService;
@@ -36,10 +36,10 @@ public class TestContextFactory {
     SuitesConfig suitesConfig = new SuitesConfig();
 
 
-    public AppConfig getAppConfig() {
+    public ApplicationConfig getAppConfig() {
 
         //może to jeszcze gdzieś wyekspediować
-        return new AppConfig(securityConfigurable);
+        return new ApplicationConfig(securityConfigurable);
     }
 
 
