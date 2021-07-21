@@ -8,9 +8,9 @@ import ReportRunner from "./components/reports/ReportRunner";
 import classes from "./components/Styles.module.css";
 import QueuesChecks from "./components/queuesChecks/QueuesChecks"
 import ListOfKafkaChecks from "./components/queuesChecks/ListOfKafkaChecks";
+import {createStore} from "redux";
 
 function App() {
-
 
     const [listOfChecks, setListOfChecks] = useState(['Loading checks...'])
 
@@ -21,6 +21,8 @@ function App() {
     const [kafkaCheckToRun, setKafkaCheckToRun] = useState('');
 
     const [error, setError] = useState(null)
+
+    const [kafkaError, setKafkaError] = useState(null);
 
     const [reports, setReports] = useState([]);
 
@@ -43,12 +45,11 @@ function App() {
 
         try {
             const response = await fetch('/kafkaCheck/')
-
             if (!response.ok)
                 throw new Error('Error fetching the list of kafka checks')
             setListOfKafkaChecks(await response.json())
         } catch (error) {
-            setError(error.message)
+            setKafkaError(error.message)
         }
         return fetchListOfKafkaChecks;
     }, [])
@@ -92,6 +93,7 @@ function App() {
             <Route path={'/queues'}>
                 <ListOfKafkaChecks kafkaChecks={listOfKafkaChecks} kafkaChecksHandler={kafkaCheckHandler}></ListOfKafkaChecks>
                 <QueuesChecks kafkaCheckToRun={kafkaCheckToRun}></QueuesChecks>
+                {kafkaError && <p className={classes.brandSmall}>{kafkaError}</p>}
             </Route>
             <Route path={'/reports'}>
                 <ReportRunner reportToRun={reports} reportsHandler={reportsHandler}/>
