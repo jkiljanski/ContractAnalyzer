@@ -1,0 +1,28 @@
+.pagination {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    cursor: pointer;
+}
+
+.pagination a {
+    padding: 3px;
+    color: salmon;
+    text-decoration: none;
+    background-color: mediumslateblue;
+}
+
+.pagination__link {
+    font-weight: bold;
+}
+
+.pagination__link--active a {
+    font-weight: bold;
+    color: salmon;
+    background: aqua;
+}
+
+.pagination__link--disabled a {
+    color: salmon;
+    /*border: 1px solid rgb(198, 197, 202);*/
+}

@@ -1,9 +1,17 @@
 target/
 .idea/
-node_modules/
 *.iml
 /KafkaPingPonger/.mvn/
 keycloak-db/*
 keycloak-db/keycloak.mv.db
 keycloak-db/keycloak.trace.db
+
+contract-analyzer-frontend/node_modules
+
+contract-analyzer-frontend/.pnp
+contract-analyzer-frontend/.pnp.js
+
+contract-analyzer-frontend/build
+contract-analyzer-frontend/coverage
+
 

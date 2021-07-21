@@ -1,0 +1,94 @@
+.App {
+    text-align: center;
+}
+
+* {
+    border-radius: 0 !important;
+    border: none !important;
+    text-decoration: none !important;
+}
+
+.navigation{
+    padding: 10px;
+    background-color: #4f346a;
+    color: #4f346a;
+
+}
+
+.brand{
+    color: black;
+    background-color: teal;
+    padding: 1rem;
+    font-size: large;
+    font-weight: bold;
+}
+
+.brandSmall{
+    color: chartreuse;
+    background-color: teal;
+    padding: 1rem;
+    font-size: small;
+    font-weight: bold;
+}
+
+.button {
+    color: #4f346a !important
+}
+
+.logoutButton {
+    color: salmon !important;
+    text-align: right !important;
+
+}
+
+
+
+.resetButton {
+    color: salmon;
+    background-color:     #451566;
+}
+
+.resetButton:hover {
+    background-color: salmon;
+    color:     #451566;
+}
+
+.report-wrapper {
+    max-width: 500px;
+    text-align: left;
+    border-radius: 10px;
+    justify-content: left;
+}
+
+.text-link {
+    text-decoration: none;
+}
+
+.reporPassed {
+    color: chartreuse;
+    background-color: teal;
+    padding: 1rem;
+    font-size: small;
+    text-decoration: none !important;
+
+}
+
+
+.reportFailed {
+    color: red;
+    background-color: teal;
+    padding: 1rem;
+    font-size: small;
+    text-decoration: none !important;
+
+}
+
+input[type="text"]{
+    background-color: salmon;
+    border: none;
+}
+
+input[type=text]:focus{
+    background-color: aquamarine;
+    border: none;
+}

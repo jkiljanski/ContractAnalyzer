@@ -1,0 +1,8 @@
+{
+  "realm": "contractAnalyzer",
+  "auth-server-url": "http://keycloak:8090/auth/",
+  "ssl-required": "external",
+  "resource": "contract-analyzer-react-front",
+  "public-client": true,
+  "confidential-port": 0
+}
