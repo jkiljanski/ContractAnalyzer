@@ -63,8 +63,8 @@ services:
       start_period: 10s
 
   keycloak:
-    image: wizzn/keycloak:12
-    #    image: jboss/keycloak:13.0.0
+    image: jboss/keycloak:13
+#    image: wizzn/keycloak:12
     ports:
       - "8090:8090"
     volumes:
@@ -86,3 +86,6 @@ services:
     depends_on:
       - kafka
       - zookeeper
+
+
+#"-Djboss.socket.binding.port-offset=10"
