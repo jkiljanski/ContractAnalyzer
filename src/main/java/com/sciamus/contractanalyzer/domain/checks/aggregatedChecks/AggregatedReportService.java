@@ -2,12 +2,11 @@ package com.sciamus.contractanalyzer.domain.checks.aggregatedChecks;
 
 import com.sciamus.contractanalyzer.application.FailedCheckDTO;
 import com.sciamus.contractanalyzer.domain.checks.rest.RestCheckRepository;
-import com.sciamus.contractanalyzer.domain.checks.rest.reportcheck.CurrentUserService;
+import com.sciamus.contractanalyzer.misc.CurrentUserService;
 import com.sciamus.contractanalyzer.domain.checks.reports.Report;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportResults;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportService;
 import com.sciamus.contractanalyzer.infrastructure.port.AggregatedReportsRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.net.MalformedURLException;
 import java.net.URL;

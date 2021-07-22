@@ -1,4 +1,4 @@
-package com.sciamus.contractanalyzer.domain.checks.rest.reportcheck;
+package com.sciamus.contractanalyzer.misc;
 
 import org.keycloak.KeycloakSecurityContext;
 import org.springframework.beans.factory.annotation.Autowired;

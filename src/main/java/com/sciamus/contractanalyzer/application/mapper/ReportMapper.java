@@ -5,7 +5,7 @@ import com.sciamus.contractanalyzer.application.ReportDTO;
 import com.sciamus.contractanalyzer.domain.checks.reports.Report;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportBuilder;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportResults;
-import com.sciamus.contractanalyzer.domain.checks.rest.reportcheck.CurrentUserService;
+import com.sciamus.contractanalyzer.misc.CurrentUserService;
 
 public class ReportMapper {
 

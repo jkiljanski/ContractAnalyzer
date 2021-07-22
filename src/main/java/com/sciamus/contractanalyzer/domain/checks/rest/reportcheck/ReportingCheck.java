@@ -1,10 +1,10 @@
 package com.sciamus.contractanalyzer.domain.checks.rest.reportcheck;
 
-import com.sciamus.contractanalyzer.domain.checks.rest.RestCheck;
-import com.sciamus.contractanalyzer.domain.checks.reports.ReportResults;
+import com.sciamus.contractanalyzer.application.ReportDTO;
 import com.sciamus.contractanalyzer.domain.checks.reports.Report;
-import com.sciamus.contractanalyzer.application.mapper.ReportMapper;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportBuilder;
+import com.sciamus.contractanalyzer.domain.checks.reports.ReportResults;
+import com.sciamus.contractanalyzer.domain.checks.rest.RestCheck;
 import feign.Feign;
 import feign.RequestInterceptor;
 import feign.gson.GsonDecoder;
@@ -17,12 +17,9 @@ public class ReportingCheck implements RestCheck {
 
     private final static String NAME = "Reporting Check";
 
-    private final ReportMapper reportMapper;
-
     private final RequestInterceptor interceptor;
 
-    public ReportingCheck(ReportMapper reportMapper, RequestInterceptor interceptor) {
-        this.reportMapper = reportMapper;
+    public ReportingCheck(RequestInterceptor interceptor) {
         this.interceptor = interceptor;
     }
 
@@ -38,17 +35,17 @@ public class ReportingCheck implements RestCheck {
                 .listOfChecks.get(0), StandardCharsets.UTF_8)
                 .replace("+", "%20");
 
-        Report reportSentToDatabase = reportMapper.
-                mapFromDTO(reportingCheckClient.autogenerate(checkToRun, url));
+        ReportDTO reportSentToDatabase = reportingCheckClient.autogenerate(checkToRun, url);
 
-        Report reportFetchedFromDatabase = reportMapper.
-                mapFromDTO(reportingCheckClient.getReportById(reportSentToDatabase.getId()));
+        ReportDTO reportFetchedFromDatabase = reportingCheckClient.getReportById(reportSentToDatabase.id);
+
+
 
         reportBuilder.setNameOfCheck(this.getName())
                 .setReportBody("Run on: " +url)
                 .createTimestamp();
 
-        if (reportSentToDatabase.getTimestamp().equals(reportFetchedFromDatabase.getTimestamp())) {
+        if (reportSentToDatabase.timestamp.equals(reportFetchedFromDatabase.timestamp)) {
             return reportBuilder
                     .setResult(ReportResults.PASSED)
                     .build();
