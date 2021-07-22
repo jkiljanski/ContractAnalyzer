@@ -7,4 +7,6 @@ import org.springframework.context.annotation.Import;
 @Configuration
 @Import({MongoConfig.class})
 public class InfrastructureConfig {
+
+
 }

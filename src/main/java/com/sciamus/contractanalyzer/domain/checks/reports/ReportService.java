@@ -43,7 +43,7 @@ public class ReportService {
         return repositoryConfigurable.getReportsRepository().findAllByNameOfCheck(name);
     }
 
-    public Page<Report> findByPage(int numPages) {
+    public Page<Report> findByPageSize(int numPages) {
         return repositoryConfigurable.getReportsRepository().findAll(Pageable.ofSize(numPages));
 
     }

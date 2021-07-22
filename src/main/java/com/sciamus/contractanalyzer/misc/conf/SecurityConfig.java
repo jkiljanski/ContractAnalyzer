@@ -10,6 +10,7 @@ import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurer
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -21,12 +22,11 @@ import org.springframework.security.web.authentication.session.SessionAuthentica
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.cors.CorsConfiguration;
 
 import java.security.Principal;
-import java.util.List;
 
 @KeycloakConfiguration
+@Import(SwaggerConfig.class)
 
 //TODO: make this and other Configs to be imported in a main config
 public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter implements SecurityConfigurable {
@@ -38,7 +38,8 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter impleme
                 .anyRequest()
                 .permitAll();
         http.csrf().disable();
-        ;}
+        ;
+    }
 
     @Override
     @Bean
