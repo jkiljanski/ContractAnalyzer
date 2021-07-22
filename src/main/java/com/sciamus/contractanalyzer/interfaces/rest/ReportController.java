@@ -5,6 +5,7 @@ import com.sciamus.contractanalyzer.domain.checks.reports.ReportNotFoundExceptio
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportService;
 import com.sciamus.contractanalyzer.domain.checks.reports.Report;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,11 +35,17 @@ public class ReportController {
     @RolesAllowed("reader")
     @GetMapping("/reports")
     @ResponseBody
-
     //refactor to DTO:
     public List<Report> getAllReports() {
         return reportService.getAllReports();
     }
+
+    @RolesAllowed("reader")
+    @GetMapping("/reports")
+    @ResponseBody
+    public Page<Report> getPagedReports( @RequestParam("numPages") int numPages) {return reportService.findByPage(numPages);}
+
+
 
 
     @ExceptionHandler(ReportNotFoundException.class)
