@@ -2,6 +2,7 @@ import React, {useState, useRef} from "react";
 import {Button, Form, InputGroup} from "reactstrap";
 import { useKeycloak } from "@react-keycloak/web";
 import ReportViewer from "../reports/ReportViewer";
+import classes from './QueuesChecks.module.css';
 
 const QueuesChecks = props => {
 
@@ -73,34 +74,38 @@ const QueuesChecks = props => {
 
     return (
         <>
-        <Form onSubmit={formSubmitHandler}>
+        <Form className={classes.form} onSubmit={formSubmitHandler}>
             <InputGroup>
-                <label>Incoming topic</label>
-                <input type="text"
+                <label className={classes.label}>Incoming topic</label>
+                <input className={classes.input}
+                       type="text"
                        name="incomingTopic"
                        placeholder="Please enter incoming topic"
                        ref={incomingTopicInputRef} />
             </InputGroup>
             <InputGroup>
-                <label>Outgoing topic</label>
-                <input type="text"
-                        name="outgoingTopic"
-                        placeholder="Please enter outgoing topic"
-                        ref={outgoingTopicInputRef} />
+                <label className={classes.label}>Outgoing topic</label>
+                <input className={classes.input}
+                       type="text"
+                       name="outgoingTopic"
+                       placeholder="Please enter outgoing topic"
+                       ref={outgoingTopicInputRef} />
             </InputGroup>
             <InputGroup>
-                <label>Host</label>
-                <input type="text"
+                <label className={classes.label}>Host</label>
+                <input className={classes.input}
+                       type="text"
                        name="host"
                        placeholder="Please enter host. The initial host is localhost:8080"
                        ref={hostInputRef}/>
             </InputGroup>
             <InputGroup>
-                <label>Port</label>
-                <input type="text"
+                <label className={classes.label}>Port</label>
+                <input className={classes.input}
+                       type="number"
                        name="port"
                        placeholder="Please enter port"
-                        ref={portInputRef} />
+                       ref={portInputRef} />
             </InputGroup>
                     <Button type="submit">Run check</Button>
         </Form>

@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import {Button, Input, InputGroup, InputGroupAddon} from "reactstrap";
 import classes from "./Styles.module.css";
 import {useKeycloak} from "@react-keycloak/web";
+import ReportViewer from "./reports/ReportViewer";
 
 
 const CheckRunner = (props) => {
@@ -64,9 +65,10 @@ const CheckRunner = (props) => {
             setError(error.message)}
 
         const dataReceived = await response.json();
-        setReport(JSON.stringify(dataReceived, null, 2)
-            .replaceAll(/}|{|"/g, '')
-        )
+        setReport(dataReceived)
+        // setReport(JSON.stringify(dataReceived, null, 2)
+        //     .replaceAll(/}|{|"/g, '')
+        // )
         setError(null)
         // console.log(report)
     }
@@ -81,14 +83,18 @@ const CheckRunner = (props) => {
             <InputGroup>
                 <InputGroupAddon addonType="prepend"><Button className={classes.button} onClick={runCheck}>Run
                     check</Button></InputGroupAddon>
-                <Input type="text" name="host" id="dupa" placeholder="Please enter host. The initial host is localhost:8080"
+                <Input type="text" name="host" placeholder="Please enter host. The initial host is localhost:8080"
                        onChange={userInputHandler}/>
             </InputGroup>
 
-            <p className={classes.reporPassed}>
+            <p className={classes.reportPassed}>
                 {error ? <b>{error}</b> :null}
-                {report.includes('id') ? <b>Your check was run and produced the following report: </b> : null} <br/>
-                {report}
+                {report.id != null ? <b>Your check was run and produced the following report: </b> : null} <br/>
+                {report.result === 'PASSED' ?
+                    <ReportViewer style={classes.reportPassed} report={report}/> :
+                    <ReportViewer style={classes.reportFailed} report={report}/>}
+
+                {/*<ReportViewer {report}*/}
             </p>
         </div>
     )

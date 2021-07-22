@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Button, ButtonGroup, ListGroup} from "reactstrap";
 import classes from "./Styles.module.css";
 import Counter from "./Counter";
@@ -24,6 +24,7 @@ const ListOfChecks = (props) => {
             selectedChecks.splice(indices[i], 1);
         console.log(selectedChecks)
         setSelected(selectedChecks)
+        console.log(selectedChecks)
         props.checkHandler(selectedChecks)
         // forceUpdate();
     }
@@ -31,6 +32,7 @@ const ListOfChecks = (props) => {
     const howManySelected = (check) => {
         return selectedChecks.filter(x => x === check).length
     }
+
     const onCheckClick = (selected) => {
 
         // const index = selectedChecks.indexOf(selected);

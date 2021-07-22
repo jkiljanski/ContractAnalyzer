@@ -1,0 +1,14 @@
+.label {
+    padding: 8px;
+    margin: 1px;
+    background-color: gray;
+    color: #4f346a;
+}
+
+.input {
+    width: 30%;
+}
+
+.form {
+    background-color: darkseagreen;
+}
