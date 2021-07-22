@@ -155,7 +155,7 @@ public class KafkaMessagesSimpleCountCheck implements KafkaCheck {
 
             producer.send(outgoingTopic, checkUniqueKey, String.valueOf(element));
 
-            Try.run(() -> Thread.sleep(30_000)).onFailure(InterruptedException.class, Throwable::printStackTrace);
+            Try.run(() -> Thread.sleep(300)).onFailure(InterruptedException.class, Throwable::printStackTrace);
 
         }
     }

@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Import;
 import java.util.List;
 
 
-@Import({AppConfig.class, FeignClientsConfig.class})
+@Import({FeignClientsConfig.class})
 @Configuration
 public class RestChecksConfig {
 

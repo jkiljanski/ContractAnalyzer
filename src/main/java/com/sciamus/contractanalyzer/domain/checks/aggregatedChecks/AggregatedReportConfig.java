@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 @Configuration
-@Import(RestChecksConfig.class)
 public class AggregatedReportConfig {
 
 

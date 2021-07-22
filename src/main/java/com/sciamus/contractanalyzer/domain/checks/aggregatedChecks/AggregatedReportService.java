@@ -27,7 +27,6 @@ public class AggregatedReportService {
 
     private final AggregatedReportsRepository aggregatedReportsRepository;
 
-    @Autowired
     public AggregatedReportService(AggregatedReportIdGenerator aggregatedReportIdGenerator, CurrentUserService currentUserService, ReportService reportService, RestCheckRepository restCheckRepository, AggregatedReportsRepository aggregatedReportsRepository) {
         this.aggregatedReportIdGenerator = aggregatedReportIdGenerator;
         this.currentUserService = currentUserService;
