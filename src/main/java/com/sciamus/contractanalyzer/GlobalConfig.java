@@ -7,12 +7,13 @@ import com.sciamus.contractanalyzer.misc.conf.SecurityConfig;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 
 @EnableAutoConfiguration
 @SpringBootConfiguration
 @EnableConfigurationProperties
-
+@ComponentScan("com.sciamus.contractanalyzer.interfaces.rest")
 
 @Import({SecurityConfig.class, DomainConfig.class, InfrastructureConfig.class, ApplicationConfig.class})
 public class GlobalConfig {

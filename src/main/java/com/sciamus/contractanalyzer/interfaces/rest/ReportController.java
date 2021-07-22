@@ -41,10 +41,9 @@ public class ReportController {
     }
 
     @RolesAllowed("reader")
-    @GetMapping("/reports")
+    @GetMapping("/reports/paged")
     @ResponseBody
-    public Page<Report> getPagedReports( @RequestParam("numPages") int numPages) {return reportService.findByPage(numPages);}
-
+    public Page<Report> getPagedReports(@RequestParam("numPages") int numPages) {return reportService.findByPage(numPages);}
 
 
 
