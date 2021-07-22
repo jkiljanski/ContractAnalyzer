@@ -63,7 +63,7 @@ services:
       start_period: 10s
 
   keycloak:
-    image: jboss/keycloak:13
+    image: jboss/keycloak:13.0.0
 #    image: wizzn/keycloak:12
     ports:
       - "8090:8090"
