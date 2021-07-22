@@ -58,6 +58,9 @@ services:
       - "8085:27017"
     volumes:
       - ./conf/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    healthcheck:
+      test: echo 'db.stats().ok' | mongo mongo:27017/reporting --quiet
+      start_period: 10s
 
   keycloak:
     image: wizzn/keycloak:12
