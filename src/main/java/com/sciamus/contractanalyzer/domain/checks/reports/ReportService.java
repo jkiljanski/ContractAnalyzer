@@ -2,7 +2,8 @@ package com.sciamus.contractanalyzer.domain.checks.reports;
 
 
 import com.sciamus.contractanalyzer.infrastructure.adapter.RepositoryConfigurable;
-import com.sciamus.contractanalyzer.infrastructure.port.ReportsRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -41,5 +42,11 @@ public class ReportService {
     public List<Report> findAllByName(String name) {
         return repositoryConfigurable.getReportsRepository().findAllByNameOfCheck(name);
     }
+
+    public Page<Report> findByPageSize(int numPages) {
+        return repositoryConfigurable.getReportsRepository().findAll(Pageable.ofSize(numPages));
+
+    }
+
 
 }

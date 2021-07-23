@@ -58,10 +58,13 @@ services:
       - "8085:27017"
     volumes:
       - ./conf/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    healthcheck:
+      test: echo 'db.stats().ok' | mongo mongo:27017/reporting --quiet
+      start_period: 10s
 
   keycloak:
+#    image: jboss/keycloak:13.0.0
     image: wizzn/keycloak:12
-    #    image: jboss/keycloak:13.0.0
     ports:
       - "8090:8090"
     volumes:
@@ -83,3 +86,6 @@ services:
     depends_on:
       - kafka
       - zookeeper
+
+
+#"-Djboss.socket.binding.port-offset=10"

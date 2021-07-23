@@ -1,11 +1,8 @@
 package com.sciamus.contractanalyzer.domain.checks.reports;
 
-import com.sciamus.contractanalyzer.AppConfig;
-import com.sciamus.contractanalyzer.infrastructure.adapter.MongoConfig;
 import com.sciamus.contractanalyzer.infrastructure.adapter.RepositoryConfigurable;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 
 @Configuration
 public class ReportsConfig {

@@ -10,6 +10,7 @@ import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurer
 import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -25,6 +26,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import java.security.Principal;
 
 @KeycloakConfiguration
+@Import(SwaggerConfig.class)
 
 public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter implements SecurityConfigurable {
 
@@ -35,7 +37,8 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter impleme
                 .anyRequest()
                 .permitAll();
         http.csrf().disable();
-        ;}
+        ;
+    }
 
     @Override
     @Bean

@@ -36,6 +36,7 @@ const ReportRunner = props => {
     const {keycloak} = useKeycloak();
 
     async function showAllReports() {
+
         setReportById('')
         let response = await fetch('/reports', {
             method: 'GET',
