@@ -1,12 +1,13 @@
 package com.sciamus.contractanalyzer.application;
 
-import com.sciamus.contractanalyzer.domain.checks.rest.RestCheckRepository;
+import com.sciamus.contractanalyzer.application.mapper.ReportMapper;
 import com.sciamus.contractanalyzer.domain.checks.reports.Report;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportService;
-import com.sciamus.contractanalyzer.application.mapper.ReportMapper;
+import com.sciamus.contractanalyzer.domain.checks.rest.RestCheckRepository;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 
 public class ChecksFacade {
 
@@ -38,5 +39,12 @@ public class ChecksFacade {
         return reportMapper.mapToDTO(toSave);
 
     }
+
+    public List<String> returnAllChecksList() {
+     return    restCheckRepository.getAllChecks();
+    }
+
+
+
 
 }

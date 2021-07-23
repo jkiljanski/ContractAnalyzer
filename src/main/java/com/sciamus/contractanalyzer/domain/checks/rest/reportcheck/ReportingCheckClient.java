@@ -9,7 +9,6 @@ import org.springframework.cloud.openfeign.FeignClient;
 
 import java.net.URL;
 
-//TODO: why to mix Feign client with Bean declaration?
 @FeignClient(value = "ReportingCheckClient")
 public interface ReportingCheckClient {
 
