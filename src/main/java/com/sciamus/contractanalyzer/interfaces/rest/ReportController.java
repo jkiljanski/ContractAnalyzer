@@ -16,7 +16,6 @@ import java.util.List;
 @RestController
 public class ReportController {
 
-    //TODO: fix me: this cannot use domain object directly -> it always must got through application layer
     private final ReportService reportService;
 
     @Autowired
@@ -35,7 +34,6 @@ public class ReportController {
     @RolesAllowed("reader")
     @GetMapping("/reports")
     @ResponseBody
-    //refactor to DTO:
     public List<Report> getAllReports() {
         return reportService.getAllReports();
     }

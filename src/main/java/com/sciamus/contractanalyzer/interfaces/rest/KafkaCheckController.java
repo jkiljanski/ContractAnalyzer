@@ -10,7 +10,6 @@ import java.util.List;
 @RestController
 public class KafkaCheckController {
 
-    //TODO: fix me: this cannot use domain object directly -> it always must got through application layer
     private final KafkaCheckService kafkaCheckService;
 
     @Autowired
@@ -36,4 +35,3 @@ public class KafkaCheckController {
 
 
 }
-//?firstTopic={firstTopic}&secondTopic={secondTopic}&host={host}&port={port}

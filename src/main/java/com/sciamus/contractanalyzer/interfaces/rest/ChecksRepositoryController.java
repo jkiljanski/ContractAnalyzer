@@ -10,14 +10,12 @@ import javax.annotation.security.RolesAllowed;
 @RestController
 public class ChecksRepositoryController {
 
-    //TODO: fix me: this cannot use domain object directly -> it always must got through application layer
     private final RestCheckRepository restCheckRepository;
 
     public ChecksRepositoryController(RestCheckRepository restCheckRepository) {
         this.restCheckRepository = restCheckRepository;
     }
 
-//    @RolesAllowed("reader")
     @GetMapping("/restContractChecks")
     public ListOfChecksDTO getRestContractCheckList() {
 

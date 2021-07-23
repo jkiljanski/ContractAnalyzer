@@ -20,7 +20,6 @@ public class ChecksServiceController {
         this.checksFacade = checksFacade;
     }
 
-//    @RolesAllowed("writer")
 
     @CrossOrigin("*")
     @PostMapping("/checks/{name}/run")
@@ -43,7 +42,6 @@ public class ChecksServiceController {
 
 
 
-    //REFACTORME
     @ExceptionHandler(CheckNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<String> handleNoSuchElementFoundException(
