@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 public class CheckRepository {
 
-    private final io.vavr.collection.List<RestContractCheck> restContractChecks;
+    private final List<RestContractCheck> restContractChecks;
 
     private final CurrentUserService currentUserService;
 

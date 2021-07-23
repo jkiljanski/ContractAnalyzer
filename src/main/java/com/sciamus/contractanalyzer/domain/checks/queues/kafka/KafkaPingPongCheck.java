@@ -6,6 +6,7 @@ import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReport;
 import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReportBuilder;
 import com.sciamus.contractanalyzer.domain.reporting.checks.ReportResults;
 import com.sciamus.contractanalyzer.domain.reporting.checks.ReportService;
+import io.vavr.collection.Stream;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.TopicPartition;
@@ -19,10 +20,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
-import java.util.function.Predicate;
-import java.util.stream.StreamSupport;
-
-import static io.vavr.API.*;
 
 
 public class KafkaPingPongCheck implements KafkaContractCheck {
@@ -88,24 +85,18 @@ public class KafkaPingPongCheck implements KafkaContractCheck {
         addTopicInfoToReport(incomingTopic, outgoingTopic, reportBuilder);
 
 
-        return Match(StreamSupport.stream(records.spliterator(), false)
-                .map(r -> r.value())
-//                .peek(System.out::println)
-                .anyMatch(p -> p.equals(correctMessageToFetch)))
-                .of(
-                    Case($(Predicate.isEqual(true)),
-
-                        reportService.addReportToRepository(reportBuilder.setResult(ReportResults.PASSED)
-                                .addTextToBody("messageToSend should be: " +
-                                        "" + correctMessageToFetch +
-                                        " and indeed was")
+        CheckReport report = Stream.ofAll(records)
+                .map(ConsumerRecord::value)
+                .find(p -> p.equals(correctMessageToFetch))
+                .map(s -> reportBuilder.setResult(ReportResults.PASSED)
+                                .addTextToBody("messageToSend should be: " + correctMessageToFetch + " and indeed was")
                                 .build())
-                    ),
-                    Case($(),
-                    reportService.addReportToRepository(reportBuilder.setResult(ReportResults.FAILED)
-                            .addTextToBody("Sorry, we couldn't find the correct messageToSend: " + correctMessageToFetch)
-                            .build())
-                    ));
+                .getOrElse(() -> reportBuilder.setResult(ReportResults.FAILED)
+                                .addTextToBody("Sorry, we couldn't find the correct messageToSend: " + correctMessageToFetch)
+                                .build()
+                );
+
+                return reportService.addReportToRepository(report);
     }
 
     private void addTopicInfoToReport(String incomingTopic, String outgoingTopic, CheckReportBuilder reportBuilder) {

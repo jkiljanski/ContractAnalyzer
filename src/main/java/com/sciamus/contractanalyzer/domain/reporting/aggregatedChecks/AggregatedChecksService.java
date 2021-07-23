@@ -4,7 +4,6 @@ import com.sciamus.contractanalyzer.application.FailedTestDTO;
 import com.sciamus.contractanalyzer.domain.checks.rest.CheckRepository;
 import com.sciamus.contractanalyzer.domain.checks.rest.reportcheck.CurrentUserService;
 import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReport;
-import com.sciamus.contractanalyzer.domain.reporting.checks.ReportResults;
 import com.sciamus.contractanalyzer.domain.reporting.checks.ReportService;
 import com.sciamus.contractanalyzer.domain.reporting.idGenerator.AggregatedReportIdGenerator;
 import io.vavr.Function2;
@@ -14,12 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.net.URL;
 import java.util.Date;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Predicate;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-import static io.vavr.API.*;
 
 public class AggregatedChecksService {
 
@@ -59,14 +54,14 @@ public class AggregatedChecksService {
     }
 
     public Function2<String, String, CheckReport> runAndSaveCheckToRepository = (name, stringUrl) ->
-                    saveReportToRepository(checkRepository.runCheck(name, generateURL(stringUrl)));
+            saveReportToRepository(checkRepository.runCheck(name, generateURL(stringUrl)));
 
     private URL generateURL(String stringUrl) throws IllegalArgumentException {
         return Try.of(() -> new URL(stringUrl)).
                 getOrElseThrow(() -> new IllegalArgumentException("Bad URL!"));
     }
 
-    public AggregatedChecksDTO runAndSaveAggregatedChecks(String name, java.util.List<String> namesOfChecks, String url)  throws RuntimeException {
+    public AggregatedChecksDTO runAndSaveAggregatedChecks(String name, java.util.List<String> namesOfChecks, String url) throws RuntimeException {
 
         AggregatedChecksStatistics statistics = List.ofAll(namesOfChecks)
                 .map(nameOfCheck -> runAndSaveCheckToRepository.apply(nameOfCheck, url))
@@ -80,8 +75,8 @@ public class AggregatedChecksService {
     }
 
     private AggregatedChecksReport getAggregatedChecksReport(java.util.List<String> namesOfChecks, int failedTestsNumber, List<CheckReport> failedTestsReport) {
-        String passedPercentage = Math.round((1 - (double) failedTestsNumber / namesOfChecks.size())*100) + "%";
-        String failedPercentage = Math.round(( (double) failedTestsNumber / namesOfChecks.size())*100) + "%";
+        String passedPercentage = Math.round((1 - (double) failedTestsNumber / namesOfChecks.size()) * 100) + "%";
+        String failedPercentage = Math.round(((double) failedTestsNumber / namesOfChecks.size()) * 100) + "%";
 
         AggregatedChecksReport aggregatedChecksReport =
                 new AggregatedChecksReport(null, null, namesOfChecks, new Date(), failedTestsReport.toJavaList(),
@@ -91,7 +86,7 @@ public class AggregatedChecksService {
 
     public List<FailedTestDTO> mapFailedTests(List<CheckReport> failedTestReports) {
         return List.ofAll(failedTestReports.map(failedTestReport ->
-            new FailedTestDTO(failedTestReport.getId(), failedTestReport.getNameOfCheck(), failedTestReport.getReportBody())
+                new FailedTestDTO(failedTestReport.getId(), failedTestReport.getNameOfCheck(), failedTestReport.getReportBody())
         ).collect(Collectors.toList()));
     }
 

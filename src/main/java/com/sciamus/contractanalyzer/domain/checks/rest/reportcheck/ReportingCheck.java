@@ -1,20 +1,18 @@
 package com.sciamus.contractanalyzer.domain.checks.rest.reportcheck;
 
-import com.sciamus.contractanalyzer.domain.checks.rest.RestContractCheck;
-import com.sciamus.contractanalyzer.domain.reporting.checks.ReportResults;
-import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReport;
 import com.sciamus.contractanalyzer.application.mapper.CheckReportMapper;
+import com.sciamus.contractanalyzer.domain.checks.rest.RestContractCheck;
+import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReport;
 import com.sciamus.contractanalyzer.domain.reporting.checks.CheckReportBuilder;
+import com.sciamus.contractanalyzer.domain.reporting.checks.ReportResults;
 import feign.Feign;
 import feign.RequestInterceptor;
 import feign.gson.GsonDecoder;
+import io.vavr.control.Option;
 
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.function.Predicate;
-
-import static io.vavr.API.*;
 
 public class ReportingCheck implements RestContractCheck {
 
@@ -51,16 +49,14 @@ public class ReportingCheck implements RestContractCheck {
                 .setReportBody("Run on: " +url)
                 .createTimestamp();
 
-        return Match(reportSentToDatabase.getTimestamp()).of(
-                Case($(Predicate.isEqual(reportFetchedFromDatabase.getTimestamp())),
-                        reportBuilder
+        return Option.of(reportSentToDatabase.getTimestamp())
+                .filter(r -> r.equals(reportFetchedFromDatabase.getTimestamp()))
+                .map(r -> reportBuilder
                         .setResult(ReportResults.PASSED)
-                        .build()),
-                Case($(),
-                        reportBuilder
-                        .setResult(ReportResults.FAILED)
                         .build())
-        );
+                .getOrElse(() -> reportBuilder
+                        .setResult(ReportResults.FAILED)
+                        .build());
     }
 
     @Override

@@ -8,11 +8,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 
-import java.util.function.Predicate;
-
-import static io.vavr.API.*;
-import static io.vavr.Predicates.instanceOf;
-
 
 @Configuration
 public class FeignClientsConfig {
@@ -45,10 +40,6 @@ public class FeignClientsConfig {
         }
 
         private void ensureTokenIsStillValid() {
-//            Match(keycloakSecurityContext).of(
-//                    Case($(instanceOf(RefreshableKeycloakSecurityContext.class)),
-//                    RefreshableKeycloakSecurityContext.class.cast(keycloakSecurityContext).refreshExpiredToken(true))
-//            );
             if (keycloakSecurityContext instanceof RefreshableKeycloakSecurityContext) {
                 RefreshableKeycloakSecurityContext.class.cast(keycloakSecurityContext).refreshExpiredToken(true);
             }
