@@ -20,13 +20,17 @@ const ReportRunner = props => {
 
     const [currentPage, setCurrentPage] = useState(0);
 
+    const reportDependingOnResult = (report) => {
+        return report.result === 'PASSED' ?
+            <ReportViewer style={classes.reportPassed} report={report}/> :
+            <ReportViewer style={classes.reportFailed} report={report}/>
+    }
+
     const PER_PAGE = 10;
     const offset = currentPage * PER_PAGE;
     const currentPageData = reports
         .slice(offset, offset + PER_PAGE)
-        .map(report =>
-            <ReportViewer report={report}/>
-        );
+        .map(report => reportDependingOnResult(report));
     const pageCount = Math.ceil(reports.length / PER_PAGE);
 
     const {keycloak} = useKeycloak();
@@ -81,6 +85,8 @@ const ReportRunner = props => {
         setCurrentPage(selectedPage);
     }
 
+
+
     return (
         <div>
             <div className={classes.brand}>
@@ -95,14 +101,14 @@ const ReportRunner = props => {
                        onChange={userInputHandler}
                 />
             </InputGroup>
-            <ListGroup className={classes.reporPassed}>
+            <ListGroup>
                 {currentPageData}
-                {!isError && <ReportViewer report={reportById}/>}
-                {isError && <div>{reportById}</div>}
+                {!isError && reportDependingOnResult(reportById)}
+                {isError && <div className={classes.reportFailed}>{reportById}</div>}
             </ListGroup>
             {/*<div><Paginator reports={reports} /></div>*/}
 
-
+            {reports.length > PER_PAGE &&
             <div className={classes.brand}><ReactPaginate
                 previousLabel={"←"}
                 nextLabel={"→"}
@@ -114,7 +120,7 @@ const ReportRunner = props => {
                 disabledClassName={"pagination__link--disabled"}
                 activeClassName={"pagination__link--active"}
                 containerClassName={'pagination'}
-            /></div>
+            /></div>}
         </div>);
 };
 

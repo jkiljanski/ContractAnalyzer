@@ -28,7 +28,6 @@ import java.security.Principal;
 @KeycloakConfiguration
 @Import(SwaggerConfig.class)
 
-//TODO: make this and other Configs to be imported in a main config
 public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter implements SecurityConfigurable {
 
     @Override

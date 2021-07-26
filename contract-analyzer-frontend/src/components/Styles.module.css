@@ -10,14 +10,14 @@
 
 .navigation{
     padding: 10px;
-    background-color: #4f346a;
-    color: #4f346a;
+    background-color: #6c7ac9;
+    color: #6c7ac9;
 
 }
 
 .brand{
-    color: black;
-    background-color: teal;
+    color: #4f346a;
+    background-color: darkseagreen;
     padding: 1rem;
     font-size: large;
     font-weight: bold;
@@ -25,7 +25,7 @@
 
 .brandSmall{
     color: chartreuse;
-    background-color: teal;
+    background-color: white;
     padding: 1rem;
     font-size: small;
     font-weight: bold;
@@ -45,12 +45,12 @@
 
 .resetButton {
     color: salmon;
-    background-color:     #451566;
+    background-color: #6c7ac9;
 }
 
 .resetButton:hover {
     background-color: salmon;
-    color:     #451566;
+    color: #6c7ac9;
 }
 
 .report-wrapper {
@@ -64,19 +64,18 @@
     text-decoration: none;
 }
 
-.reporPassed {
-    color: chartreuse;
-    background-color: teal;
+.reportPassed {
+    color: green;
+    background-color: darkseagreen;
     padding: 1rem;
     font-size: small;
     text-decoration: none !important;
-
 }
 
 
 .reportFailed {
     color: red;
-    background-color: teal;
+    background-color: darkseagreen;
     padding: 1rem;
     font-size: small;
     text-decoration: none !important;
@@ -84,7 +83,7 @@
 }
 
 input[type="text"]{
-    background-color: salmon;
+    background-color: white;
     border: none;
 }
 
