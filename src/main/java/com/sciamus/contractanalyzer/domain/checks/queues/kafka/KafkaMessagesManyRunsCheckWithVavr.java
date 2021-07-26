@@ -161,6 +161,7 @@ public class KafkaMessagesManyRunsCheckWithVavr implements KafkaCheck {
         HashMap<String, List<String>> results = HashMap.empty();
 
 
+
         for (int i = 0; i < numberOfConcurrentRuns; i++) {
 
             String checkUniqueIdentifier = getCheckUniqueIdentifier();

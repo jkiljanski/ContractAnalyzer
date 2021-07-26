@@ -29,13 +29,9 @@ public class AggregatedReport {
         @Field("timestamp")
         private Date timestamp;
 
-//        @DBRef
-//        @Field("failedTestsId")
-//        private final List<Check> failedTestsId;
-
         @DBRef
-        @Field("failedTestsId")
-        private final List<Report> failedTestsId;
+        @Field("failedTestsReport")
+        private final List<Report> failedTestsReport;
 
         @Field("passedPercentage")
         private final String passedPercentage;
@@ -46,24 +42,23 @@ public class AggregatedReport {
         @Field("userName")
         private final String userName;
 
-
         @PersistenceConstructor
-        public AggregatedReport(String id, String aggregatedReportName, List<String> namesOfChecks, Date timestamp, List<Report> failedTestsId, String passedPercentage, String failedPercentage, String userName) {
+        public AggregatedReport(String id, String aggregatedReportName, List<String> namesOfChecks, Date timestamp, List<Report> failedTestsReport, String passedPercentage, String failedPercentage, String userName) {
             this.id = id;
             this.aggregatedReportName = aggregatedReportName;
             this.namesOfChecks = namesOfChecks;
             this.timestamp = timestamp;
-            this.failedTestsId = failedTestsId;
+            this.failedTestsReport = failedTestsReport;
             this.passedPercentage = passedPercentage;
             this.failedPercentage = failedPercentage;
             this.userName = userName;
         }
 
-        void addId(String id) {
+        public void addId(String id) {
             this.id = id;
         }
 
-        void addName(String name) {
+        public void addName(String name) {
             this.aggregatedReportName = name;
         }
 
@@ -74,7 +69,7 @@ public class AggregatedReport {
                     ", aggregatedReportName=" + aggregatedReportName +
                     ", namesOfChecks='" + namesOfChecks + '\'' +
                     ", timestamp=" + timestamp + '\'' +
-                    ", failedTestsId='" + failedTestsId + '\'' +
+                    ", failedTestsReport='" + failedTestsReport + '\'' +
                     ", passedPercentage='" + passedPercentage + '\'' +
                     ", failedPercentage='" + failedPercentage + '\'' +
                     ", userName='" + userName +

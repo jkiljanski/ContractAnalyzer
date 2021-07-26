@@ -150,14 +150,13 @@ public class KafkaMessagesSimpleCountCheck implements KafkaCheck {
     }
 
     private void sendMessagesToBeChecked(String outgoingTopic, KafkaTemplate<String, String> producer, String checkUniqueKey, List<? super Integer> toSendToTopic) {
-        for (Object element : toSendToTopic) {
 
+        toSendToTopic.forEach(element -> {
 
             producer.send(outgoingTopic, checkUniqueKey, String.valueOf(element));
 
-            Try.run(() -> Thread.sleep(300)).onFailure(InterruptedException.class, Throwable::printStackTrace);
-
-        }
+            Try.run(() -> Thread.sleep(30_000)).onFailure(InterruptedException.class, Throwable::printStackTrace);
+        });
     }
 
     private void sendMessagesToIgnore(String outgoingTopic, KafkaTemplate<String, String> producer) {

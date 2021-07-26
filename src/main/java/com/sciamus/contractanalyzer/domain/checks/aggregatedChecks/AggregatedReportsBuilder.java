@@ -1,16 +1,16 @@
 package com.sciamus.contractanalyzer.domain.checks.aggregatedChecks;
 
 import com.sciamus.contractanalyzer.application.FailedCheckDTO;
+import io.vavr.collection.List;
 
 import java.util.Date;
-import java.util.List;
 
 public class AggregatedReportsBuilder {
     private String id;
     private String aggregatedReportName;
     private List<String> namesOfChecks;
     private Date timestamp;
-    private List<FailedCheckDTO> failedTests;
+    private List<FailedCheckDTO> failedChecks;
     private String passedPercentage;
     private String failedPercentage;
     private String userName;
@@ -35,8 +35,8 @@ public class AggregatedReportsBuilder {
         return this;
     }
 
-    public AggregatedReportsBuilder setFailedTests(List<FailedCheckDTO> failedTests) {
-        this.failedTests = failedTests;
+    public AggregatedReportsBuilder setFailedChecks(List<FailedCheckDTO> failedChecks) {
+        this.failedChecks = failedChecks;
         return this;
     }
 
@@ -56,7 +56,7 @@ public class AggregatedReportsBuilder {
     }
 
     public AggregatedReportDTO build() {
-        return new AggregatedReportDTO(id, aggregatedReportName, namesOfChecks, timestamp,
-                failedTests, passedPercentage, failedPercentage, userName);
+        return new AggregatedReportDTO(id, aggregatedReportName, namesOfChecks.toJavaList(), timestamp,
+                failedChecks.toJavaList(), passedPercentage, failedPercentage, userName);
     }
 }

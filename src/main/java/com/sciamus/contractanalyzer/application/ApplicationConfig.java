@@ -2,6 +2,7 @@ package com.sciamus.contractanalyzer.application;
 
 import com.sciamus.contractanalyzer.application.mapper.ReportMapper;
 import com.sciamus.contractanalyzer.domain.checks.aggregatedChecks.AggregatedReportService;
+import com.sciamus.contractanalyzer.domain.checks.queues.KafkaCheckService;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportService;
 import com.sciamus.contractanalyzer.domain.checks.rest.RestCheckRepository;
 import com.sciamus.contractanalyzer.misc.CurrentUserService;
@@ -39,6 +40,15 @@ public class ApplicationConfig {
     @Bean
     public CurrentUserService currentUserService() {
         return new CurrentUserService(securityConfigurable.provideKeycloakSecurityContext());
+    }
+
+    @Bean
+    public  KafkaChecksFacade kafkaChecksFacade (KafkaCheckService kafkaCheckService, ReportMapper reportMapper) {
+        return new KafkaChecksFacade(kafkaCheckService,reportMapper);
+    }
+
+    @Bean ReportFacade reportFacade (ReportService reportService, ReportMapper reportMapper) {
+        return  new ReportFacade(reportService, reportMapper);
     }
 
 }

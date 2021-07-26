@@ -6,6 +6,7 @@ import com.sciamus.contractanalyzer.domain.checks.reports.Report;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportBuilder;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportResults;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportService;
+import io.vavr.collection.Stream;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.TopicPartition;
@@ -18,7 +19,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
-import java.util.stream.StreamSupport;
 
 
 public class KafkaPingPongCheck implements KafkaCheck {
@@ -83,22 +83,18 @@ public class KafkaPingPongCheck implements KafkaCheck {
         addTopicInfoToReport(incomingTopic, outgoingTopic, reportBuilder);
 
 
-        if (StreamSupport.stream(records.spliterator(), false)
-                .map(r -> r.value())
-//                .peek(System.out::println)
-                .anyMatch(p -> p.equals(correctMessageToFetch))) {
+        Report report = Stream.ofAll(records)
+                .map(ConsumerRecord::value)
+                .find(p -> p.equals(correctMessageToFetch))
+                .map(s -> reportBuilder.setResult(ReportResults.PASSED)
+                                .addTextToBody("messageToSend should be: " + correctMessageToFetch + " and indeed was")
+                                .build())
+                .getOrElse(() -> reportBuilder.setResult(ReportResults.FAILED)
+                                .addTextToBody("Sorry, we couldn't find the correct messageToSend: " + correctMessageToFetch)
+                                .build()
+                );
 
-            return reportService.addReportToRepository(reportBuilder.setResult(ReportResults.PASSED)
-                    .addTextToBody("messageToSend should be: " +
-                            "" + correctMessageToFetch +
-                            " and indeed was")
-                    .build());
-        } else {
-            return reportService.addReportToRepository(reportBuilder.setResult(ReportResults.FAILED)
-                    .addTextToBody("Sorry, we couldn't find the correct messageToSend: " + correctMessageToFetch
-                    )
-                    .build());
-        }
+                return reportService.addReportToRepository(report);
     }
 
     private void addTopicInfoToReport(String incomingTopic, String outgoingTopic, ReportBuilder reportBuilder) {
@@ -112,9 +108,7 @@ public class KafkaPingPongCheck implements KafkaCheck {
     }
 
     private void logRecords(Logger logger, Iterable<ConsumerRecord<String, String>> records, String s) {
-        for (ConsumerRecord<String, String> record : records) {
-            logger.info(s + record.value());
-        }
+        records.forEach(record -> logger.info(s + record.value()));
     }
 
     private Iterable<ConsumerRecord<String, String>> getRecords(String incomingTopic, Consumer<String, String> consumer) {

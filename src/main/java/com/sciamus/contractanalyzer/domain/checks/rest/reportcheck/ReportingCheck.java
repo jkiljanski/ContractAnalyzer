@@ -8,6 +8,7 @@ import com.sciamus.contractanalyzer.domain.checks.rest.RestCheck;
 import feign.Feign;
 import feign.RequestInterceptor;
 import feign.gson.GsonDecoder;
+import io.vavr.control.Option;
 
 import java.net.URL;
 import java.net.URLEncoder;
@@ -45,14 +46,14 @@ public class ReportingCheck implements RestCheck {
                 .setReportBody("Run on: " +url)
                 .createTimestamp();
 
-        if (reportSentToDatabase.timestamp.equals(reportFetchedFromDatabase.timestamp)) {
-            return reportBuilder
-                    .setResult(ReportResults.PASSED)
-                    .build();
-        }
-        return  reportBuilder
-                .setResult(ReportResults.FAILED)
-                .build();
+        return Option.of(reportSentToDatabase.getTimestamp())
+                .filter(r -> r.equals(reportFetchedFromDatabase.getTimestamp()))
+                .map(r -> reportBuilder
+                        .setResult(ReportResults.PASSED)
+                        .build())
+                .getOrElse(() -> reportBuilder
+                        .setResult(ReportResults.FAILED)
+                        .build());
     }
 
     @Override

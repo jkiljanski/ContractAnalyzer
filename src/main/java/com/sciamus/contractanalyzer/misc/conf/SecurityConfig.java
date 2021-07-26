@@ -25,6 +25,9 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.security.Principal;
 
+import static com.google.common.base.Predicates.instanceOf;
+import static io.vavr.API.*;
+
 @KeycloakConfiguration
 @Import(SwaggerConfig.class)
 
@@ -47,6 +50,7 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter impleme
 
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         Principal principal = attributes.getRequest().getUserPrincipal();
+
         if (principal == null) {
             return null;
         }

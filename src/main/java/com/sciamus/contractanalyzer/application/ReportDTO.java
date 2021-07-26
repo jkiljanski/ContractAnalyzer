@@ -1,9 +1,11 @@
 package com.sciamus.contractanalyzer.application;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import java.util.Date;
 
+@Getter
 @AllArgsConstructor
 public class ReportDTO {
 

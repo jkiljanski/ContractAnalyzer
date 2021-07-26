@@ -95,9 +95,8 @@ public class SuiteTest {
     @DisplayName("Suite report with bad URL crashed")
     public void suiteReportBadURLTest() {
         // when
-        Exception exception = assertThrows(RuntimeException.class, () -> {
-            suitesService.runSuiteAndAddToRepository("Basic Suite", "httttp://localhost:8080");
-        });
+        Exception exception = assertThrows(RuntimeException.class, () ->
+                suitesService.runSuiteAndAddToRepository("Basic Suite", "httttp://localhost:8080"));
 
         // then
         assertThat(exception).hasMessageContaining("Bad URL!");
@@ -107,9 +106,8 @@ public class SuiteTest {
     @DisplayName("Suite report's unknown name crashed")
     public void suiteReportBadNameTest() {
         // when
-        Exception exception = assertThrows(SuiteNotFoundException.class, () -> {
-            suitesService.runSuiteAndAddToRepository("Test Suite", "http://localhost:8080");
-        });
+        Exception exception = assertThrows(SuiteNotFoundException.class, () ->
+            suitesService.runSuiteAndAddToRepository("Test Suite", "http://localhost:8080"));
 
         // then
         assertThat(exception).hasMessageContaining("Test Suite");
