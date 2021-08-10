@@ -23,13 +23,20 @@ public class ReportFacade {
         return  reportMapper.mapToDTO(reportService.getReportByID(id));
     }
 
-    public List<ReportDTO> getAllReports() {
-        return reportService.getAllReports().stream().map(reportMapper::mapToDTO).collect(Collectors.toList());
-    }
+//    public List<ReportDTO> getAllReports() {
+//        return reportService.getAllReports().stream().map(reportMapper::mapToDTO).collect(Collectors.toList());
+//    }
 
     public Page<Report> findByPageSize(int documentsPerPage) {
 
         return  reportService.findByPageSize(documentsPerPage);
 
+    }
+
+    public List<ReportDTO> getFilteredReports(String result, String reportBody, String timestamp, String nameOfCheck, String userName) {
+        return reportService
+                .getFilteredReports(result, reportBody, timestamp, nameOfCheck, userName)
+                .stream()
+                .map(reportMapper::mapToDTO).collect(Collectors.toList());
     }
 }

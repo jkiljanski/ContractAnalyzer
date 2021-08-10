@@ -1,8 +1,10 @@
 import React, {useState} from "react";
-import {Button, Input, InputGroup, InputGroupAddon} from "reactstrap";
+import {Button, Input, InputGroup, InputGroupAddon, Table} from "reactstrap";
 import classes from "./Styles.module.css";
 import {useKeycloak} from "@react-keycloak/web";
 import ReportViewer from "./reports/ReportViewer";
+import AggregatedReportTableHeaders from "./reports/AggregatedReportTableHeaders";
+import ReportTableHeaders from "./reports/ReportTableHeaders";
 
 
 const CheckRunner = (props) => {
@@ -14,6 +16,7 @@ const CheckRunner = (props) => {
     const [report, setReport] = useState(initialMessage);
     const [host, setHost] = useState(['http://localhost:8080']);
     const [error, setError] = useState(null)
+    const [isAggregated, setIsAggregated] = useState(false)
 
 
     const {keycloak} = useKeycloak();
@@ -34,6 +37,7 @@ const CheckRunner = (props) => {
         try {
 
         if (checkToRun.length === 1) {
+            setIsAggregated(false)
             response = await fetch('/checks/' + checkToRun + '/run?url=' + host, {
                 method: 'POST',
                 headers: {
@@ -47,7 +51,7 @@ const CheckRunner = (props) => {
             }
 
         } else {
-
+            setIsAggregated(true)
             response = await fetch('/aggregatedChecks/run?namesOfChecks=' + checkToRun + '&url=' + host, {
                 method: 'POST',
                 headers: {
@@ -65,6 +69,7 @@ const CheckRunner = (props) => {
             setError(error.message)}
 
         const dataReceived = await response.json();
+        console.log(dataReceived)
         setReport(dataReceived)
         // setReport(JSON.stringify(dataReceived, null, 2)
         //     .replaceAll(/}|{|"/g, '')
@@ -87,17 +92,21 @@ const CheckRunner = (props) => {
                        onChange={userInputHandler}/>
             </InputGroup>
 
-            <p className={classes.reportPassed}>
-                {error ? <b>{error}</b> :null}
-                {report.id != null ? <b>Your check was run and produced the following report: </b> : null} <br/>
-                {report.result === 'PASSED' ?
-                    <ReportViewer style={classes.reportPassed} report={report}/> :
-                    <ReportViewer style={classes.reportFailed} report={report}/>}
-
-                {/*<ReportViewer {report}*/}
-            </p>
+            {error ? <b>{error}</b> :null}
+            {report.id != null ? <b>Your check was run and produced the following report: </b> : null} <br/>
+            {report &&
+                <Table>
+                    {isAggregated && <AggregatedReportTableHeaders></AggregatedReportTableHeaders> }
+                    {!isAggregated && <ReportTableHeaders></ReportTableHeaders>}
+                    <tbody>
+                    {report.result === 'PASSED' ?
+                        <ReportViewer style={classes.reportPassed} report={report}/> :
+                        <ReportViewer style={classes.reportFailed} report={report}/>}
+                    </tbody>
+                </Table>
+            }
         </div>
     )
-}
+};
 
 export default CheckRunner

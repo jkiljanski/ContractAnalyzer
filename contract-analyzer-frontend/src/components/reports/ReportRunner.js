@@ -1,10 +1,14 @@
 import React, {useState} from "react";
 import ReactPaginate from 'react-paginate';
-import {Button, Input, InputGroup, InputGroupAddon, ListGroup} from "reactstrap";
+import {Button, Input, InputGroup, InputGroupAddon, ListGroup, Table} from "reactstrap";
 import classes from "../Styles.module.css";
 import ReportViewer from "./ReportViewer";
 import '../pagination/Paginator.css'
 import {useKeycloak} from "@react-keycloak/web";
+import BootstrapTable from 'react-bootstrap-table-next';
+import TableHeaderColumn from 'react-bootstrap-table';
+import ReportsFilter from "./ReportsFilter";
+import ReportTableHeaders from "./ReportTableHeaders";
 
 
 const ReportRunner = props => {
@@ -21,24 +25,24 @@ const ReportRunner = props => {
     const [currentPage, setCurrentPage] = useState(0);
 
     const reportDependingOnResult = (report) => {
+
         return report.result === 'PASSED' ?
-            <ReportViewer style={classes.reportPassed} report={report}/> :
-            <ReportViewer style={classes.reportFailed} report={report}/>
+            <ReportViewer key={report.id} style={classes.reportPassed} report={report}/> :
+            <ReportViewer key={report.id} style={classes.reportFailed} report={report}/>
     }
 
     const PER_PAGE = 10;
     const offset = currentPage * PER_PAGE;
-    const currentPageData = reports
-        .slice(offset, offset + PER_PAGE)
-        .map(report => reportDependingOnResult(report));
+
     const pageCount = Math.ceil(reports.length / PER_PAGE);
 
     const {keycloak} = useKeycloak();
 
-    async function showAllReports() {
+    async function showFilteredReports(result, reportBody, timestamp, nameOfCheck, userName) {
 
         setReportById('')
-        let response = await fetch('/reports', {
+        let response = await fetch('/filteredReports?result=' + result + '&reportBody=' + reportBody +
+            '&timestamp=' + timestamp + '&nameOfCheck=' + nameOfCheck + '&userName=' + userName, {
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + keycloak.token,
@@ -47,10 +51,23 @@ const ReportRunner = props => {
             },
         })
 
-        const allReports = await response.json();
+        // setReportById('')
+        // let response = await fetch('/reports', {
+        //     method: 'GET',
+        //     headers: {
+        //         'Authorization': 'Bearer ' + keycloak.token,
+        //         'Accept': 'application/json',
+        //         'Content-Type': 'application/json'
+        //     },
+        // })
 
-        setReports(Object.values(allReports))
-        console.log(reports)
+        if (response.status !== 200)
+            setIsError(true);
+        else {
+            setIsError(false);
+            const allReports = await response.json();
+            setReports(allReports)
+        }
     }
 
     async function getReportById() {
@@ -77,6 +94,10 @@ const ReportRunner = props => {
         }
     }
 
+    const currentPageData = reports
+        .slice(offset, offset + PER_PAGE)
+        .map(report => reportDependingOnResult(report));
+
     const userInputHandler = event => {
         setReportId(event.target.value);
     }
@@ -85,12 +106,44 @@ const ReportRunner = props => {
         setCurrentPage(selectedPage);
     }
 
-
+    // const data = {
+    //     columns: [
+    //         {
+    //             dataField: 'Id',
+    //             text: 'ID',
+    //             sort: true,
+    //         },
+    //         {
+    //             dataField: 'Result',
+    //             text: 'Result',
+    //             sort: true
+    //         },
+    //         {
+    //             dataField: 'Report body',
+    //             text: 'Report body',
+    //             sort: true
+    //         },
+    //         {
+    //             dataField: 'Timestamp',
+    //             text: 'Timestamp',
+    //             sort: true
+    //         },
+    //         {
+    //             dataField: 'Name of check',
+    //             text: 'Name of check',
+    //             sort: true
+    //         },
+    //         {
+    //             dataField: 'Username',
+    //             text: 'Username',
+    //             sort: true
+    //         },
+    //     ]
+    // }
 
     return (
-        <div>
-            <div className={classes.brand}>
-                <Button className={classes.button} onClick={showAllReports}>Show all reports</Button></div>
+        <>
+            <ReportsFilter show={showFilteredReports}></ReportsFilter>
             <InputGroup>
                 <InputGroupAddon addonType="prepend"><Button className={classes.button} onClick={getReportById}>Show
                     report by id</Button>
@@ -101,11 +154,20 @@ const ReportRunner = props => {
                        onChange={userInputHandler}
                 />
             </InputGroup>
-            <ListGroup>
-                {currentPageData}
-                {!isError && reportDependingOnResult(reportById)}
-                {isError && <div className={classes.reportFailed}>{reportById}</div>}
-            </ListGroup>
+            {/*<ListGroup>*/}
+            {isError}
+            {(reports.length > 0 || reportById) && !isError &&
+            // <BootstrapTable keyField='id' columns={data.columns} data={currentPageData}>
+            <Table bordered={true}>
+                <ReportTableHeaders></ReportTableHeaders>
+                <tbody>
+                    {currentPageData}
+                    {reportDependingOnResult(reportById)}
+                </tbody>
+            </Table>}
+            {/*</BootstrapTable>}*/}
+            {isError && <div className={classes.reportFailed}>{reportById}</div>}
+            {/*</ListGroup>*/}
             {/*<div><Paginator reports={reports} /></div>*/}
 
             {reports.length > PER_PAGE &&
@@ -121,7 +183,7 @@ const ReportRunner = props => {
                 activeClassName={"pagination__link--active"}
                 containerClassName={'pagination'}
             /></div>}
-        </div>);
+        </>);
 };
 
 export default ReportRunner;
