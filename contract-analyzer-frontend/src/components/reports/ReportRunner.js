@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import ReactPaginate from 'react-paginate';
-import {Button, Input, InputGroup, InputGroupAddon, ListGroup, Table} from "reactstrap";
+import {Button, Input, InputGroup, InputGroupAddon, Table} from "reactstrap";
 import classes from "../Styles.module.css";
 import ReportViewer from "./ReportViewer";
 import '../pagination/Paginator.css'
@@ -11,8 +11,7 @@ import ReportsFilter from "./ReportsFilter";
 import ReportTableHeaders from "./ReportTableHeaders";
 
 
-const ReportRunner = props => {
-
+const ReportRunner = () => {
 
     const [reports, setReports] = useState([]);
 
@@ -25,7 +24,6 @@ const ReportRunner = props => {
     const [currentPage, setCurrentPage] = useState(0);
 
     const reportDependingOnResult = (report) => {
-
         return report.result === 'PASSED' ?
             <ReportViewer key={report.id} style={classes.reportPassed} report={report}/> :
             <ReportViewer key={report.id} style={classes.reportFailed} report={report}/>
@@ -106,44 +104,44 @@ const ReportRunner = props => {
         setCurrentPage(selectedPage);
     }
 
-    // const data = {
-    //     columns: [
-    //         {
-    //             dataField: 'Id',
-    //             text: 'ID',
-    //             sort: true,
-    //         },
-    //         {
-    //             dataField: 'Result',
-    //             text: 'Result',
-    //             sort: true
-    //         },
-    //         {
-    //             dataField: 'Report body',
-    //             text: 'Report body',
-    //             sort: true
-    //         },
-    //         {
-    //             dataField: 'Timestamp',
-    //             text: 'Timestamp',
-    //             sort: true
-    //         },
-    //         {
-    //             dataField: 'Name of check',
-    //             text: 'Name of check',
-    //             sort: true
-    //         },
-    //         {
-    //             dataField: 'Username',
-    //             text: 'Username',
-    //             sort: true
-    //         },
-    //     ]
-    // }
+    const data = {
+        columns: [
+            {
+                dataField: 'id',
+                text: 'ID',
+                sort: true,
+            },
+            {
+                dataField: 'result',
+                text: 'Result',
+                sort: true
+            },
+            {
+                dataField: 'reportBody',
+                text: 'Report body',
+                sort: true
+            },
+            {
+                dataField: 'timestamp',
+                text: 'Timestamp',
+                sort: true
+            },
+            {
+                dataField: 'nameOfCheck',
+                text: 'Name of check',
+                sort: true
+            },
+            {
+                dataField: 'username',
+                text: 'Username',
+                sort: true
+            },
+        ]
+    }
 
     return (
         <>
-            <ReportsFilter show={showFilteredReports}></ReportsFilter>
+            <ReportsFilter show={showFilteredReports} />
             <InputGroup>
                 <InputGroupAddon addonType="prepend"><Button className={classes.button} onClick={getReportById}>Show
                     report by id</Button>
@@ -157,15 +155,20 @@ const ReportRunner = props => {
             {/*<ListGroup>*/}
             {isError}
             {(reports.length > 0 || reportById) && !isError &&
-            // <BootstrapTable keyField='id' columns={data.columns} data={currentPageData}>
+            // <BootstrapTable bordered
+            //     bootstrap4
+            //     data={currentPageData}
+            //     keyField='id'
+            //     columns={data.columns}>
+            // </BootstrapTable>}
             <Table bordered={true}>
-                <ReportTableHeaders></ReportTableHeaders>
-                <tbody>
+                 <ReportTableHeaders />
+                 <tbody>
                     {currentPageData}
-                    {reportDependingOnResult(reportById)}
-                </tbody>
-            </Table>}
-            {/*</BootstrapTable>}*/}
+                     {reportDependingOnResult(reportById)}
+                 </tbody>
+             </Table>}
+
             {isError && <div className={classes.reportFailed}>{reportById}</div>}
             {/*</ListGroup>*/}
             {/*<div><Paginator reports={reports} /></div>*/}

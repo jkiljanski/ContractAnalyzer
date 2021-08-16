@@ -7,7 +7,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import {BrowserRouter} from "react-router-dom";
 import { ReactKeycloakProvider } from '@react-keycloak/web'
 import keycloak from './keycloak'
-
+import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 
 const keycloakInitOptions = { onLoad: 'login-required' }
 
