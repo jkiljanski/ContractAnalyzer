@@ -31,13 +31,23 @@ public class ReportController {
         return reportFacade.getReportByID(id);
     }
 
-    @RolesAllowed("reader")
-    @GetMapping("/reports")
-    @ResponseBody
+//    @RolesAllowed("reader")
+//    @GetMapping("/reports")
+//    @ResponseBody
+//
+//    public List<ReportDTO> getAllReports() {
+//        return reportFacade.getAllReports();
+//    }
 
-    //refactor to DTO:
-    public List<ReportDTO> getAllReports() {
-        return reportFacade.getAllReports();
+    @RolesAllowed("reader")
+    @GetMapping("/filteredReports")
+    @ResponseBody
+    public List<ReportDTO> getAllReports(@RequestParam("result") String result,
+                                         @RequestParam("reportBody") String reportBody,
+                                         @RequestParam("timestamp") String timestamp,
+                                         @RequestParam("nameOfCheck") String nameOfCheck,
+                                         @RequestParam("userName") String userName) {
+        return reportFacade.getFilteredReports(result, reportBody, timestamp, nameOfCheck, userName);
     }
 
     @RolesAllowed("reader")

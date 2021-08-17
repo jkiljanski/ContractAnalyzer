@@ -4,15 +4,17 @@ import classes from "../Styles.module.css";
 
 const ReportViewer = (props) => {
     return (
-        <div key={props.report.id}>
-            <Card>
-                <CardBody className={classes.brandSmall} className={props.style}>
-                    {Object.entries(props.report).map( ([key, val]) =>
-                        <div >{key}: {val}</div>
-                    )}
-                </CardBody>
-            </Card>
-        </div>
+            <tr>
+            {Object.entries(props.report).map( ([key, value]) => (
+                <td>
+                    <Card>
+                        <CardBody className={classes.brandSmall} className={props.style}>
+                            {value}
+                        </CardBody>
+                    </Card>
+                </td>
+            ))}
+            </tr>
     );
 }
 

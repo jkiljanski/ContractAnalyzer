@@ -24,7 +24,7 @@
 }
 
 .brandSmall{
-    color: chartreuse;
+    color: black;
     background-color: white;
     padding: 1rem;
     font-size: small;
@@ -66,7 +66,7 @@
 
 .reportPassed {
     color: green;
-    background-color: darkseagreen;
+    /*background-color: darkseagreen;*/
     padding: 1rem;
     font-size: small;
     text-decoration: none !important;
@@ -75,7 +75,7 @@
 
 .reportFailed {
     color: red;
-    background-color: darkseagreen;
+    /*background-color: darkseagreen;*/
     padding: 1rem;
     font-size: small;
     text-decoration: none !important;
@@ -90,4 +90,9 @@ input[type="text"]{
 input[type=text]:focus{
     background-color: aquamarine;
     border: none;
+}
+
+.reportTable {
+    width: 100%;
+    border-color: black;
 }

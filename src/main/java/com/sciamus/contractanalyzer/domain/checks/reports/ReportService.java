@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class ReportService {
@@ -33,10 +34,21 @@ public class ReportService {
     }
 
     //watchout: żeby nie zaciągnęło całej bazy danych, to trzeba zrobić jakieś warunki
-    public List<Report> getAllReports() {
+//    public List<Report> getAllReports() {
+//
+//        return repositoryConfigurable.getReportsRepository().findAll();
+//
+//    }
 
-        return repositoryConfigurable.getReportsRepository().findAll();
-
+    public List<Report> getFilteredReports(String result, String reportBody, String timestamp, String nameOfCheck, String userName) {
+        List<Report> filteredReports = repositoryConfigurable.getReportsRepository().findAll();
+        return filteredReports
+                .stream()
+                .filter(r -> (result.isEmpty() || r.getResult().equals(ReportResults.valueOf(result))) &&
+                        r.getReportBody().contains(reportBody) &&
+                        r.getNameOfCheck().contains(nameOfCheck) &&
+                        r.getUserName().contains(userName))
+                .collect(Collectors.toList());
     }
 
     public List<Report> findAllByName(String name) {
