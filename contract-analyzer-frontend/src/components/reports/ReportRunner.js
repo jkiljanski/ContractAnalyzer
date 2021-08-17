@@ -155,19 +155,19 @@ const ReportRunner = () => {
             {/*<ListGroup>*/}
             {isError}
             {(reports.length > 0 || reportById) && !isError &&
-            // <BootstrapTable bordered
-            //     bootstrap4
-            //     data={currentPageData}
-            //     keyField='id'
-            //     columns={data.columns}>
-            // </BootstrapTable>}
-            <Table bordered={true}>
-                 <ReportTableHeaders />
-                 <tbody>
-                    {currentPageData}
-                     {reportDependingOnResult(reportById)}
-                 </tbody>
-             </Table>}
+            <BootstrapTable bordered
+                bootstrap4
+                data={currentPageData}
+                keyField='id'
+                columns={data.columns}>
+            </BootstrapTable>}
+            {/*<Table bordered={true}>*/}
+            {/*     <ReportTableHeaders />*/}
+            {/*     <tbody>*/}
+            {/*        {currentPageData}*/}
+            {/*         {reportDependingOnResult(reportById)}*/}
+            {/*     </tbody>*/}
+            {/* </Table>}*/}
 
             {isError && <div className={classes.reportFailed}>{reportById}</div>}
             {/*</ListGroup>*/}
