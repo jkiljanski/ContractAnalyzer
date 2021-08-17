@@ -68,6 +68,11 @@ public class KafkaConfig {
         return new KafkaTransformationCheck(kafkaProducFactory(),kafkaConsumFactory());
     }
 
+    @Bean
+    public KafkaComplexCheck kafkaComplexCheck(){
+        return new KafkaComplexCheck(kafkaProducFactory(),kafkaConsumFactory());
+    }
+
 
 
 
