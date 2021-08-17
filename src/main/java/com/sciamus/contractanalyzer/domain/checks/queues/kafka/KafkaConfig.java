@@ -5,7 +5,6 @@ import com.sciamus.contractanalyzer.domain.checks.queues.kafka.config.KafkaConsu
 import com.sciamus.contractanalyzer.domain.checks.queues.kafka.config.KafkaProducFactory;
 import com.sciamus.contractanalyzer.domain.checks.queues.kafka.config.KafkaProperties;
 import com.sciamus.contractanalyzer.domain.checks.queues.kafka.config.KafkaStreamFactory;
-import com.sciamus.contractanalyzer.domain.checks.reports.ReportService;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportsConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -48,10 +47,10 @@ public class KafkaConfig {
         return new KafkaMessagesSimpleCountCheck(kafkaStreamFactory(), kafkaProducFactory(), kafkaConsumFactory());
     }
 
-    @Bean
-    public KafkaPingPongCheck kafkaPingPongCheck(ReportService reportService){
-        return new KafkaPingPongCheck(kafkaConsumFactory(), kafkaProducFactory(), reportService);
-    }
+//    @Bean
+//    public KafkaPingPongCheck kafkaPingPongCheck(ReportService reportService){
+//        return new KafkaPingPongCheck(kafkaConsumFactory(), kafkaProducFactory(), reportService);
+//    }
 
     @Bean
     KafkaMessagesManyRunsCheck kafkaMessagesManyRunsCheck(){
