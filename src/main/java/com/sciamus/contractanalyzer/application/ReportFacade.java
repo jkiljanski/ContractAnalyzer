@@ -6,6 +6,7 @@ import com.sciamus.contractanalyzer.domain.checks.reports.Report;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportResults;
 import com.sciamus.contractanalyzer.infrastructure.port.ReportInfrastructureDTO;
 import com.sciamus.contractanalyzer.infrastructure.port.ReportPersistancePort;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,14 +46,13 @@ public class ReportFacade {
                 .map(reportViewMapper::mapToDTO).collect(Collectors.toList());
     }
 
-    public List<ReportViewDTO> findByPageSize(int documentsPerPage) {
+    public Page<ReportViewDTO> findByPageSize(int documentsPerPage) {
 
         return reportPersistancePort.findAll(documentsPerPage).stream()
                 .map(reportInfrastructureMapper::mapFromDTO)
                 .map(reportViewMapper::mapToDTO)
                 .collect(Collectors.toList());
     }
-
 
     private ReportInfrastructureDTO convertInterfaceDTOToInfrastructureDTO(ReportViewDTO dto) {
         return reportInfrastructureMapper.mapToDTO(reportViewMapper.mapFromDTO(dto));
@@ -69,7 +69,5 @@ public class ReportFacade {
                         r.getUserName().contains(userName))
                 .collect(Collectors.toList());
     }
-
-
 
 }

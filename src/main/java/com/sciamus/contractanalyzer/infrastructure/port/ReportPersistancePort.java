@@ -1,5 +1,7 @@
 package com.sciamus.contractanalyzer.infrastructure.port;
 
+import org.springframework.data.domain.Page;
+
 import java.util.List;
 
 public interface ReportPersistancePort {
@@ -10,7 +12,7 @@ public interface ReportPersistancePort {
 
     List<ReportInfrastructureDTO> findAll();
 
-    List<ReportInfrastructureDTO> findAll(int pageSize);
+    Page<ReportInfrastructureDTO> findAll(int pageSize);
 
 
 }
