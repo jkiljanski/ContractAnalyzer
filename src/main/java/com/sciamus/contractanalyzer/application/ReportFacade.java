@@ -6,6 +6,7 @@ import com.sciamus.contractanalyzer.domain.checks.reports.Report;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportResults;
 import com.sciamus.contractanalyzer.infrastructure.port.ReportInfrastructureDTO;
 import com.sciamus.contractanalyzer.infrastructure.port.ReportPersistancePort;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -59,7 +60,11 @@ public class ReportFacade {
     }
 
     public List<Report> innerGetFilteredReports(String result, String reportBody, String timestamp, String nameOfCheck, String userName) {
-        List<ReportInfrastructureDTO> filteredReports = reportPersistancePort.findAll();
+        List<ReportInfrastructureDTO> reportsToFilter = reportPersistancePort.findAll();
+        return filterReports(result, reportBody, nameOfCheck, userName, reportsToFilter);
+    }
+
+    private List<Report> filterReports(String result, String reportBody, String nameOfCheck, String userName, List<ReportInfrastructureDTO> filteredReports) {
         return filteredReports
                 .stream()
                 .map(reportInfrastructureMapper::mapFromDTO)
@@ -69,6 +74,27 @@ public class ReportFacade {
                         r.getUserName().contains(userName))
                 .collect(Collectors.toList());
     }
+
+    public List<ReportViewDTO> getAscendingSortedFilteredReports(String result, String reportBody, String timestamp, String nameOfCheck, String userName, String sortedBy) {
+
+        List<ReportInfrastructureDTO> reportsToFilter = reportPersistancePort.findAll(Sort.by(Sort.Direction.ASC,sortedBy));
+        return filterReports(result, reportBody, nameOfCheck, userName, reportsToFilter)
+                .stream()
+                .map(reportViewMapper::mapToDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<ReportViewDTO> getDescendingSortedFilteredReports(String result, String reportBody, String timestamp, String nameOfCheck, String userName, String sortedBy) {
+
+        List<ReportInfrastructureDTO> reportsToFilter = reportPersistancePort.findAll(Sort.by(Sort.Direction.DESC,sortedBy));
+        return filterReports(result, reportBody, nameOfCheck, userName, reportsToFilter)
+                .stream()
+                .map(reportViewMapper::mapToDTO)
+                .collect(Collectors.toList());
+    }
+
+
+
 
 
 

@@ -4,6 +4,7 @@ import com.sciamus.contractanalyzer.domain.checks.reports.ReportNotFoundExceptio
 import com.sciamus.contractanalyzer.infrastructure.port.ReportInfrastructureDTO;
 import com.sciamus.contractanalyzer.infrastructure.port.ReportPersistancePort;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,4 +47,11 @@ public class MongoReportPersistenceAdapter implements ReportPersistancePort {
     public List<ReportInfrastructureDTO> findAll(int pageSize) {
         return mongoReportsRepository.findAll(Pageable.ofSize(pageSize)).stream().map(reportDocumentMapper::mapFromDocument).collect(Collectors.toList());
     }
+
+    @Override
+    public List<ReportInfrastructureDTO> findAll(Sort sortBy) {
+         return mongoReportsRepository.findAll(sortBy).stream().map(reportDocumentMapper::mapFromDocument).collect(Collectors.toList());
+    }
+
+
 }

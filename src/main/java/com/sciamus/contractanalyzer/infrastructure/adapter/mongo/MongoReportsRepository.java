@@ -22,4 +22,7 @@ public interface MongoReportsRepository extends MongoRepository<ReportDocument, 
     List<Report> findByNameOfCheckContaining(String result);
 
     List<Report> findByUserNameContaining(String result);
+
+
+
 }

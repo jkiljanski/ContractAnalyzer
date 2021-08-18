@@ -1,5 +1,7 @@
 package com.sciamus.contractanalyzer.infrastructure.port;
 
+import org.springframework.data.domain.Sort;
+
 import java.util.List;
 
 public interface ReportPersistancePort {
@@ -13,4 +15,5 @@ public interface ReportPersistancePort {
     List<ReportInfrastructureDTO> findAll(int pageSize);
 
 
+    List<ReportInfrastructureDTO> findAll(Sort sortBy);
 }
