@@ -5,7 +5,6 @@ import com.sciamus.contractanalyzer.domain.checks.queues.kafka.config.KafkaProdu
 import com.sciamus.contractanalyzer.domain.checks.reports.Report;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportBuilder;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportResults;
-import com.sciamus.contractanalyzer.domain.checks.reports.ReportService;
 import io.vavr.collection.Stream;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -29,12 +28,10 @@ public class KafkaPingPongCheck implements KafkaCheck {
 
     private final KafkaProducFactory kafkaProducFactory;
 
-    private final ReportService reportService;
 
-    public KafkaPingPongCheck(KafkaConsumFactory kafkaConsumFactory, KafkaProducFactory kafkaProducFactory, ReportService reportService) {
+    public KafkaPingPongCheck(KafkaConsumFactory kafkaConsumFactory, KafkaProducFactory kafkaProducFactory) {
         this.kafkaConsumFactory = kafkaConsumFactory;
         this.kafkaProducFactory = kafkaProducFactory;
-        this.reportService = reportService;
     }
 
     //2 strategie: albo assign() albo subscribe()
@@ -83,7 +80,7 @@ public class KafkaPingPongCheck implements KafkaCheck {
         addTopicInfoToReport(incomingTopic, outgoingTopic, reportBuilder);
 
 
-        Report report = Stream.ofAll(records)
+        return Stream.ofAll(records)
                 .map(ConsumerRecord::value)
                 .find(p -> p.equals(correctMessageToFetch))
                 .map(s -> reportBuilder.setResult(ReportResults.PASSED)
@@ -94,7 +91,6 @@ public class KafkaPingPongCheck implements KafkaCheck {
                                 .build()
                 );
 
-                return reportService.addReportToRepository(report);
     }
 
     private void addTopicInfoToReport(String incomingTopic, String outgoingTopic, ReportBuilder reportBuilder) {

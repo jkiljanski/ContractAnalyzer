@@ -1,7 +1,7 @@
 package com.sciamus.contractanalyzer.domain.checks.suites;
 
 import com.sciamus.contractanalyzer.domain.checks.suites.reports.SuiteReport;
-import com.sciamus.contractanalyzer.infrastructure.port.SuitesReportsRepository;
+import com.sciamus.contractanalyzer.infrastructure.adapter.mongo.MongoSuitesReportsRepository;
 import io.vavr.CheckedFunction1;
 import io.vavr.Function1;
 import io.vavr.Function2;
@@ -15,13 +15,13 @@ import java.util.function.Predicate;
 
 public class SuitesService {
 
-    private final SuitesReportsRepository suitesReportsRepository;
+    private final MongoSuitesReportsRepository mongoSuitesReportsRepository;
 
     private SuitesRepository suitesRepository;
 
     @Autowired
-    public SuitesService(SuitesReportsRepository suitesReportsRepository, SuitesRepository suitesRepository) {
-        this.suitesReportsRepository = suitesReportsRepository;
+    public SuitesService(MongoSuitesReportsRepository mongoSuitesReportsRepository, SuitesRepository suitesRepository) {
+        this.mongoSuitesReportsRepository = mongoSuitesReportsRepository;
         this.suitesRepository = suitesRepository;
     }
 
@@ -52,7 +52,7 @@ public class SuitesService {
 
         return gluingFunction.apply(name, url)
                 .onFailure(MalformedURLException.class, this::throwBadURL)
-                .map(suitesReportsRepository::save)
+                .map(mongoSuitesReportsRepository::save)
                 .get();
     }
 
@@ -62,7 +62,7 @@ public class SuitesService {
 
     public java.util.List<SuiteReport> getAllReports() {
 
-        return suitesReportsRepository.findAll();
+        return mongoSuitesReportsRepository.findAll();
 
     }
 

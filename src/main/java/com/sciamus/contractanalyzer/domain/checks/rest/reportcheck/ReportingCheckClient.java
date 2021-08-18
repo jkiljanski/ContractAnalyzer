@@ -2,7 +2,7 @@ package com.sciamus.contractanalyzer.domain.checks.rest.reportcheck;
 
 
 import com.sciamus.contractanalyzer.domain.checks.rest.getlistof.ListOfChecksDTO;
-import com.sciamus.contractanalyzer.application.ReportDTO;
+import com.sciamus.contractanalyzer.application.ReportViewDTO;
 import feign.Param;
 import feign.RequestLine;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -18,10 +18,10 @@ public interface ReportingCheckClient {
     ListOfChecksDTO getAvailableChecks();
 
     @RequestLine(value = "POST /checks/{name}/autorun?url={url}")
-    ReportDTO autogenerate(@Param("name") String name, @Param("url") URL url);
+    ReportViewDTO autogenerate(@Param("name") String name, @Param("url") URL url);
 
     @RequestLine(value = "GET /reports/{id}")
-    ReportDTO getReportById(@Param("id") String id);
+    ReportViewDTO getReportById(@Param("id") String id);
 
 }
 

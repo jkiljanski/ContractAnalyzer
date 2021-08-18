@@ -1,37 +1,10 @@
-import com.sciamus.contractanalyzer.domain.checks.rest.RestCheck;
-import com.sciamus.contractanalyzer.domain.checks.suites.BasicSuite;
-import com.sciamus.contractanalyzer.domain.checks.suites.CheckSuite;
-import com.sciamus.contractanalyzer.domain.checks.suites.SuiteNotFoundException;
-import com.sciamus.contractanalyzer.domain.checks.suites.SuitesService;
-import com.sciamus.contractanalyzer.domain.checks.suites.reports.SuiteReport;
-import com.sciamus.contractanalyzer.infrastructure.adapter.RepositoryConfigurable;
-import com.sciamus.contractanalyzer.infrastructure.port.ReportsRepository;
-import com.sciamus.contractanalyzer.infrastructure.port.SuitesReportsRepository;
-import com.sciamus.contractanalyzer.misc.conf.SecurityConfigurable;
-import config.TestContextFactory;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.keycloak.KeycloakSecurityContext;
-import org.mockito.AdditionalAnswers;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 public class SuiteTest {
 
-    @Mock
+    /*@Mock
     private KeycloakSecurityContext keycloakSecurityContextMock;
 
     @Mock
@@ -111,6 +84,6 @@ public class SuiteTest {
 
         // then
         assertThat(exception).hasMessageContaining("Test Suite");
-    }
+    }*/
 
 }

@@ -1,4 +1,4 @@
-package com.sciamus.contractanalyzer.infrastructure.port;
+package com.sciamus.contractanalyzer.infrastructure.adapter.mongo;
 
 import com.sciamus.contractanalyzer.domain.checks.reports.Report;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportResults;
@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.Date;
 import java.util.List;
 
-public interface ReportsRepository extends MongoRepository<Report, String> {
+public interface MongoReportsRepository extends MongoRepository<ReportDocument, String> {
 
     List<Report> findAllByNameOfCheck(String name);
 

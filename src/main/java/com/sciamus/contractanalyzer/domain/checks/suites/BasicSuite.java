@@ -1,8 +1,8 @@
 package com.sciamus.contractanalyzer.domain.checks.suites;
 
-import com.sciamus.contractanalyzer.application.ReportDTO;
+import com.sciamus.contractanalyzer.application.ReportViewDTO;
 import com.sciamus.contractanalyzer.application.ChecksFacade;
-import com.sciamus.contractanalyzer.application.mapper.ReportMapper;
+import com.sciamus.contractanalyzer.application.mapper.report.ReportViewMapper;
 import com.sciamus.contractanalyzer.domain.checks.rest.RestCheckRepository;
 import com.sciamus.contractanalyzer.domain.checks.reports.Report;
 import com.sciamus.contractanalyzer.domain.checks.suites.reports.SuiteReport;
@@ -22,14 +22,14 @@ public class BasicSuite extends CheckSuite {
 
     private final RestCheckRepository restCheckRepository;
 
-    private final ReportMapper reportMapper;
+    private final ReportViewMapper reportViewMapper;
 
     @Autowired
-    public BasicSuite(ChecksFacade checksFacade, RestCheckRepository restCheckRepository, ReportMapper reportMapper) {
+    public BasicSuite(ChecksFacade checksFacade, RestCheckRepository restCheckRepository, ReportViewMapper reportViewMapper) {
         super();
         this.checksFacade = checksFacade;
         this.restCheckRepository = restCheckRepository;
-        this.reportMapper = reportMapper;
+        this.reportViewMapper = reportViewMapper;
     }
 
     public String getName() {
@@ -40,7 +40,7 @@ public class BasicSuite extends CheckSuite {
     public SuiteReport run(URL url) {
 
 
-        List<ReportDTO> checkReportDTOS = List.ofAll(restCheckRepository.getAllChecks().stream())
+        List<ReportViewDTO> checkReportDTOS = List.ofAll(restCheckRepository.getAllChecks().stream())
                 .take(3)
                 .peek(System.out::println)
                 .map(s -> Try.of(()-> checksFacade
@@ -51,7 +51,7 @@ public class BasicSuite extends CheckSuite {
 
         List<Report> checkReports = checkReportDTOS
                 .toStream()
-                .map(checkReportDTO -> reportMapper.mapFromDTO(checkReportDTO))
+                .map(checkReportDTO -> reportViewMapper.mapFromDTO(checkReportDTO))
                 .collect(List.collector());
 
         SuiteReport suiteReport = new SuiteReport(checkReports.toJavaList());
