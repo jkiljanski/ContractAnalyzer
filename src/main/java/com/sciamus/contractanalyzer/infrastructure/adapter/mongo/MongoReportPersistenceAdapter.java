@@ -55,9 +55,11 @@ public class MongoReportPersistenceAdapter implements ReportPersistancePort {
     }
 
     @Override
-    public Page<ReportInfrastructureDTO> findAll(int pageSize, String sortingProperty) {
+    public Page<ReportInfrastructureDTO> findAll(int pageSize, String sortingProperty, String sortingOrder) {
 
-        Page<ReportDocument> page = mongoReportsRepository.findAll(PageRequest.of(pageSize,10, Sort.by(sortingProperty)));
+
+
+        Page<ReportDocument> page = mongoReportsRepository.findAll(PageRequest.of(pageSize,10, Sort.Direction.fromString(sortingOrder), sortingProperty));
 
         return page.map(reportDocumentMapper::mapFromDocument);
     }

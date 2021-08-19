@@ -14,7 +14,7 @@ public interface ReportPersistancePort {
 
     Page<ReportInfrastructureDTO> findAll(int pageSize);
 
-    Page<ReportInfrastructureDTO> findAll(int pageSize, String sortingProperty);
+    Page<ReportInfrastructureDTO> findAll(int pageSize, String sortingProperty, String sortingOrder);
 
 
 

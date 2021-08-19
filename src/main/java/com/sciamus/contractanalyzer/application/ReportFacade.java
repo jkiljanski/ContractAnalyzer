@@ -54,9 +54,10 @@ public class ReportFacade {
     }
 
 
-    public Page<ReportViewDTO> findByPageNumberAndSortingProperty(int pageNumber, String sortingProperty) {
+    public Page<ReportViewDTO> findByPageNumberAndSortingProperty(int pageNumber, String sortingProperty, String sortingOrder) {
 
-        Page<ReportInfrastructureDTO> page = reportPersistancePort.findAll(pageNumber, sortingProperty);
+
+        Page<ReportInfrastructureDTO> page = reportPersistancePort.findAll(pageNumber, sortingProperty, sortingOrder );
 
         return page.map(this::convertInfrastractureDTOToViewDTO);
 

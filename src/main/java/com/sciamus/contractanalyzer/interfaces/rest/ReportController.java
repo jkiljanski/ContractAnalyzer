@@ -45,10 +45,11 @@ public class ReportController {
     @GetMapping("/reports/paged")
     @ResponseBody
     public Page<ReportViewDTO> getPagedReports(@RequestParam("pageNumber") int pageNumber,
-                                               @RequestParam(value = "sortingProperty", required = false) String sortingProperty) {
+                                               @RequestParam(value = "sortingProperty", required = false) String sortingProperty,
+                                               @RequestParam(value = "order",required = false) String sortingOrder) {
         return sortingProperty == null ?
                 reportFacade.findByPageNumber(pageNumber) :
-                reportFacade.findByPageNumberAndSortingProperty(pageNumber, sortingProperty);
+                reportFacade.findByPageNumberAndSortingProperty(pageNumber, sortingProperty, sortingOrder);
     }
 
 
