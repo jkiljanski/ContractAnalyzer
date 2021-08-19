@@ -46,12 +46,23 @@ public class ReportFacade {
                 .map(reportViewMapper::mapToDTO).collect(Collectors.toList());
     }
 
-    public Page<ReportViewDTO> findByPageSize(int documentsPerPage) {
+    public Page<ReportViewDTO> findByPageNumber(int pageNumber) {
 
-        Page<ReportInfrastructureDTO> page = reportPersistancePort.findAll(documentsPerPage);
+        Page<ReportInfrastructureDTO> page = reportPersistancePort.findAll(pageNumber);
 
         return page.map(this::convertInfrastractureDTOToViewDTO);
     }
+
+
+    public Page<ReportViewDTO> findByPageNumberAndSortingProperty(int pageNumber, String sortingProperty) {
+
+        Page<ReportInfrastructureDTO> page = reportPersistancePort.findAll(pageNumber, sortingProperty);
+
+        return page.map(this::convertInfrastractureDTOToViewDTO);
+
+    }
+
+
 
     private ReportInfrastructureDTO convertInterfaceDTOToInfrastructureDTO(ReportViewDTO dto) {
         return reportInfrastructureMapper.mapToDTO(reportViewMapper.mapFromDTO(dto));

@@ -34,18 +34,22 @@ public class ReportController {
     @GetMapping("/filteredReports")
     @ResponseBody
     public List<ReportViewDTO> getAllReports(@RequestParam("result") String result,
-                                         @RequestParam("reportBody") String reportBody,
-                                         @RequestParam("timestamp") String timestamp,
-                                         @RequestParam("nameOfCheck") String nameOfCheck,
-                                         @RequestParam("userName") String userName) {
+                                             @RequestParam("reportBody") String reportBody,
+                                             @RequestParam("timestamp") String timestamp,
+                                             @RequestParam("nameOfCheck") String nameOfCheck,
+                                             @RequestParam("userName") String userName) {
         return reportFacade.getFilteredReports(result, reportBody, timestamp, nameOfCheck, userName);
     }
 
     @RolesAllowed("reader")
     @GetMapping("/reports/paged")
     @ResponseBody
-    public Page<ReportViewDTO> getPagedReports(@RequestParam("pageNumber") int documentsPerPage) {return reportFacade.findByPageSize(documentsPerPage);}
-
+    public Page<ReportViewDTO> getPagedReports(@RequestParam("pageNumber") int pageNumber,
+                                               @RequestParam(value = "sortingProperty", required = false) String sortingProperty) {
+        return sortingProperty == null ?
+                reportFacade.findByPageNumber(pageNumber) :
+                reportFacade.findByPageNumberAndSortingProperty(pageNumber, sortingProperty);
+    }
 
 
     @ExceptionHandler(ReportNotFoundException.class)
@@ -57,8 +61,6 @@ public class ReportController {
                 .status(HttpStatus.NOT_FOUND)
                 .body(exception.getMessage());
     }
-
-
 
 
 }
