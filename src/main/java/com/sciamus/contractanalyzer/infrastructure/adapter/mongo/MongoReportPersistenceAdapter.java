@@ -5,6 +5,7 @@ import com.sciamus.contractanalyzer.infrastructure.port.ReportInfrastructureDTO;
 import com.sciamus.contractanalyzer.infrastructure.port.ReportPersistancePort;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,4 +47,14 @@ public class MongoReportPersistenceAdapter implements ReportPersistancePort {
     public List<ReportInfrastructureDTO> findAll(int pageSize) {
         return mongoReportsRepository.findAll(Pageable.ofSize(pageSize)).stream().map(reportDocumentMapper::mapFromDocument).collect(Collectors.toList());
     }
+
+    public List<ReportInfrastructureDTO> findAllByTimestampBetweenAndNameOfCheckAndResultAndUserNameAndReportBodyContaining(LocalDateTime from, LocalDateTime to, String name, String result, String user, String reportBody) {
+       return mongoReportsRepository.findAllByTimestampBetweenAndNameOfCheckAndResultAndUserNameAndReportBodyContaining(from, to, name, result, user, reportBody)
+               .stream()
+               .map(reportDocumentMapper::mapFromDocument).collect(Collectors.toList());
+    }
+
+
+
+
 }

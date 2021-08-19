@@ -11,10 +11,12 @@ public interface MongoReportsRepository extends MongoRepository<ReportDocument, 
 
     List<ReportDocument> findByReportBodyContaining(String reportBody);
 
+    List<ReportDocument> findAllByTimestampBetweenAndNameOfCheckAndResultAndUserNameAndReportBodyContaining(LocalDateTime timestampFrom,
+                                                                                                        LocalDateTime timestampTo,
+                                                                                                        String nameOfCheck,
+                                                                                                        String result,
+                                                                                                        String userName,
+                                                                                                        String reportBody);
 
-    List<ReportDocument> findAllByTimestampBetween(LocalDateTime timestampFrom);
 
-    List<ReportDocument> findByNameOfCheckContaining(String result);
-
-    List<ReportDocument> findByUserNameContaining(String result);
 }

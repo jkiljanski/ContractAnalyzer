@@ -7,6 +7,7 @@ import com.sciamus.contractanalyzer.domain.checks.reports.ReportResults;
 import com.sciamus.contractanalyzer.infrastructure.port.ReportInfrastructureDTO;
 import com.sciamus.contractanalyzer.infrastructure.port.ReportPersistancePort;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,6 +55,22 @@ public class ReportFacade {
     }
 
 
+    public List<ReportViewDTO> filerAll(LocalDateTime timestampFrom,
+                                     LocalDateTime timestampTo,
+                                     String nameOfCheck,
+                                     String result,
+                                     String userName,
+                                     String reportBody) {
+
+        return reportPersistancePort.findAllByTimestampBetweenAndNameOfCheckAndResultAndUserNameAndReportBodyContaining
+                (timestampFrom,timestampTo,nameOfCheck,result,userName,reportBody)
+                .stream()
+                .map(reportInfrastructureMapper::mapFromDTO)
+                .map(reportViewMapper::mapToDTO)
+                .collect(Collectors.toList());
+    }
+
+
     private ReportInfrastructureDTO convertInterfaceDTOToInfrastructureDTO(ReportViewDTO dto) {
         return reportInfrastructureMapper.mapToDTO(reportViewMapper.mapFromDTO(dto));
     }
@@ -69,6 +86,8 @@ public class ReportFacade {
                         r.getUserName().contains(userName))
                 .collect(Collectors.toList());
     }
+
+
 
 
 

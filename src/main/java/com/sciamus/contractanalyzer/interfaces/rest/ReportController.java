@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -33,18 +34,36 @@ public class ReportController {
     @GetMapping("/filteredReports")
     @ResponseBody
     public List<ReportViewDTO> getAllReports(@RequestParam("result") String result,
-                                         @RequestParam("reportBody") String reportBody,
-                                         @RequestParam("timestamp") String timestamp,
-                                         @RequestParam("nameOfCheck") String nameOfCheck,
-                                         @RequestParam("userName") String userName) {
+                                             @RequestParam("reportBody") String reportBody,
+                                             @RequestParam("timestamp") String timestamp,
+                                             @RequestParam("nameOfCheck") String nameOfCheck,
+                                             @RequestParam("userName") String userName) {
         return reportFacade.getFilteredReports(result, reportBody, timestamp, nameOfCheck, userName);
     }
+
 
     @RolesAllowed("reader")
     @GetMapping("/reports/paged")
     @ResponseBody
-    public List<ReportViewDTO> getPagedReports(@RequestParam("documentsPerPage") int documentsPerPage) {return reportFacade.findByPageSize(documentsPerPage);}
+    public List<ReportViewDTO> getPagedReports(@RequestParam("documentsPerPage") int documentsPerPage) {
+        return reportFacade.findByPageSize(documentsPerPage);
+    }
 
+    @RolesAllowed("reader")
+    @GetMapping("/reports/filter")
+    @ResponseBody
+    public List<ReportViewDTO> getByTimestamp(@RequestParam(value = "dateTimeFrom", required = false) String from,
+                                              @RequestParam(value = "dateTimeTo", required = false) String to,
+                                              @RequestParam(value = "nameOfCheck", required = false) String name,
+                                              @RequestParam(value = "result", required = false) String result,
+                                              @RequestParam(value = "userName", required = false) String username,
+                                              @RequestParam(value = "reportBody", required = false) String reportBody
+                                              ) {
+
+
+        return reportFacade.filerAll(LocalDateTime.parse(from), LocalDateTime.parse(to), name, result,username,reportBody);
+
+    }
 
 
     @ExceptionHandler(ReportNotFoundException.class)
@@ -56,8 +75,6 @@ public class ReportController {
                 .status(HttpStatus.NOT_FOUND)
                 .body(exception.getMessage());
     }
-
-
 
 
 }
