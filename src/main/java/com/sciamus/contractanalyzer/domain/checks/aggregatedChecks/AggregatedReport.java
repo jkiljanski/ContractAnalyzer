@@ -3,7 +3,7 @@ package com.sciamus.contractanalyzer.domain.checks.aggregatedChecks;
 import com.sciamus.contractanalyzer.domain.checks.reports.Report;
 import lombok.Getter;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -12,14 +12,14 @@ public class AggregatedReport {
     public String id;
     private String aggregatedReportName;
     private final List<String> namesOfChecks;
-    private Date timestamp;
+    private LocalDateTime timestamp;
     private final List<Report> failedTestReportList;
     private final String passedPercentage;
     private final String failedPercentage;
     private final String userName;
 
 
-    public AggregatedReport(String id, String aggregatedReportName, List<String> namesOfChecks, Date timestamp, List<Report> failedTestReportList, String passedPercentage, String failedPercentage, String userName) {
+    public AggregatedReport(String id, String aggregatedReportName, List<String> namesOfChecks, LocalDateTime timestamp, List<Report> failedTestReportList, String passedPercentage, String failedPercentage, String userName) {
         this.id = id;
         this.aggregatedReportName = aggregatedReportName;
         this.namesOfChecks = namesOfChecks;

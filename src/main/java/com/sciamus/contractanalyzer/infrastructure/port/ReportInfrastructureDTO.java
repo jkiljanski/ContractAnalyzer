@@ -3,7 +3,7 @@ package com.sciamus.contractanalyzer.infrastructure.port;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @AllArgsConstructor
@@ -12,7 +12,7 @@ public class ReportInfrastructureDTO {
     public String id;
     public String result;
     public String reportBody;
-    public Date timestamp;
+    public LocalDateTime timestamp;
     public String nameOfCheck;
     public String userName;
 

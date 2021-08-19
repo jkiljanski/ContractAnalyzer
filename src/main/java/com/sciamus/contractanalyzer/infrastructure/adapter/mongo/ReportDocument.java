@@ -8,7 +8,7 @@ import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Document(collection = "checkReports")
 @TypeAlias("check_report")
@@ -25,7 +25,7 @@ public class ReportDocument {
     @Field("name")
     public  String nameOfCheck;
     @Field("timestamp")
-    public Date timestamp;
+    public LocalDateTime timestamp;
     @Field("userName")
     public  String userName;
 
@@ -33,7 +33,7 @@ public class ReportDocument {
     }
 
     @PersistenceConstructor
-    public ReportDocument(String id, ReportResults result, String reportBody, String nameOfCheck, Date timestamp, String userName) {
+    public ReportDocument(String id, ReportResults result, String reportBody, String nameOfCheck, LocalDateTime timestamp, String userName) {
         this.id = id;
         this.result = result;
         this.reportBody = reportBody;
