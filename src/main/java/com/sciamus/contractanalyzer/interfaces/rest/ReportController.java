@@ -44,7 +44,7 @@ public class ReportController {
     @RolesAllowed("reader")
     @GetMapping("/reports/paged")
     @ResponseBody
-    public Page<ReportViewDTO> getPagedReports(@RequestParam("documentsPerPage") int documentsPerPage) {return reportFacade.findByPageSize(documentsPerPage);}
+    public Page<ReportViewDTO> getPagedReports(@RequestParam("pageNumber") int documentsPerPage) {return reportFacade.findByPageSize(documentsPerPage);}
 
 
 
