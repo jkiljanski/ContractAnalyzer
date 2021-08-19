@@ -4,6 +4,7 @@ package com.sciamus.contractanalyzer.interfaces.rest;
 import com.sciamus.contractanalyzer.application.ReportFacade;
 import com.sciamus.contractanalyzer.application.ReportViewDTO;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportNotFoundException;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -43,7 +44,7 @@ public class ReportController {
     @RolesAllowed("reader")
     @GetMapping("/reports/paged")
     @ResponseBody
-    public List<ReportViewDTO> getPagedReports(@RequestParam("documentsPerPage") int documentsPerPage) {return reportFacade.findByPageSize(documentsPerPage);}
+    public Page<ReportViewDTO> getPagedReports(@RequestParam("documentsPerPage") int documentsPerPage) {return reportFacade.findByPageSize(documentsPerPage);}
 
 
 

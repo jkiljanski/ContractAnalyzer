@@ -45,7 +45,10 @@ public class MongoReportPersistenceAdapter implements ReportPersistancePort {
 
     @Override
     public Page<ReportInfrastructureDTO> findAll(int pageSize) {
-        return mongoReportsRepository.findAll(Pageable.ofSize(pageSize));
+
+        Page<ReportDocument> pages = mongoReportsRepository.findAll(Pageable.ofSize(pageSize));
+
+        return pages.map(reportDocumentMapper::mapFromDocument);
 
 //        return mongoReportsRepository.findAll(Pageable.ofSize(pageSize)).stream().map(reportDocumentMapper::mapFromDocument).collect(Collectors.toList());
     }

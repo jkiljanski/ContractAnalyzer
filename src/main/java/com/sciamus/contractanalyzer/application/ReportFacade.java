@@ -48,10 +48,9 @@ public class ReportFacade {
 
     public Page<ReportViewDTO> findByPageSize(int documentsPerPage) {
 
-        return reportPersistancePort.findAll(documentsPerPage).stream()
-                .map(reportInfrastructureMapper::mapFromDTO)
-                .map(reportViewMapper::mapToDTO)
-                .collect(Collectors.toList());
+        Page<ReportInfrastructureDTO> page = reportPersistancePort.findAll(documentsPerPage);
+
+        return page.map(this::convertInfrastractureDTOToViewDTO);
     }
 
     private ReportInfrastructureDTO convertInterfaceDTOToInfrastructureDTO(ReportViewDTO dto) {
