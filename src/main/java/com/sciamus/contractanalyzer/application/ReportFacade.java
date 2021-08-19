@@ -55,12 +55,12 @@ public class ReportFacade {
     }
 
 
-    public List<ReportViewDTO> filerAll(LocalDateTime timestampFrom,
-                                     LocalDateTime timestampTo,
-                                     String nameOfCheck,
-                                     String result,
-                                     String userName,
-                                     String reportBody) {
+    public List<ReportViewDTO> filterAll(LocalDateTime timestampFrom,
+                                         LocalDateTime timestampTo,
+                                         String nameOfCheck,
+                                         String result,
+                                         String userName,
+                                         String reportBody) {
 
         return reportPersistancePort.findAllByTimestampBetweenAndNameOfCheckAndResultAndUserNameAndReportBodyContaining
                 (timestampFrom,timestampTo,nameOfCheck,result,userName,reportBody)

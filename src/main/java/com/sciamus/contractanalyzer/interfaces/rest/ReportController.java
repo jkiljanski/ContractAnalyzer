@@ -61,7 +61,7 @@ public class ReportController {
                                               ) {
 
 
-        return reportFacade.filerAll(LocalDateTime.parse(from), LocalDateTime.parse(to), name, result,username,reportBody);
+        return reportFacade.filterAll(LocalDateTime.parse(from), LocalDateTime.parse(to), name, result,username,reportBody);
 
     }
 
