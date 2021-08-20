@@ -1,5 +1,6 @@
 package com.sciamus.contractanalyzer.infrastructure.port;
 
+import com.sciamus.contractanalyzer.application.ReportFilterParameters;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -16,6 +17,8 @@ public interface ReportPersistancePort {
 
     Page<ReportInfrastructureDTO> findAll(int pageSize, String sortingProperty, String sortingOrder);
 
+
+    Page<ReportInfrastructureDTO> findAll(ReportFilterParameters reportFilterParameters, int pageNumber);
 
 
 }

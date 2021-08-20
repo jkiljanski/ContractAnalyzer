@@ -2,6 +2,7 @@ package com.sciamus.contractanalyzer.interfaces.rest;
 
 
 import com.sciamus.contractanalyzer.application.ReportFacade;
+import com.sciamus.contractanalyzer.application.ReportFilterParameters;
 import com.sciamus.contractanalyzer.application.ReportViewDTO;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportNotFoundException;
 import org.springframework.data.domain.Page;
@@ -10,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
-import java.util.List;
 
 @RestController
 public class ReportController {
@@ -33,12 +33,14 @@ public class ReportController {
     @RolesAllowed("reader")
     @GetMapping("/filteredReports")
     @ResponseBody
-    public List<ReportViewDTO> getAllReports(@RequestParam("result") String result,
-                                             @RequestParam("reportBody") String reportBody,
-                                             @RequestParam("timestamp") String timestamp,
-                                             @RequestParam("nameOfCheck") String nameOfCheck,
-                                             @RequestParam("userName") String userName) {
-        return reportFacade.getFilteredReports(result, reportBody, timestamp, nameOfCheck, userName);
+    public Page<ReportViewDTO> getAllReports(@RequestParam(value = "result", required = false) String result,
+                                             @RequestParam(value = "reportBody", required = false) String reportBody,
+                                             @RequestParam(value = "timestampFrom", required = false) String timestampFrom,
+                                             @RequestParam(value = "timestampTo", required = false) String timestampTo,
+                                             @RequestParam(value = "nameOfCheck", required = false) String nameOfCheck,
+                                             @RequestParam(value = "userName", required = false) String userName,
+                                             @RequestParam(value = "pageNumber", required = false) int number) {
+        return reportFacade.getFilteredReports(new ReportFilterParameters(result, reportBody, timestampFrom, timestampTo, nameOfCheck, userName), number);
     }
 
     @RolesAllowed("reader")
@@ -48,8 +50,8 @@ public class ReportController {
                                                @RequestParam(value = "sortingProperty", required = false) String sortingProperty,
                                                @RequestParam(value = "order",required = false) String sortingOrder) {
         return sortingProperty == null ?
-                reportFacade.findByPageNumber(pageNumber) :
-                reportFacade.findByPageNumberAndSortingProperty(pageNumber, sortingProperty, sortingOrder);
+                reportFacade.findAllByPageNumber(pageNumber) :
+                reportFacade.findAllByPageNumberAndSortingProperty(pageNumber, sortingProperty, sortingOrder);
     }
 
 

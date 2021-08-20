@@ -1,5 +1,6 @@
 package com.sciamus.contractanalyzer.infrastructure.adapter.mongo;
 
+import com.sciamus.contractanalyzer.application.ReportFilterParameters;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportNotFoundException;
 import com.sciamus.contractanalyzer.infrastructure.port.ReportInfrastructureDTO;
 import com.sciamus.contractanalyzer.infrastructure.port.ReportPersistancePort;
@@ -33,12 +34,14 @@ public class MongoReportPersistenceAdapter implements ReportPersistancePort {
         return reportDocumentMapper.mapFromDocument(saved);
 
     }
+
     @Override
     public ReportInfrastructureDTO findById(String id) {
 
-       return reportDocumentMapper.mapFromDocument(mongoReportsRepository.findById(id).orElseThrow(() -> new ReportNotFoundException("" + id)));
+        return reportDocumentMapper.mapFromDocument(mongoReportsRepository.findById(id).orElseThrow(() -> new ReportNotFoundException("" + id)));
 
     }
+
     @Override
     public List<ReportInfrastructureDTO> findAll() {
         return mongoReportsRepository.findAll().stream().map(reportDocumentMapper::mapFromDocument).collect(Collectors.toList());
@@ -47,7 +50,7 @@ public class MongoReportPersistenceAdapter implements ReportPersistancePort {
     @Override
     public Page<ReportInfrastructureDTO> findAll(int pageNumber) {
 
-        Page<ReportDocument> page = mongoReportsRepository.findAll(PageRequest.of(pageNumber,10));
+        Page<ReportDocument> page = mongoReportsRepository.findAll(PageRequest.of(pageNumber, 10));
 
         return page.map(reportDocumentMapper::mapFromDocument);
 
@@ -55,12 +58,19 @@ public class MongoReportPersistenceAdapter implements ReportPersistancePort {
     }
 
     @Override
-    public Page<ReportInfrastructureDTO> findAll(int pageSize, String sortingProperty, String sortingOrder) {
+    public Page<ReportInfrastructureDTO> findAll(int pageNumber, String sortingProperty, String sortingOrder) {
 
 
+        Page<ReportDocument> page = mongoReportsRepository.findAll(PageRequest.of(pageNumber, 10, Sort.Direction.fromString(sortingOrder), sortingProperty));
 
-        Page<ReportDocument> page = mongoReportsRepository.findAll(PageRequest.of(pageSize,10, Sort.Direction.fromString(sortingOrder), sortingProperty));
+        return page.map(reportDocumentMapper::mapFromDocument);
+    }
 
+    @Override
+    public Page<ReportInfrastructureDTO> findAll(ReportFilterParameters reportFilterParameters, int pageNumber) {
+
+
+        Page<ReportDocument> page = mongoReportsRepository.findAll(reportFilterParameters.getResult(), reportFilterParameters.getReportBody(), reportFilterParameters.getTimestampFrom(), reportFilterParameters.getTimestampTo(), reportFilterParameters.getNameOfCheck(), reportFilterParameters.getUserName(), PageRequest.of(pageNumber, 10));
         return page.map(reportDocumentMapper::mapFromDocument);
     }
 }

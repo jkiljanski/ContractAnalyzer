@@ -1,25 +1,20 @@
 package com.sciamus.contractanalyzer.infrastructure.adapter.mongo;
 
-import com.sciamus.contractanalyzer.domain.checks.reports.Report;
-import com.sciamus.contractanalyzer.domain.checks.reports.ReportResults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
-
-import java.util.Date;
-import java.util.List;
+import org.springframework.data.mongodb.repository.Query;
 
 public interface MongoReportsRepository extends MongoRepository<ReportDocument, String> {
 
-    List<Report> findAllByNameOfCheck(String name);
+    @Query("{$or:[{ $expr: { $eq: ['?0', 'null'] },{'result': ?0}]}" +
+            "{$or:[{ $expr: { $eq: ['?1', 'null'] },{'content':{$regex : ?1}}]}" +
+            "{$or:[{ $expr: { $eq: ['?2', 'null'] },{ $expr: { $eq: ['?3', 'null'] },{'timestamp' : {$gte : ?2, $lt : ?3 }]}" +
+            "{$or:[{ $expr: { $eq: ['?4', 'null'] }, { 'name': ?4 } ]}" +
+            "{$or:[{ $expr: { $eq: ['?5', 'null'] }, { 'userName': ?5 } ]}")
+    Page<ReportDocument> findAll(String result, String reportBody, String timestampFrom, String timestampTo, String nameOfCheck, String userName, Pageable pageable);
 
-    List<Report> findReportsByIdIsWithin(String idFrom, String idTo);
-
-    List<Report> findByResultContaining(ReportResults result);
-
-    List<Report> findByReportBodyContaining(String reportBody);
-
-    List<Report> findByTimestampContaining(Date timestamp);
-
-    List<Report> findByNameOfCheckContaining(String result);
-
-    List<Report> findByUserNameContaining(String result);
 }
+
+
+//{ $and: [
