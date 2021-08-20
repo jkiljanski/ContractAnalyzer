@@ -1,6 +1,7 @@
 package com.sciamus.contractanalyzer.interfaces.rest;
 
 
+import com.sciamus.contractanalyzer.application.QueryParameters;
 import com.sciamus.contractanalyzer.application.ReportFacade;
 import com.sciamus.contractanalyzer.application.ReportViewDTO;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportNotFoundException;
@@ -52,6 +53,8 @@ public class ReportController {
     @RolesAllowed("reader")
     @GetMapping("/reports/filter")
     @ResponseBody
+
+    //parameter object - refactor w idei <3
     public List<ReportViewDTO> getByTimestamp(@RequestParam(value = "dateTimeFrom", required = false) String from,
                                               @RequestParam(value = "dateTimeTo", required = false) String to,
                                               @RequestParam(value = "nameOfCheck", required = false) String name,
@@ -61,7 +64,7 @@ public class ReportController {
                                               ) {
 
 
-        return reportFacade.filterAll(LocalDateTime.parse(from), LocalDateTime.parse(to), name, result,username,reportBody);
+        return reportFacade.filterAll(new QueryParameters(LocalDateTime.parse(from), LocalDateTime.parse(to), name, result, username, reportBody));
 
     }
 

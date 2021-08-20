@@ -7,7 +7,6 @@ import com.sciamus.contractanalyzer.domain.checks.reports.ReportResults;
 import com.sciamus.contractanalyzer.infrastructure.port.ReportInfrastructureDTO;
 import com.sciamus.contractanalyzer.infrastructure.port.ReportPersistancePort;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,15 +54,10 @@ public class ReportFacade {
     }
 
 
-    public List<ReportViewDTO> filterAll(LocalDateTime timestampFrom,
-                                         LocalDateTime timestampTo,
-                                         String nameOfCheck,
-                                         String result,
-                                         String userName,
-                                         String reportBody) {
+    public List<ReportViewDTO> filterAll(QueryParameters queryParameters) {
 
         return reportPersistancePort.findAllByTimestampBetweenAndNameOfCheckAndResultAndUserNameAndReportBodyContaining
-                (timestampFrom,timestampTo,nameOfCheck,result,userName,reportBody)
+                (queryParameters.getTimestampFrom(), queryParameters.getTimestampTo(), queryParameters.getNameOfCheck(), queryParameters.getResult(), queryParameters.getUserName(), queryParameters.getReportBody())
                 .stream()
                 .map(reportInfrastructureMapper::mapFromDTO)
                 .map(reportViewMapper::mapToDTO)
