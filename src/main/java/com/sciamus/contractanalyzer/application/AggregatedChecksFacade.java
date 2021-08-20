@@ -49,7 +49,7 @@ public class AggregatedChecksFacade {
     public AggregatedReportViewDTO addAggregatedReportToRepository(String name, AggregatedReport aggregatedReport) {
         aggregatedReport.addName(name != null ? name : "Aggregated report#" + aggregatedReport.id);
 
-        return convertInfrastractureDTOToViewDTO(aggregatedReportPersistancePort.save(aggregatedReportInfrastructureMapper.mapToDTO(aggregatedReport)));
+        return convertInfrastractureDTOToViewDTO(aggregatedReportPersistancePort.save(aggregatedReportInfrastructureMapper.mapToDTO(aggregatedReport), name));
     }
 
     public AggregatedReportViewDTO runAndSaveAggregatedChecks(String name, List<String> namesOfChecks, String url) throws MalformedURLException {

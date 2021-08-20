@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface AggregatedReportPersistancePort {
 
-    AggregatedReportInfrastructureDTO save(AggregatedReportInfrastructureDTO report);
+    AggregatedReportInfrastructureDTO save(AggregatedReportInfrastructureDTO report, String name);
 
     AggregatedReportInfrastructureDTO findById(String id);
 

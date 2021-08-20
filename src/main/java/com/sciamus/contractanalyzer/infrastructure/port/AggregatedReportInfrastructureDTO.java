@@ -70,4 +70,8 @@ public class AggregatedReportInfrastructureDTO {
     public String getUserName() {
         return userName;
     }
+
+    public void addName(String name) {
+        this.aggregatedReportName = name;
+    }
 }
