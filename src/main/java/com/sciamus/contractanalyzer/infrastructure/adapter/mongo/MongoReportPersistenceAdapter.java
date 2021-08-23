@@ -4,9 +4,9 @@ import com.sciamus.contractanalyzer.application.ReportFilterParameters;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportNotFoundException;
 import com.sciamus.contractanalyzer.infrastructure.port.ReportInfrastructureDTO;
 import com.sciamus.contractanalyzer.infrastructure.port.ReportPersistancePort;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,10 +19,13 @@ public class MongoReportPersistenceAdapter implements ReportPersistancePort {
 
     private final ReportIdGenerator reportIdGenerator;
 
-    public MongoReportPersistenceAdapter(ReportDocumentMapper reportDocumentMapper, MongoReportsRepository mongoReportsRepository, ReportIdGenerator reportIdGenerator) {
+    private final MongoTemplate mongoTemplate;
+
+    public MongoReportPersistenceAdapter(ReportDocumentMapper reportDocumentMapper, MongoReportsRepository mongoReportsRepository, ReportIdGenerator reportIdGenerator, MongoTemplate mongoTemplate) {
         this.reportDocumentMapper = reportDocumentMapper;
         this.mongoReportsRepository = mongoReportsRepository;
         this.reportIdGenerator = reportIdGenerator;
+        this.mongoTemplate = mongoTemplate;
     }
 
     @Override
@@ -69,10 +72,15 @@ public class MongoReportPersistenceAdapter implements ReportPersistancePort {
     @Override
     public Page<ReportInfrastructureDTO> findAll(ReportFilterParameters reportFilterParameters, int pageNumber) {
 
+        QueryBuilder queryBuilder = new QueryBuilder();
 
-        Page<ReportDocument> page = mongoReportsRepository.findAll(reportFilterParameters.getResult(), reportFilterParameters.getReportBody(), reportFilterParameters.getTimestampFrom(), reportFilterParameters.getTimestampTo(), reportFilterParameters.getNameOfCheck(), reportFilterParameters.getUserName(), PageRequest.of(pageNumber, 10));
+        Query query = queryBuilder.buildQuery(reportFilterParameters);
 
-        System.out.println(reportFilterParameters.getReportBody() + "JAPIERDOLE!!!!!!");
+        Query pagedQuery = query.with(PageRequest.of(pageNumber, 10));
+
+        List<ReportDocument> reportDocumentList = mongoTemplate.find(pagedQuery, ReportDocument.class, "checkReports");
+
+        Page<ReportDocument>  page = new PageImpl<>(reportDocumentList, PageRequest.of(pageNumber,10), mongoTemplate.count(query, ReportDocument.class));
 
         return page.map(reportDocumentMapper::mapFromDocument);
     }
