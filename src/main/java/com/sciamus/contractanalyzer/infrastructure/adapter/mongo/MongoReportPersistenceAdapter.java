@@ -71,6 +71,9 @@ public class MongoReportPersistenceAdapter implements ReportPersistancePort {
 
 
         Page<ReportDocument> page = mongoReportsRepository.findAll(reportFilterParameters.getResult(), reportFilterParameters.getReportBody(), reportFilterParameters.getTimestampFrom(), reportFilterParameters.getTimestampTo(), reportFilterParameters.getNameOfCheck(), reportFilterParameters.getUserName(), PageRequest.of(pageNumber, 10));
+
+        System.out.println(reportFilterParameters.getReportBody() + "JAPIERDOLE!!!!!!");
+
         return page.map(reportDocumentMapper::mapFromDocument);
     }
 }
