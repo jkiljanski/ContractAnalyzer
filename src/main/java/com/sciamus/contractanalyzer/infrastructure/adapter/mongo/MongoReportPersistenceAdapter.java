@@ -80,8 +80,12 @@ public class MongoReportPersistenceAdapter implements ReportPersistancePort {
 
         List<ReportDocument> reportDocumentList = mongoTemplate.find(pagedQuery, ReportDocument.class, "checkReports");
 
+        reportDocumentList.stream().peek(s -> System.out.println(s + "JEBAC JEBAC"));
+
         Page<ReportDocument>  page = new PageImpl<>(reportDocumentList, PageRequest.of(pageNumber,10), mongoTemplate.count(query, ReportDocument.class));
 
         return page.map(reportDocumentMapper::mapFromDocument);
+
+
     }
 }
