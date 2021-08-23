@@ -1,6 +1,7 @@
 package com.sciamus.contractanalyzer.infrastructure.adapter.mongo;
 
 
+import com.querydsl.core.annotations.QueryEntity;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportResults;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceConstructor;
@@ -10,6 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDateTime;
 
+@QueryEntity
 @Document(collection = "checkReports")
 @TypeAlias("check_report")
 public class ReportDocument {

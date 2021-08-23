@@ -1,11 +1,9 @@
 package com.sciamus.contractanalyzer.infrastructure.adapter.mongo;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.data.mongodb.repository.Query;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
-public interface MongoReportsRepository extends MongoRepository<ReportDocument, String> {
+public interface MongoReportsRepository extends MongoRepository<ReportDocument, String>, QuerydslPredicateExecutor<ReportDocument> {
 
 //    @Query("{$or:[{ $expr: { $eq: ['?0', 'null'] }},{result: ?0}]}" +
 //            "{$or:[{ $expr: { $eq: ['?1', 'null'] }},{content:{$regex : ?1}}]}" +
@@ -20,8 +18,14 @@ public interface MongoReportsRepository extends MongoRepository<ReportDocument, 
 //    @Query("{ $or : [ { $expr: { $eq: ['?0', 'null'] }} , { result : ?0 } ] }")
 
 
-    @Query("{$or:[{ $expr: { $eq: ['?1', 'null'] }},{content:{$regex : ?1}}]}")
-    Page<ReportDocument> findAll(String result, String reportBody, String timestampFrom, String timestampTo, String nameOfCheck, String userName, Pageable pageable);
+//    @Query("{$or:[{ $expr: { $eq: ['?1', 'null'] }},{content:{$regex : ?1}}]}")
+
+
+
+//    Page<ReportDocument> findAll(String result, String reportBody, String timestampFrom, String timestampTo, String nameOfCheck, String userName, Pageable pageable);
+
+
+
 
 }
 
