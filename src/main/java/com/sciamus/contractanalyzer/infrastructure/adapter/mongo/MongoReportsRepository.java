@@ -1,25 +1,20 @@
 package com.sciamus.contractanalyzer.infrastructure.adapter.mongo;
 
-import com.sciamus.contractanalyzer.domain.checks.reports.Report;
-import com.sciamus.contractanalyzer.domain.checks.reports.ReportResults;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface MongoReportsRepository extends MongoRepository<ReportDocument, String> {
 
-    List<Report> findAllByNameOfCheck(String name);
+    List<ReportDocument> findAllByNameOfCheck(String name);
 
-    List<Report> findReportsByIdIsWithin(String idFrom, String idTo);
+    List<ReportDocument> findByReportBodyContaining(String reportBody);
 
-    List<Report> findByResultContaining(ReportResults result);
 
-    List<Report> findByReportBodyContaining(String reportBody);
+    List<ReportDocument> findAllByTimestampBetween(LocalDateTime timestampFrom);
 
-    List<Report> findByTimestampContaining(Date timestamp);
+    List<ReportDocument> findByNameOfCheckContaining(String result);
 
-    List<Report> findByNameOfCheckContaining(String result);
-
-    List<Report> findByUserNameContaining(String result);
+    List<ReportDocument> findByUserNameContaining(String result);
 }

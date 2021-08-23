@@ -3,7 +3,7 @@ package com.sciamus.contractanalyzer.domain.checks.reports;
 
 import lombok.Getter;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 
 @Getter
@@ -14,11 +14,11 @@ public class Report {
     private final ReportResults result;
     private String reportBody;
     private final String nameOfCheck;
-    private Date timestamp;
+    private LocalDateTime timestamp;
     private final String userName;
 
 
-    public Report(String id, ReportResults result, String reportBody, Date timestamp, String nameOfCheck, String userName) {
+    public Report(String id, ReportResults result, String reportBody, LocalDateTime timestamp, String nameOfCheck, String userName) {
         this.id = id;
         this.result = result;
         this.reportBody = reportBody;
