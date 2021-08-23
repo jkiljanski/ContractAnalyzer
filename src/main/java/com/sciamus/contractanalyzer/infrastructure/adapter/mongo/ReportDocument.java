@@ -17,7 +17,6 @@ import java.time.LocalDateTime;
 public class ReportDocument {
 
 
-
     @Id
     public String id;
     @Field("result")
