@@ -6,7 +6,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.5.0</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/> <!-- lookup parent from reportPersistancePort -->
     </parent>
     <groupId>com.example</groupId>
     <artifactId>KafkaPingPonger</artifactId>
@@ -92,26 +92,26 @@
         </plugins>
     </build>
     <repositories>
-        <repository>
+        <reportPersistancePort>
             <id>spring-snapshots</id>
             <name>Spring Snapshots</name>
             <url>https://repo.spring.io/snapshot</url>
             <releases>
                 <enabled>false</enabled>
             </releases>
-        </repository>
+        </reportPersistancePort>
 
 
 
 
-        <repository>
+        <reportPersistancePort>
             <id>spring-milestones</id>
             <name>Spring Milestones</name>
             <url>https://repo.spring.io/milestone</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
-        </repository>
+        </reportPersistancePort>
     </repositories>
 
 </project>

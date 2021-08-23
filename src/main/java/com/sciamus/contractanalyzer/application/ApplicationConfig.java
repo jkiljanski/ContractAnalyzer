@@ -1,10 +1,13 @@
 package com.sciamus.contractanalyzer.application;
 
-import com.sciamus.contractanalyzer.application.mapper.ReportMapper;
-import com.sciamus.contractanalyzer.domain.checks.aggregatedChecks.AggregatedReportService;
+import com.sciamus.contractanalyzer.application.mapper.aggregatedReport.AggregatedReportInfrastructureMapper;
+import com.sciamus.contractanalyzer.application.mapper.aggregatedReport.AggregatedReportViewMapper;
+import com.sciamus.contractanalyzer.application.mapper.report.ReportInfrastructureMapper;
+import com.sciamus.contractanalyzer.application.mapper.report.ReportViewMapper;
 import com.sciamus.contractanalyzer.domain.checks.queues.KafkaCheckService;
-import com.sciamus.contractanalyzer.domain.checks.reports.ReportService;
 import com.sciamus.contractanalyzer.domain.checks.rest.RestCheckRepository;
+import com.sciamus.contractanalyzer.infrastructure.port.AggregatedReportPersistancePort;
+import com.sciamus.contractanalyzer.infrastructure.port.ReportPersistancePort;
 import com.sciamus.contractanalyzer.misc.CurrentUserService;
 import com.sciamus.contractanalyzer.misc.conf.SecurityConfig;
 import com.sciamus.contractanalyzer.misc.conf.SecurityConfigurable;
@@ -23,18 +26,45 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public ChecksFacade contractChecksFacade(RestCheckRepository restCheckRepository, ReportService reportService) {
-        return new ChecksFacade(restCheckRepository, reportService, checkReportMapper());
+    public  KafkaChecksFacade kafkaChecksFacade (KafkaCheckService kafkaCheckService, ReportViewMapper reportViewMapper) {
+        return new KafkaChecksFacade(kafkaCheckService, reportViewMapper);
     }
 
     @Bean
-    public AggregatedChecksFacade aggregatedChecksFacade(AggregatedReportService aggregatedReportService) {
-        return new AggregatedChecksFacade(aggregatedReportService);
+    public ChecksFacade checksFacade(RestCheckRepository restCheckRepository, ReportPersistancePort reportPersistancePort) {
+        return new ChecksFacade(restCheckRepository, reportFacade(reportPersistancePort), reportPersistancePort, reportViewMapper(), reportInfrastructureMapper());
     }
 
     @Bean
-    public ReportMapper checkReportMapper() {
-        return new ReportMapper(currentUserService());
+    public ReportFacade reportFacade(ReportPersistancePort reportPersistancePort) {
+
+        return new ReportFacade(checkReportMapper(),reportInfrastructureMapper(), reportPersistancePort);
+    }
+
+    @Bean
+    public ReportInfrastructureMapper reportInfrastructureMapper() {
+        return  new ReportInfrastructureMapper();
+    }
+
+    @Bean ReportViewMapper reportViewMapper(){
+        return  new ReportViewMapper();
+    }
+
+    @Bean
+    AggregatedReportViewMapper aggregatedReportViewMapper() {return  new AggregatedReportViewMapper();}
+
+    @Bean
+    AggregatedReportInfrastructureMapper aggregatedReportInfrastructureMapper() {return  new AggregatedReportInfrastructureMapper();}
+
+
+    @Bean
+    public AggregatedChecksFacade aggregatedChecksFacade(RestCheckRepository restCheckRepository, AggregatedReportPersistancePort aggregatedReportPersistancePort, ChecksFacade checkFacade) {
+        return new AggregatedChecksFacade(restCheckRepository, aggregatedReportPersistancePort, aggregatedReportInfrastructureMapper(), aggregatedReportViewMapper(), currentUserService(), checkFacade);
+    }
+
+    @Bean
+    public ReportViewMapper checkReportMapper() {
+        return new ReportViewMapper();
     }
 
     @Bean
@@ -43,12 +73,8 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public  KafkaChecksFacade kafkaChecksFacade (KafkaCheckService kafkaCheckService, ReportMapper reportMapper) {
-        return new KafkaChecksFacade(kafkaCheckService,reportMapper);
-    }
-
-    @Bean ReportFacade reportFacade (ReportService reportService, ReportMapper reportMapper) {
-        return  new ReportFacade(reportService, reportMapper);
+    public  KafkaChecksFacade kafkaChecksFacade (KafkaCheckService kafkaCheckService) {
+        return new KafkaChecksFacade(kafkaCheckService, reportViewMapper());
     }
 
 }

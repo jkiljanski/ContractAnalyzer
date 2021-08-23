@@ -1,6 +1,6 @@
 package com.sciamus.contractanalyzer.domain.checks.rest.reportcheck;
 
-import com.sciamus.contractanalyzer.application.ReportDTO;
+import com.sciamus.contractanalyzer.application.ReportViewDTO;
 import com.sciamus.contractanalyzer.domain.checks.reports.Report;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportBuilder;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportResults;
@@ -36,9 +36,9 @@ public class ReportingCheck implements RestCheck {
                 .listOfChecks.get(0), StandardCharsets.UTF_8)
                 .replace("+", "%20");
 
-        ReportDTO reportSentToDatabase = reportingCheckClient.autogenerate(checkToRun, url);
+        ReportViewDTO reportSentToDatabase = reportingCheckClient.autogenerate(checkToRun, url);
 
-        ReportDTO reportFetchedFromDatabase = reportingCheckClient.getReportById(reportSentToDatabase.id);
+        ReportViewDTO reportFetchedFromDatabase = reportingCheckClient.getReportById(reportSentToDatabase.id);
 
 
 

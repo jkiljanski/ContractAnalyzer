@@ -1,42 +1,75 @@
 package com.sciamus.contractanalyzer.application;
 
-import com.sciamus.contractanalyzer.application.mapper.ReportMapper;
+import com.sciamus.contractanalyzer.application.mapper.report.ReportInfrastructureMapper;
+import com.sciamus.contractanalyzer.application.mapper.report.ReportViewMapper;
 import com.sciamus.contractanalyzer.domain.checks.reports.Report;
-import com.sciamus.contractanalyzer.domain.checks.reports.ReportService;
-import org.springframework.data.domain.Page;
+import com.sciamus.contractanalyzer.domain.checks.reports.ReportResults;
+import com.sciamus.contractanalyzer.infrastructure.port.ReportInfrastructureDTO;
+import com.sciamus.contractanalyzer.infrastructure.port.ReportPersistancePort;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class ReportFacade {
 
-    private final ReportService reportService;
-    private final ReportMapper reportMapper;
+    private final ReportViewMapper reportViewMapper;
 
-    public ReportFacade(ReportService reportService, ReportMapper reportMapper) {
-        this.reportService = reportService;
-        this.reportMapper = reportMapper;
+    private final ReportInfrastructureMapper reportInfrastructureMapper;
+
+    private final ReportPersistancePort reportPersistancePort;
+
+
+    public ReportFacade(ReportViewMapper reportViewMapper, ReportInfrastructureMapper reportInfrastructureMapper, ReportPersistancePort reportPersistancePort) {
+        this.reportViewMapper = reportViewMapper;
+        this.reportInfrastructureMapper = reportInfrastructureMapper;
+        this.reportPersistancePort = reportPersistancePort;
     }
 
-
-    public ReportDTO getReportByID(String id) {
-        return  reportMapper.mapToDTO(reportService.getReportByID(id));
+    // change to Try:
+    public ReportViewDTO getReportByID(String id) {
+        return convertInfrastractureDTOToViewDTO(reportPersistancePort.findById(id));
     }
 
-//    public List<ReportDTO> getAllReports() {
-//        return reportService.getAllReports().stream().map(reportMapper::mapToDTO).collect(Collectors.toList());
-//    }
-
-    public Page<Report> findByPageSize(int documentsPerPage) {
-
-        return  reportService.findByPageSize(documentsPerPage);
-
+    // change to Try
+    public List<ReportViewDTO> getAllReports() {
+        return reportPersistancePort.findAll().stream().map(this::convertInfrastractureDTOToViewDTO).collect(Collectors.toList());
     }
 
-    public List<ReportDTO> getFilteredReports(String result, String reportBody, String timestamp, String nameOfCheck, String userName) {
-        return reportService
-                .getFilteredReports(result, reportBody, timestamp, nameOfCheck, userName)
+    private ReportViewDTO convertInfrastractureDTOToViewDTO(ReportInfrastructureDTO dto) {
+        return reportViewMapper.mapToDTO(reportInfrastructureMapper.mapFromDTO(dto));
+    }
+
+    public List<ReportViewDTO> getFilteredReports(String result, String reportBody, String timestamp, String nameOfCheck, String userName) {
+        return innerGetFilteredReports(result, reportBody, timestamp, nameOfCheck, userName)
                 .stream()
-                .map(reportMapper::mapToDTO).collect(Collectors.toList());
+                .map(reportViewMapper::mapToDTO).collect(Collectors.toList());
     }
+
+    public List<ReportViewDTO> findByPageSize(int documentsPerPage) {
+
+        return reportPersistancePort.findAll(documentsPerPage).stream()
+                .map(reportInfrastructureMapper::mapFromDTO)
+                .map(reportViewMapper::mapToDTO)
+                .collect(Collectors.toList());
+    }
+
+
+    private ReportInfrastructureDTO convertInterfaceDTOToInfrastructureDTO(ReportViewDTO dto) {
+        return reportInfrastructureMapper.mapToDTO(reportViewMapper.mapFromDTO(dto));
+    }
+
+    public List<Report> innerGetFilteredReports(String result, String reportBody, String timestamp, String nameOfCheck, String userName) {
+        List<ReportInfrastructureDTO> filteredReports = reportPersistancePort.findAll();
+        return filteredReports
+                .stream()
+                .map(reportInfrastructureMapper::mapFromDTO)
+                .filter(r -> (result.isEmpty() || r.getResult().equals(ReportResults.valueOf(result))) &&
+                        r.getReportBody().contains(reportBody) &&
+                        r.getNameOfCheck().contains(nameOfCheck) &&
+                        r.getUserName().contains(userName))
+                .collect(Collectors.toList());
+    }
+
+
+
 }
