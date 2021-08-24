@@ -1,7 +1,9 @@
 package com.sciamus.contractanalyzer.infrastructure.adapter.mongo;
 
 import com.sciamus.contractanalyzer.application.ReportFilterParameters;
+import com.sciamus.contractanalyzer.application.mapper.queries.ReportFilterParametersMapper;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportNotFoundException;
+import com.sciamus.contractanalyzer.infrastructure.port.ReportFilterParametersInfrastructureDTO;
 import com.sciamus.contractanalyzer.infrastructure.port.ReportInfrastructureDTO;
 import com.sciamus.contractanalyzer.infrastructure.port.ReportPersistancePort;
 import org.springframework.data.domain.*;
@@ -21,11 +23,15 @@ public class MongoReportPersistenceAdapter implements ReportPersistancePort {
 
     private final MongoTemplate mongoTemplate;
 
-    public MongoReportPersistenceAdapter(ReportDocumentMapper reportDocumentMapper, MongoReportsRepository mongoReportsRepository, ReportIdGenerator reportIdGenerator, MongoTemplate mongoTemplate) {
+    private final ReportFilterParametersMapper reportFilterParametersMapper;
+
+
+    public MongoReportPersistenceAdapter(ReportDocumentMapper reportDocumentMapper, MongoReportsRepository mongoReportsRepository, ReportIdGenerator reportIdGenerator, MongoTemplate mongoTemplate, ReportFilterParametersMapper reportFilterParametersMapper) {
         this.reportDocumentMapper = reportDocumentMapper;
         this.mongoReportsRepository = mongoReportsRepository;
         this.reportIdGenerator = reportIdGenerator;
         this.mongoTemplate = mongoTemplate;
+        this.reportFilterParametersMapper = reportFilterParametersMapper;
     }
 
     @Override
@@ -57,7 +63,6 @@ public class MongoReportPersistenceAdapter implements ReportPersistancePort {
 
         return page.map(reportDocumentMapper::mapFromDocument);
 
-//        return mongoReportsRepository.findAll(Pageable.ofSize(pageSize)).stream().map(reportDocumentMapper::mapFromDocument).collect(Collectors.toList());
     }
 
     @Override
@@ -72,13 +77,15 @@ public class MongoReportPersistenceAdapter implements ReportPersistancePort {
     @Override
     public Page<ReportInfrastructureDTO> findAll(ReportFilterParameters reportFilterParameters, int pageNumber) {
 
-        QueryBuilder queryBuilder = new QueryBuilder();
+        MongoQueryBuilder mongoQueryBuilder = new MongoQueryBuilder();
 
         Pageable pageable = PageRequest.of(pageNumber, 10);
 
-        Query pagedQuery = queryBuilder.buildQuery(reportFilterParameters).with(pageable);
+        ReportFilterParametersInfrastructureDTO reportFilterParametersInfrastructureDTO = reportFilterParametersMapper.mapToDTO(reportFilterParameters);
 
-        Query unpagedQueryForCountingPurposes = queryBuilder.buildQuery(reportFilterParameters);
+        Query pagedQuery = mongoQueryBuilder.buildQuery(reportFilterParametersInfrastructureDTO).with(pageable);
+
+        Query unpagedQueryForCountingPurposes = mongoQueryBuilder.buildQuery(reportFilterParametersInfrastructureDTO);
 
         List<ReportDocument> reportDocumentList = mongoTemplate.find(pagedQuery, ReportDocument.class, "checkReports");
 

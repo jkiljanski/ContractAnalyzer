@@ -42,10 +42,7 @@ const ReportsFilter = props => {
     const convertToDateTimeFormat = (date, time) => {
         if (!date)
             return null;
-        console.log(date + " XXXX " +time)
-        return date.toJSON() + time;
-        // return date.toISOString() + time;
-
+        return date.toISOString().slice(0,11) + time;
     }
 
     return (

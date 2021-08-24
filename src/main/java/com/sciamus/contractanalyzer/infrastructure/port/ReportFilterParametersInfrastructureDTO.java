@@ -1,7 +1,7 @@
-package com.sciamus.contractanalyzer.application;
+package com.sciamus.contractanalyzer.infrastructure.port;
 
+public class ReportFilterParametersInfrastructureDTO {
 
-public class ReportFilterParameters {
     public final  String  result;
     public final  String  reportBody;
     public final  String  timestampFrom;
@@ -10,7 +10,7 @@ public class ReportFilterParameters {
     public final  String  userName;
 
 
-    public ReportFilterParameters (String result, String reportBody, String timestampFrom, String timestampTo, String nameOfCheck, String userName) {
+    public ReportFilterParametersInfrastructureDTO(String result, String reportBody, String timestampFrom, String timestampTo, String nameOfCheck, String userName) {
         this.result = result;
         this.reportBody = reportBody;
         this.timestampFrom = timestampFrom;
@@ -18,7 +18,4 @@ public class ReportFilterParameters {
         this.nameOfCheck = nameOfCheck;
         this.userName = userName;
     }
-
-
-
 }
