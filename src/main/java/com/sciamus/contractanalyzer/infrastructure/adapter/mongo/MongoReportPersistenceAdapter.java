@@ -74,15 +74,17 @@ public class MongoReportPersistenceAdapter implements ReportPersistancePort {
 
         QueryBuilder queryBuilder = new QueryBuilder();
 
-        Query query = queryBuilder.buildQuery(reportFilterParameters);
+        Pageable pageable = PageRequest.of(pageNumber, 10);
 
-        Query pagedQuery = query.with(PageRequest.of(pageNumber, 10));
+        Query pagedQuery = queryBuilder.buildQuery(reportFilterParameters).with(pageable);
+
+        Query unpagedQuery = queryBuilder.buildQuery(reportFilterParameters);
 
         List<ReportDocument> reportDocumentList = mongoTemplate.find(pagedQuery, ReportDocument.class, "checkReports");
 
-        reportDocumentList.stream().peek(s -> System.out.println(s + "JEBAC JEBAC"));
+        long count = mongoTemplate.count(unpagedQuery, ReportDocument.class, "checkReports");
 
-        Page<ReportDocument>  page = new PageImpl<>(reportDocumentList, PageRequest.of(pageNumber,10), mongoTemplate.count(query, ReportDocument.class));
+        Page<ReportDocument> page = new PageImpl<>(reportDocumentList, pageable, count);
 
         return page.map(reportDocumentMapper::mapFromDocument);
 

@@ -1,43 +1,25 @@
 package com.sciamus.contractanalyzer.application;
 
+import io.vavr.control.Option;
+
 public class ReportFilterParameters {
-    private final String result;
-    private final String reportBody;
-    private final String timestampFrom;
-    private final String timestampTo;
-    private final String nameOfCheck;
-    private final String userName;
+    public final Option<String> result;
+    public final Option<String> reportBody;
+    public final Option<String> timestampFrom;
+    public final Option<String> timestampTo;
+    public final Option<String> nameOfCheck;
+    public final Option<String> userName;
+
 
     public ReportFilterParameters(String result, String reportBody, String timestampFrom, String timestampTo, String nameOfCheck, String userName) {
-        this.result = result;
-        this.reportBody = reportBody;
-        this.timestampFrom = timestampFrom;
-        this.timestampTo = timestampTo;
-        this.nameOfCheck = nameOfCheck;
-        this.userName = userName;
+        this.result = Option.of(result);
+        this.reportBody = Option.of(reportBody);
+        this.timestampFrom = Option.of(timestampFrom);
+        this.timestampTo = Option.of(timestampTo);
+        this.nameOfCheck = Option.of(nameOfCheck);
+        this.userName = Option.of(userName);
     }
 
-    public String getResult() {
-        return result;
-    }
 
-    public String getReportBody() {
-        return reportBody;
-    }
 
-    public String getTimestampFrom() {
-        return timestampFrom;
-    }
-
-    public String getTimestampTo() {
-        return timestampTo;
-    }
-
-    public String getNameOfCheck() {
-        return nameOfCheck;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
 }
