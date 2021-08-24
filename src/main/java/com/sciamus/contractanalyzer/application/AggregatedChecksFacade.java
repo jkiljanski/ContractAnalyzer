@@ -12,7 +12,7 @@ import com.sciamus.contractanalyzer.infrastructure.port.AggregatedReportPersista
 import com.sciamus.contractanalyzer.misc.CurrentUserService;
 
 import java.net.MalformedURLException;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -68,7 +68,7 @@ public class AggregatedChecksFacade {
         String passedPercentage = Math.round((1 - (double) failedTestsNumber / namesOfChecks.size()) * 100) + "%";
         String failedPercentage = Math.round(((double) failedTestsNumber / namesOfChecks.size()) * 100) + "%";
 
-        return new AggregatedReport(null, null, namesOfChecks, new Date(),
+        return new AggregatedReport(null, null, namesOfChecks, LocalDateTime.now(),
                 failedTestsReport.toJavaList(), passedPercentage, failedPercentage, currentUserService.obtainUserName());
     }
 

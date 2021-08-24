@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -20,45 +20,32 @@ public class AggregatedReportDocument {
 
     @Id
     public String id;
-
     @Field("aggregatedReportName")
     public String aggregatedReportName;
-
     @Field("namesOfChecks")
-     public List<String> namesOfChecks;
-
+    public List<String> namesOfChecks;
     @Field("timestamp")
-    public Date timestamp;
+    public LocalDateTime timestamp;
+    @DBRef
+    @Field("failedTestsId")
+    public List<Report> failedTestReportList;
+    @Field("passedPercentage")
+    public String passedPercentage;
+    @Field("failedPercentage")
+    public String failedPercentage;
+    @Field("userName")
+    public String userName;
 
     public AggregatedReportDocument() {
     }
 
-
-    //        @DBRef
-//        @Field("failedTestsId")
-//         public List<Check> failedTestsId;
-
-    @DBRef
-    @Field("failedTestsId")
-     public List<Report> failedTestsId;
-
-    @Field("passedPercentage")
-     public String passedPercentage;
-
-    @Field("failedPercentage")
-     public String failedPercentage;
-
-    @Field("userName")
-     public String userName;
-
-
     @PersistenceConstructor
-    public AggregatedReportDocument(String id, String aggregatedReportName, List<String> namesOfChecks, Date timestamp, List<Report> failedTestsId, String passedPercentage, String failedPercentage, String userName) {
+    public AggregatedReportDocument(String id, String aggregatedReportName, List<String> namesOfChecks, LocalDateTime timestamp, List<Report> failedTestReportList, String passedPercentage, String failedPercentage, String userName) {
         this.id = id;
         this.aggregatedReportName = aggregatedReportName;
         this.namesOfChecks = namesOfChecks;
         this.timestamp = timestamp;
-        this.failedTestsId = failedTestsId;
+        this.failedTestReportList = failedTestReportList;
         this.passedPercentage = passedPercentage;
         this.failedPercentage = failedPercentage;
         this.userName = userName;
@@ -79,13 +66,12 @@ public class AggregatedReportDocument {
                 ", aggregatedReportName=" + aggregatedReportName +
                 ", namesOfChecks='" + namesOfChecks + '\'' +
                 ", timestamp=" + timestamp + '\'' +
-                ", failedTestsId='" + failedTestsId + '\'' +
+                ", failedTestsId='" + failedTestReportList + '\'' +
                 ", passedPercentage='" + passedPercentage + '\'' +
                 ", failedPercentage='" + failedPercentage + '\'' +
                 ", userName='" + userName +
                 '}';
     }
-
 
 
 }

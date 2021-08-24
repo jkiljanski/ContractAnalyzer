@@ -1,6 +1,6 @@
 package com.sciamus.contractanalyzer.infrastructure.port;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class AggregatedReportInfrastructureDTO {
@@ -8,13 +8,13 @@ public class AggregatedReportInfrastructureDTO {
     public String id;
     public String aggregatedReportName;
     public List<String> namesOfChecks;
-    public Date timestamp;
+    public LocalDateTime timestamp;
     public List<ReportInfrastructureDTO> failedTestReportList;
     public String passedPercentage;
     public String failedPercentage;
     public String userName;
 
-    public AggregatedReportInfrastructureDTO(String id, String aggregatedReportName, List<String> namesOfChecks, Date timestamp, List<ReportInfrastructureDTO> failedTestReportList, String passedPercentage, String failedPercentage, String userName) {
+    public AggregatedReportInfrastructureDTO(String id, String aggregatedReportName, List<String> namesOfChecks, LocalDateTime timestamp, List<ReportInfrastructureDTO> failedTestReportList, String passedPercentage, String failedPercentage, String userName) {
         this.id = id;
         this.aggregatedReportName = aggregatedReportName;
         this.namesOfChecks = namesOfChecks;
@@ -51,7 +51,7 @@ public class AggregatedReportInfrastructureDTO {
         return namesOfChecks;
     }
 
-    public Date getTimestamp() {
+    public LocalDateTime getTimestamp() {
         return timestamp;
     }
 
