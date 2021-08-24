@@ -25,7 +25,7 @@ public class ReportController {
     @RolesAllowed("reader")
     @GetMapping("/reports/{id}")
     @ResponseBody
-    public ReportViewDTO GetReportById(
+    public ReportViewDTO getReportById(
             @PathVariable("id") String id) {
         return reportFacade.getReportByID(id);
     }
@@ -33,13 +33,13 @@ public class ReportController {
     @RolesAllowed("reader")
     @GetMapping("/filteredReports")
     @ResponseBody
-    public Page<ReportViewDTO> getAllReports(@RequestParam(value = "result", required = false) String result,
-                                             @RequestParam(value = "reportBody", required = false) String reportBody,
-                                             @RequestParam(value = "timestampFrom", required = false) String timestampFrom,
-                                             @RequestParam(value = "timestampTo", required = false) String timestampTo,
-                                             @RequestParam(value = "nameOfCheck", required = false) String nameOfCheck,
-                                             @RequestParam(value = "userName", required = false) String userName,
-                                             @RequestParam(value = "pageNumber", required = false) int number) {
+    public Page<ReportViewDTO> getFileteredReports(@RequestParam(value = "result", required = false) String result,
+                                                   @RequestParam(value = "reportBody", required = false) String reportBody,
+                                                   @RequestParam(value = "timestampFrom", required = false) String timestampFrom,
+                                                   @RequestParam(value = "timestampTo", required = false) String timestampTo,
+                                                   @RequestParam(value = "nameOfCheck", required = false) String nameOfCheck,
+                                                   @RequestParam(value = "userName", required = false) String userName,
+                                                   @RequestParam(value = "pageNumber", required = false) int number) {
         return reportFacade.getFilteredReports(new ReportFilterParameters(result, reportBody, timestampFrom, timestampTo, nameOfCheck, userName), number);
     }
 
@@ -48,7 +48,7 @@ public class ReportController {
     @ResponseBody
     public Page<ReportViewDTO> getPagedReports(@RequestParam("pageNumber") int pageNumber,
                                                @RequestParam(value = "sortingProperty", required = false) String sortingProperty,
-                                               @RequestParam(value = "order",required = false) String sortingOrder) {
+                                               @RequestParam(value = "order", required = false) String sortingOrder) {
         return sortingProperty == null ?
                 reportFacade.findAllByPageNumber(pageNumber) :
                 reportFacade.findAllByPageNumberAndSortingProperty(pageNumber, sortingProperty, sortingOrder);
@@ -64,6 +64,5 @@ public class ReportController {
                 .status(HttpStatus.NOT_FOUND)
                 .body(exception.getMessage());
     }
-
 
 }
