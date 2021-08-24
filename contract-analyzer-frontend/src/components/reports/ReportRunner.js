@@ -38,11 +38,11 @@ const ReportRunner = props => {
 
     const {keycloak} = useKeycloak();
 
-    async function showFilteredReports(result, reportBody, timestamp, nameOfCheck, userName) {
+    async function showFilteredReports(result, reportBody, startDateWithTime, finishDateWithTime, nameOfCheck, userName) {
 
         setReportById('')
         let response = await fetch('/filteredReports?result=' + result + '&reportBody=' + reportBody +
-            '&timestamp=' + timestamp + '&nameOfCheck=' + nameOfCheck + '&userName=' + userName, {
+            '&from=' + startDateWithTime + '&to=' + finishDateWithTime + '&nameOfCheck=' + nameOfCheck + '&userName=' + userName, {
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + keycloak.token,
