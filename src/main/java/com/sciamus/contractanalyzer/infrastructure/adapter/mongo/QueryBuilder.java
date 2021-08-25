@@ -15,23 +15,23 @@ public class QueryBuilder {
 
         Criteria andCriteria = new Criteria();
 
-        if (reportFilterParameters.result !=null) {
+        if (reportFilterParameters.result !=null && !reportFilterParameters.result.equals("")) {
             query.addCriteria(Criteria.where("result").is(reportFilterParameters.result));
         }
-        if (reportFilterParameters.reportBody !=null) {
+        if (reportFilterParameters.reportBody !=null &&!reportFilterParameters.result.equals("")) {
             query.addCriteria(Criteria.where("content").regex(reportFilterParameters.reportBody));
         }
-        if( reportFilterParameters.userName !=null) {
+        if( reportFilterParameters.userName !=null &&!reportFilterParameters.userName.equals("")) {
             query.addCriteria(Criteria.where("userName").is(reportFilterParameters.userName));
         }
-        if( reportFilterParameters.nameOfCheck !=null) {
+        if( reportFilterParameters.nameOfCheck !=null &&!reportFilterParameters.nameOfCheck.equals("")) {
             query.addCriteria(Criteria.where("name").is(reportFilterParameters.nameOfCheck));
         }
 
         Criteria from = null;
         Criteria to = null;
 
-        if(reportFilterParameters.timestampFrom !=null) {
+        if(reportFilterParameters.timestampFrom !=null &&!reportFilterParameters.timestampFrom.equals("")) {
             if (reportFilterParameters.timestampFrom.length()>10) {
                 LocalDateTime parsed = LocalDateTime.parse(reportFilterParameters.timestampFrom);
                 from = Criteria.where("timestamp").gte(parsed);
@@ -42,7 +42,7 @@ public class QueryBuilder {
             }
         }
 
-        if(reportFilterParameters.timestampTo !=null) {
+        if(reportFilterParameters.timestampTo !=null && !reportFilterParameters.timestampTo.equals("") ) {
             if (reportFilterParameters.timestampTo.length()>10) {
                 to = Criteria.where("timestamp").lt(LocalDateTime.parse(reportFilterParameters.timestampTo));
             }

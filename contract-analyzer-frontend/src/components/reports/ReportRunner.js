@@ -40,6 +40,10 @@ const ReportRunner = props => {
     async function showFilteredReports(result, reportBody, startDateWithTime, finishDateWithTime, nameOfCheck, userName) {
 
         setReportById('')
+
+        console.log('this is request: /filteredReports?result=' + result + '&reportBody=' + reportBody +
+            '&timestampFrom=' + startDateWithTime + '&timestampTo=' + finishDateWithTime + '&nameOfCheck=' + nameOfCheck + '&userName=' + userName + '&pageNumber=' + currentPage)
+
         let response = await fetch('/filteredReports?result=' + result + '&reportBody=' + reportBody +
             '&timestampFrom=' + startDateWithTime + '&timestampTo=' + finishDateWithTime + '&nameOfCheck=' + nameOfCheck + '&userName=' + userName + '&pageNumber=' + currentPage, {
             method: 'GET',
@@ -56,9 +60,13 @@ const ReportRunner = props => {
             setIsError(false);
             let allReports = await response.json();
             setPageCount(allReports.totalPages);
-            console.log(allReports.totalPages + "SUPER SUPER")
-            allReports = reportDependingOnResult(allReports);
-            setReports(allReports)
+            console.log(allReports)
+            console.log(allReports.totalPages + " NR PAG SUPER SUPER")
+            console.log(allReports.content)
+            let readyReports = allReports.content
+            console.log(readyReports)
+            setReports(readyReports.map(report => reportDependingOnResult(report)))
+            // console.log(reports.length + " OCIECHUK")
         }
     }
 
@@ -99,7 +107,7 @@ const ReportRunner = props => {
 
     return (
         <>
-            <ReportsFilter show={showFilteredReports}></ReportsFilter>
+            <ReportsFilter show={showFilteredReports}/>
             <InputGroup>
                 <InputGroupAddon addonType="prepend"><Button className={classes.button} onClick={getReportById}>Show
                     report by id</Button>
@@ -115,7 +123,7 @@ const ReportRunner = props => {
             {(reports.length > 0 || reportById) && !isError &&
             // <BootstrapTable keyField='id' columns={data.columns} data={currentPageData}>
             <Table bordered={true}>
-                <ReportTableHeaders></ReportTableHeaders>
+                <ReportTableHeaders/>
                 <tbody>
                 {reports}
                 {reportDependingOnResult(reportById)}

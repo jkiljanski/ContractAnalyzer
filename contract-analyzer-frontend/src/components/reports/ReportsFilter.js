@@ -1,6 +1,6 @@
-import React, {useState, useRef} from "react";
+import React, {useRef, useState} from "react";
 import classes from "../Styles.module.css";
-import {Button, Col, Form, Input, InputGroup, InputGroupAddon, Label, Row} from "reactstrap";
+import {Button, Col, Form, InputGroup, Label, Row} from "reactstrap";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -14,8 +14,8 @@ const ReportsFilter = props => {
     const startTimeInputRef = useRef();
     const finishTimeInputRef = useRef();
 
-    const [startDate, setStartDate] = useState(null);
-    const [finishDate, setFinishDate] = useState(null);
+    const [startDate, setStartDate] = useState("");
+    const [finishDate, setFinishDate] = useState("");
 
     const formSubmitHandler = (event) => {
         event.preventDefault();
@@ -34,16 +34,22 @@ const ReportsFilter = props => {
         const startDateWithTime = convertToDateTimeFormat(startDate, startTime);
         const finishDateWithTime = convertToDateTimeFormat(finishDate, finishTime);
 
-        console.log(result, reportBody, startDateWithTime, finishDateWithTime, nameOfCheck, userName)
+        console.log(result, reportBody, startDateWithTime, finishDateWithTime, nameOfCheck, userName, "filtering params")
 
         props.show(result, reportBody, startDateWithTime, finishDateWithTime, nameOfCheck, userName);
     }
 
     const convertToDateTimeFormat = (date, time) => {
-        if (!date)
-            return null;
-        console.log(date + " XXXX " +time)
-        return date.toISOString().slice(0,11) + time;
+
+        if (date.length===0) {
+            return ""
+        }
+
+        console.log(date + " XXXX " + time)
+
+        return time.length === 0 ? date.toISOString().slice(0, 10) :
+
+            date.toISOString().slice(0, 11).trim() + time.trim();
     }
 
     return (
@@ -65,8 +71,8 @@ const ReportsFilter = props => {
                     <Row>
                         <DatePicker
                             selected={startDate}
-                            onChange={(date) => setStartDate(date)} />
-                            <Label>Time</Label>
+                            onChange={(date) => setStartDate(date)}/>
+                        <Label>Time</Label>
                         <input
                             type="time"
                             name="startTime"
@@ -79,13 +85,13 @@ const ReportsFilter = props => {
                     <Row>
                         <DatePicker
                             selected={finishDate}
-                            onChange={(date) => setFinishDate(date)} />
-                            <Label>Time</Label>
-                            <input
-                                type="time"
-                                name="finishTime"
-                                ref={finishTimeInputRef}
-                            />
+                            onChange={(date) => setFinishDate(date)}/>
+                        <Label>Time</Label>
+                        <input
+                            type="time"
+                            name="finishTime"
+                            ref={finishTimeInputRef}
+                        />
                     </Row>
                 </Col>
                 <Col>
@@ -93,7 +99,7 @@ const ReportsFilter = props => {
                         <Label>Name of check</Label>
                         <input type="text"
                                name="nameOfCheck"
-                               ref={nameOfCheckInputRef} />
+                               ref={nameOfCheckInputRef}/>
                     </InputGroup>
                 </Col>
             </Row>
@@ -103,7 +109,7 @@ const ReportsFilter = props => {
                         <Label>Report body</Label>
                         <input type="text"
                                name="reportBody"
-                               ref={reportBodyInputRef} />
+                               ref={reportBodyInputRef}/>
                     </InputGroup>
                 </Col>
             </Row>
@@ -113,7 +119,7 @@ const ReportsFilter = props => {
                         <Label>Username</Label>
                         <input type="text"
                                name="userName"
-                               ref={userNameInputRef} />
+                               ref={userNameInputRef}/>
                     </InputGroup>
                 </Col>
             </Row>
