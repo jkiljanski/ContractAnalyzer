@@ -41,7 +41,7 @@ const ReportRunner = props => {
 
         setReportById('')
 
-        setQueryArgs(result, reportBody, startDateWithTime, finishDateWithTime, nameOfCheck, userName);
+        setQueryArgs([result, reportBody, startDateWithTime, finishDateWithTime, nameOfCheck, userName]);
 
         let response = await fetch('/filteredReports?result=' + result + '&reportBody=' + reportBody +
             '&timestampFrom=' + startDateWithTime + '&timestampTo=' + finishDateWithTime + '&nameOfCheck=' + nameOfCheck + '&userName=' + userName + '&pageNumber=' + currentPage, {
@@ -92,6 +92,8 @@ const ReportRunner = props => {
 
     const handlePageChange = async (selectedObject) => {
         setCurrentPage(selectedObject.selected);
+        console.log(currentPage + " CUCUCUFCU PAGE");
+        console.log(queryArgs + "JEJEJEJJE Queryargs")
         await showFilteredReports([...queryArgs], currentPage);
     };
 
