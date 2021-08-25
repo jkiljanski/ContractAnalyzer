@@ -20,11 +20,13 @@ const ReportRunner = props => {
 
     const [isError, setIsError] = useState(false);
 
+
+
     const [currentPage, setCurrentPage] = useState(0);
 
-    const [currentPageData, setCurrentPageData] = useState('')
-
     const [pageCount, setPageCount] = useState()
+
+    const [queryArgs, setQueryArgs] = useState([])
 
 
     const reportDependingOnResult = (report) => {
@@ -37,12 +39,11 @@ const ReportRunner = props => {
 
     const {keycloak} = useKeycloak();
 
-    async function showFilteredReports(result, reportBody, startDateWithTime, finishDateWithTime, nameOfCheck, userName) {
+    async function showFilteredReports(result, reportBody, startDateWithTime, finishDateWithTime, nameOfCheck, userName, pageNumber) {
 
         setReportById('')
 
-        console.log('this is request: /filteredReports?result=' + result + '&reportBody=' + reportBody +
-            '&timestampFrom=' + startDateWithTime + '&timestampTo=' + finishDateWithTime + '&nameOfCheck=' + nameOfCheck + '&userName=' + userName + '&pageNumber=' + currentPage)
+        setQueryArgs(result, reportBody, startDateWithTime, finishDateWithTime, nameOfCheck, userName);
 
         let response = await fetch('/filteredReports?result=' + result + '&reportBody=' + reportBody +
             '&timestampFrom=' + startDateWithTime + '&timestampTo=' + finishDateWithTime + '&nameOfCheck=' + nameOfCheck + '&userName=' + userName + '&pageNumber=' + currentPage, {
@@ -100,9 +101,11 @@ const ReportRunner = props => {
         setReportId(event.target.value);
     }
 
-    function handlePageClick({selected: selectedPage}) {
-        setCurrentPage(selectedPage);
-    }
+    const handlePageChange = async (selectedObject) => {
+        setCurrentPage(selectedObject.selected);
+        await showFilteredReports([...queryArgs], currentPage);
+    };
+
 
 
     return (
@@ -118,10 +121,8 @@ const ReportRunner = props => {
                        onChange={userInputHandler}
                 />
             </InputGroup>
-            {/*<ListGroup>*/}
             {isError}
             {(reports.length > 0 || reportById) && !isError &&
-            // <BootstrapTable keyField='id' columns={data.columns} data={currentPageData}>
             <Table bordered={true}>
                 <ReportTableHeaders/>
                 <tbody>
@@ -129,25 +130,20 @@ const ReportRunner = props => {
                 {reportDependingOnResult(reportById)}
                 </tbody>
             </Table>}
-            {/*</BootstrapTable>}*/}
             {isError && <div className={classes.reportFailed}>{reportById}</div>}
-            {/*</ListGroup>*/}
-            {/*<div><Paginator reports={reports} /></div>*/}
 
-            {
-            <div className={classes.brand}><ReactPaginate
+            {<div className={classes.brand}><ReactPaginate
                 previousLabel={"←"}
                 nextLabel={"→"}
                 breakLabel={'...'}
                 pageCount={pageCount}
-                onPageChange={handlePageClick}
+                onPageChange={handlePageChange}
                 previousLinkClassName={"pagination__link"}
                 nextLinkClassName={"pagination__link"}
                 disabledClassName={"pagination__link--disabled"}
                 activeClassName={"pagination__link--active"}
                 containerClassName={'pagination'}
             /></div>}
-        </>);
-};
+        </>)}
 
 export default ReportRunner;
