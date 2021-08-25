@@ -17,7 +17,7 @@ spring:
                   key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
                   value.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
     function:
-      definition: process
+      definition: process, transform
 
 spring.cloud.stream.bindings.process-out-0:
   destination: command-topic
@@ -27,6 +27,13 @@ spring.cloud.stream.bindings.process-out-1:
 
 spring.cloud.stream.bindings.process-in-0:
   destination: input-topic
+
+
+spring.cloud.stream.bindings.transform-in-0:
+  destination: transform-input-topic
+
+spring.cloud.stream.bindings.transform-out-0:
+  destination: transform-output-topic
 
 server:
   port: 8888

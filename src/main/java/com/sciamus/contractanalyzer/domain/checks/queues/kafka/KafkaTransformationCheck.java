@@ -13,7 +13,9 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.kafka.core.KafkaTemplate;
 
 import java.time.Duration;
-import java.util.*;
+import java.util.List;
+import java.util.Random;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -24,6 +26,8 @@ public class KafkaTransformationCheck implements KafkaCheck {
     private final KafkaConsumFactory kafkaConsumFactory;
     private ReportBuilder reportBuilder = new ReportBuilder();
     private String checkUniqueKey;
+
+    final Logger logger = getLogger();
 
     public KafkaTransformationCheck(KafkaProducFactory kafkaProducFactory, KafkaConsumFactory kafkaConsumFactory) {
         this.kafkaProducFactory = kafkaProducFactory;
@@ -37,13 +41,14 @@ public class KafkaTransformationCheck implements KafkaCheck {
         Consumer<String, String> consumer = Consumer(incomingTopic, host, port);
         setCheckUniqueIdentifier();
         List<Integer> integersListToSendToOutsideProcessor = getIntegersListToSendToOutsideProcessor();
+        String seqOfNumbersToSendToOutsideProcessor = convertListOfIntegersToStringSeq(integersListToSendToOutsideProcessor);
 
         //when:
-        sendMessagesToOutsideSystemAndGoToSleep(outgoingTopic, producer, integersListToSendToOutsideProcessor);
-        Long expectedAnswer = getExpectedAnswer(integersListToSendToOutsideProcessor);
+        sendMessagesToOutsideSystemAndGoToSleep(outgoingTopic, producer, seqOfNumbersToSendToOutsideProcessor);
+        Integer expectedAnswer = getExpectedAnswer(integersListToSendToOutsideProcessor);
 
-        Iterable<ConsumerRecord<String, String>> recordsFromOutsideSystem = waitForRecordsFromOutsideSystem(incomingTopic, consumer);
-        Long actualAnswer = checkIfReceivedRecordsHaveUniqueIdentifier(recordsFromOutsideSystem);
+        Iterable<ConsumerRecord<String, String>> recordsFromOutsideSystem = waitForRecordFromOutsideSystem(incomingTopic, consumer);
+        Integer actualAnswer = checkIfReceivedRecordsHaveUniqueIdentifier(recordsFromOutsideSystem);
 
         //then:
         setUpReportBuilder(reportBuilder);
@@ -51,6 +56,15 @@ public class KafkaTransformationCheck implements KafkaCheck {
         if (expectedAnswer.equals(actualAnswer))
             return getPassedCheckReport(reportBuilder);
         return getFailedCheckReport(expectedAnswer, actualAnswer, reportBuilder);
+    }
+
+    private String convertListOfIntegersToStringSeq(List<Integer> integersList) {
+        StringBuilder seqOfNumbers = new StringBuilder();
+        for (int i=0; i< integersList.size(); i++) {
+            seqOfNumbers.append(integersList.get(i).intValue());
+        }
+        String a = seqOfNumbers.toString();
+        return seqOfNumbers.toString();
     }
 
     private void setUpConsumer(Consumer consumer) {
@@ -72,9 +86,9 @@ public class KafkaTransformationCheck implements KafkaCheck {
         this.checkUniqueKey = UUID.randomUUID() + "--test--";
     }
 
-    private Iterable<ConsumerRecord<String, String>> waitForRecordsFromOutsideSystem(String incomingTopic, Consumer<String, String> consumer) {
+    private Iterable<ConsumerRecord<String, String>> waitForRecordFromOutsideSystem(String incomingTopic, Consumer<String, String> consumer) {
 
-        Iterable<ConsumerRecord<String, String>> records = consumer.poll(Duration.ofSeconds(20)).records(incomingTopic);
+        Iterable<ConsumerRecord<String, String>> records = consumer.poll(Duration.ofSeconds(10)).records(incomingTopic);
         consumer.close();
         return records;
     }
@@ -86,71 +100,38 @@ public class KafkaTransformationCheck implements KafkaCheck {
                 .collect(Collectors.toList());
     }
 
-    private void sendMessagesToOutsideSystemAndGoToSleep(String outgoingTopic, KafkaTemplate<String, String> producer, List<Integer> integersListToSendToTopic) {
-        sendMessagesToIgnore(outgoingTopic, producer);
-
-        sendMessagesToBeChecked(outgoingTopic, producer, checkUniqueKey, integersListToSendToTopic);
-        sendMessagesToIgnore(outgoingTopic, producer);
-        sendMessagesToBeChecked(outgoingTopic, producer, checkUniqueKey, Collections.singletonList("compute"));
-
-        Try.run(() -> Thread.sleep(30_000)).onFailure(InterruptedException.class, Throwable::printStackTrace);
+    private void sendMessagesToOutsideSystemAndGoToSleep(String outgoingTopic, KafkaTemplate<String, String> producer, String seqOfNumbersToSendToOutsideProcessor) {
+        sendMessagesToBeChecked(outgoingTopic, producer, checkUniqueKey, seqOfNumbersToSendToOutsideProcessor);
     }
 
-    private void sendMessagesToIgnore(String outgoingTopic, KafkaTemplate<String, String> producer) {
-        for (int i = 0; i < 5; i++) {
-            producer.send(outgoingTopic, "to be ignored");
-        }
+    private void sendMessagesToBeChecked(String outgoingTopic, KafkaTemplate<String, String> producer, String checkUniqueKey, String toSendToTopic) {
+        producer.send(outgoingTopic, checkUniqueKey, toSendToTopic);
     }
 
-    private void sendMessagesToBeChecked(String outgoingTopic, KafkaTemplate<String, String> producer, String checkUniqueKey, List<? super Integer> toSendToTopic) {
-
-        toSendToTopic.forEach(element -> {
-
-            producer.send(outgoingTopic, checkUniqueKey, String.valueOf(element));
-
-            Try.run(() -> Thread.sleep(30_000)).onFailure(InterruptedException.class, Throwable::printStackTrace);
-        });
-    }
-
-    private Long checkIfReceivedRecordsHaveUniqueIdentifier(Iterable<ConsumerRecord<String, String>> records) {
-
-        Long answerToCheck = 0L;
-
-        Logger logger = getLogger();
-
-        int numberCounter = 0;
+    private Integer checkIfReceivedRecordsHaveUniqueIdentifier(Iterable<ConsumerRecord<String, String>> records) {
 
         for (ConsumerRecord<String, String> record : records) {
-
             logger.info("logging records after second poll: key" + record.key() + " value: " + record.value()
                     + " offset: " + record.offset()
                     + " timestamp " + record.timestamp());
-            if (record.key().contains(checkUniqueKey)) {
-                Long longTry = Try.of(
-                        () -> Long.valueOf(Character.getNumericValue(record.key().charAt(record.key().length() - 1))))
-                        .getOrElseThrow(
-                                () -> new RuntimeException("Sorry, I cannot convert the value you provided to Long type"));
-                logger.info("Num: " + longTry);
-
-                if (numberCounter % 2 == 0)
-                    answerToCheck += 10 * longTry;
-                else
-                    answerToCheck += longTry;
-            }
-            ++numberCounter;
+                Integer intTry = Try.of(
+                        () -> Integer.valueOf(record.value()))
+                        .getOrElseThrow(() ->
+                                new RuntimeException("Sorry, I cannot convert the value you provided to Integer type"));
+            return intTry;
         }
-        return answerToCheck;
+        return null;
     }
 
     private Logger getLogger() {
-        Logger logger = LogManager.getLogger(KafkaMessagesSimpleCountCheck.class);
-        return logger;
+        return LogManager.getLogger(KafkaMessagesSimpleCountCheck.class);
     }
 
-    private Long getExpectedAnswer(List<Integer> toSend) {
-        Long sum = 0L;
-        for(int i=0; i<10; i+=2) {
-            sum += toSend.get(i)*10+toSend.get(i+1);
+    private Integer getExpectedAnswer(List<Integer> toSend) {
+        int sum = 0;
+
+        for (int i=0; i<toSend.size(); i+=2) {
+            sum += toSend.get(i) * 10 + toSend.get(i+1);
         }
         return sum;
     }
@@ -159,7 +140,7 @@ public class KafkaTransformationCheck implements KafkaCheck {
         reportBuilder.createTimestamp().setNameOfCheck(getName());
     }
 
-    private Report getFailedCheckReport(Long expectedAnswer, Long answerToCheck, ReportBuilder reportBuilder) {
+    private Report getFailedCheckReport(Integer expectedAnswer, Integer answerToCheck, ReportBuilder reportBuilder) {
         return reportBuilder
                 .setResult(ReportResults.FAILED)
                 .setReportBody("Sorry, please have another shot. " +

@@ -1,4 +1,4 @@
-package com.example.kafkapingponger.kafka;
+package com.example.kafkapingponger.kafka.pingPonger;
 
 import org.springframework.stereotype.Service;
 
