@@ -34,8 +34,6 @@ const ReportsFilter = props => {
         const startDateWithTime = convertToDateTimeFormat(startDate, startTime);
         const finishDateWithTime = convertToDateTimeFormat(finishDate, finishTime);
 
-        console.log(result, reportBody, startDateWithTime, finishDateWithTime, nameOfCheck, userName, "filtering params")
-
         props.show(result, reportBody, startDateWithTime, finishDateWithTime, nameOfCheck, userName);
     }
 
@@ -44,8 +42,6 @@ const ReportsFilter = props => {
         if (date.length===0) {
             return ""
         }
-
-        console.log(date + " XXXX " + time)
 
         return time.length === 0 ? date.toISOString().slice(0, 10) :
 

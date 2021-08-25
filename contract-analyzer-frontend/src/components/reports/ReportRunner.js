@@ -20,8 +20,6 @@ const ReportRunner = props => {
 
     const [isError, setIsError] = useState(false);
 
-
-
     const [currentPage, setCurrentPage] = useState(0);
 
     const [pageCount, setPageCount] = useState()
@@ -61,13 +59,8 @@ const ReportRunner = props => {
             setIsError(false);
             let allReports = await response.json();
             setPageCount(allReports.totalPages);
-            console.log(allReports)
-            console.log(allReports.totalPages + " NR PAG SUPER SUPER")
-            console.log(allReports.content)
             let readyReports = allReports.content
-            console.log(readyReports)
             setReports(readyReports.map(report => reportDependingOnResult(report)))
-            // console.log(reports.length + " OCIECHUK")
         }
     }
 
@@ -93,10 +86,6 @@ const ReportRunner = props => {
         }
     }
 
-    // const currentPageData = reports
-    //     .slice(offset, offset + PER_PAGE)
-    //     .map(report => reportDependingOnResult(report));
-
     const userInputHandler = event => {
         setReportId(event.target.value);
     }
@@ -105,7 +94,6 @@ const ReportRunner = props => {
         setCurrentPage(selectedObject.selected);
         await showFilteredReports([...queryArgs], currentPage);
     };
-
 
 
     return (
@@ -144,6 +132,7 @@ const ReportRunner = props => {
                 activeClassName={"pagination__link--active"}
                 containerClassName={'pagination'}
             /></div>}
-        </>)}
+        </>)
+}
 
 export default ReportRunner;
