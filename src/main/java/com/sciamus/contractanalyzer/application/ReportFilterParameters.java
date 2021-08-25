@@ -1,23 +1,22 @@
 package com.sciamus.contractanalyzer.application;
 
-import io.vavr.control.Option;
 
 public class ReportFilterParameters {
-    public final Option<String> result;
-    public final Option<String> reportBody;
-    public final Option<String> timestampFrom;
-    public final Option<String> timestampTo;
-    public final Option<String> nameOfCheck;
-    public final Option<String> userName;
+    public final  String  result;
+    public final  String  reportBody;
+    public final  String  timestampFrom;
+    public final  String  timestampTo;
+    public final  String  nameOfCheck;
+    public final  String  userName;
 
 
-    public ReportFilterParameters(String result, String reportBody, String timestampFrom, String timestampTo, String nameOfCheck, String userName) {
-        this.result = Option.of(result);
-        this.reportBody = Option.of(reportBody);
-        this.timestampFrom = Option.of(timestampFrom);
-        this.timestampTo = Option.of(timestampTo);
-        this.nameOfCheck = Option.of(nameOfCheck);
-        this.userName = Option.of(userName);
+    public ReportFilterParameters (String result, String reportBody, String timestampFrom, String timestampTo, String nameOfCheck, String userName) {
+        this.result = result;
+        this.reportBody = reportBody;
+        this.timestampFrom = timestampFrom;
+        this.timestampTo = timestampTo;
+        this.nameOfCheck = nameOfCheck;
+        this.userName = userName;
     }
 
 
