@@ -1,11 +1,9 @@
 package com.sciamus.contractanalyzer.interfaces.rest;
 
 
-import com.sciamus.contractanalyzer.application.ReportDTO;
 import com.sciamus.contractanalyzer.application.ReportFacade;
-import com.sciamus.contractanalyzer.domain.checks.reports.Report;
+import com.sciamus.contractanalyzer.application.ReportViewDTO;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportNotFoundException;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,23 +24,15 @@ public class ReportController {
     @RolesAllowed("reader")
     @GetMapping("/reports/{id}")
     @ResponseBody
-    public ReportDTO GetReportById(
+    public ReportViewDTO GetReportById(
             @PathVariable("id") String id) {
         return reportFacade.getReportByID(id);
     }
 
-//    @RolesAllowed("reader")
-//    @GetMapping("/reports")
-//    @ResponseBody
-//
-//    public List<ReportDTO> getAllReports() {
-//        return reportFacade.getAllReports();
-//    }
-
     @RolesAllowed("reader")
     @GetMapping("/filteredReports")
     @ResponseBody
-    public List<ReportDTO> getAllReports(@RequestParam("result") String result,
+    public List<ReportViewDTO> getAllReports(@RequestParam("result") String result,
                                          @RequestParam("reportBody") String reportBody,
                                          @RequestParam("timestamp") String timestamp,
                                          @RequestParam("nameOfCheck") String nameOfCheck,
@@ -53,7 +43,7 @@ public class ReportController {
     @RolesAllowed("reader")
     @GetMapping("/reports/paged")
     @ResponseBody
-    public Page<Report> getPagedReports(@RequestParam("documentsPerPage") int documentsPerPage) {return reportFacade.findByPageSize(documentsPerPage);}
+    public List<ReportViewDTO> getPagedReports(@RequestParam("documentsPerPage") int documentsPerPage) {return reportFacade.findByPageSize(documentsPerPage);}
 
 
 

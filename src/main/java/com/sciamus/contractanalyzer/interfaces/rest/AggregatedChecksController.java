@@ -1,8 +1,7 @@
 package com.sciamus.contractanalyzer.interfaces.rest;
 
 import com.sciamus.contractanalyzer.application.AggregatedChecksFacade;
-import com.sciamus.contractanalyzer.domain.checks.aggregatedChecks.AggregatedReportDTO;
-import com.sciamus.contractanalyzer.domain.checks.aggregatedChecks.AggregatedReport;
+import com.sciamus.contractanalyzer.application.AggregatedReportViewDTO;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
@@ -20,7 +19,7 @@ public class AggregatedChecksController {
 
     @GetMapping("/aggregatedChecksReports")
     @ResponseBody
-    public List<AggregatedReport> getAggregatedChecksReports() {
+    public List<AggregatedReportViewDTO> getAggregatedChecksReports() {
         return aggregatedChecksFacade.getAggregatedChecksReports();
     }
 
@@ -29,7 +28,7 @@ public class AggregatedChecksController {
     @RolesAllowed("writer")
     @PostMapping("/aggregatedChecks/run")
     @ResponseBody
-    public AggregatedReportDTO runAggregatedChecks(
+    public AggregatedReportViewDTO runAggregatedChecks(
             @RequestParam List<String> namesOfChecks,
             @RequestParam(name = "url") String url,
             @RequestParam(required = false, name = "name") String name) throws MalformedURLException {

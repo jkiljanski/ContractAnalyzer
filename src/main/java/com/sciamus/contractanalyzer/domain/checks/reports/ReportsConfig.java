@@ -1,21 +1,15 @@
 package com.sciamus.contractanalyzer.domain.checks.reports;
 
-import com.sciamus.contractanalyzer.infrastructure.adapter.RepositoryConfigurable;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class ReportsConfig {
 
-    @Bean
-    public ReportService reportService(RepositoryConfigurable repositoryConfigurable) {
-        return new ReportService(repositoryConfigurable, reportIdGenerator(repositoryConfigurable));
-    }
+//    @Bean
+//    public ReportService reportService(PersistanceConfigurable persistanceConfigurable) {
+//        return new ReportService(persistanceConfigurable, reportIdGenerator(persistanceConfigurable));
+//    }
 
-    @Bean
-    public ReportIdGenerator reportIdGenerator(RepositoryConfigurable repositoryConfigurable) {
-        return new ReportIdGenerator(repositoryConfigurable.getReportsRepository());
-    }
 
 
 }

@@ -1,10 +1,11 @@
 import com.sciamus.contractanalyzer.application.AggregatedChecksFacade;
-import com.sciamus.contractanalyzer.domain.checks.aggregatedChecks.AggregatedReportDTO;
+import com.sciamus.contractanalyzer.application.AggregatedReportViewDTO;
 import com.sciamus.contractanalyzer.domain.checks.rest.RestCheck;
 import com.sciamus.contractanalyzer.domain.checks.rest.dummy.DummyRestCheck;
-import com.sciamus.contractanalyzer.infrastructure.adapter.RepositoryConfigurable;
-import com.sciamus.contractanalyzer.infrastructure.port.AggregatedReportsRepository;
-import com.sciamus.contractanalyzer.infrastructure.port.ReportsRepository;
+import com.sciamus.contractanalyzer.infrastructure.adapter.mongo.MongoAggregatedReportsRepository;
+import com.sciamus.contractanalyzer.infrastructure.adapter.mongo.MongoReportsRepository;
+import com.sciamus.contractanalyzer.infrastructure.port.AggregatedReportPersistancePort;
+import com.sciamus.contractanalyzer.infrastructure.port.ReportPersistancePort;
 import com.sciamus.contractanalyzer.misc.conf.SecurityConfigurable;
 import config.TestContextFactory;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,10 +34,10 @@ public class AggregatedChecksTest {
     private KeycloakSecurityContext keycloakSecurityContextMock;
 
     @Mock
-    private AggregatedReportsRepository aggregatedReportsRepositoryMock;
+    private MongoAggregatedReportsRepository mongoAggregatedReportsRepositoryMock;
 
     @Mock
-    private ReportsRepository reportsRepositoryMock;
+    private MongoReportsRepository mongoReportsRepositoryMock;
 
     private AggregatedChecksFacade aggregatedChecksFacade;
 
@@ -44,18 +45,22 @@ public class AggregatedChecksTest {
     private SecurityConfigurable securityConfigMock;
 
     @Mock
-    private RepositoryConfigurable repositoryConfigurableMock;
+    private ReportPersistancePort reportPersistancePortMock;
+
+    @Mock
+    private AggregatedReportPersistancePort aggregatedReportPersistancePortMock;
 
 
     @BeforeEach
     public void init() {
 
         given(securityConfigMock.provideKeycloakSecurityContext()).willReturn(keycloakSecurityContextMock);
-        given(repositoryConfigurableMock.getAggregatedReportsRepository()).willReturn(aggregatedReportsRepositoryMock);
-        given(repositoryConfigurableMock.getReportsRepository()).willReturn(reportsRepositoryMock);
+
+        given(aggregatedReportPersistancePortMock.save(any())).willAnswer(AdditionalAnswers.returnsFirstArg());
+        given(reportPersistancePortMock.save(any())).willAnswer(AdditionalAnswers.returnsFirstArg());
 
 
-        TestContextFactory testContextFactory = new TestContextFactory(securityConfigMock, repositoryConfigurableMock);
+        TestContextFactory testContextFactory = new TestContextFactory(securityConfigMock, aggregatedReportPersistancePortMock, reportPersistancePortMock);
 
         List<RestCheck> restChecks = List.of(new DummyRestCheck());
 
@@ -69,16 +74,18 @@ public class AggregatedChecksTest {
         //given
 
         given(keycloakSecurityContextMock.getToken()).willReturn(new AccessToken());
-        given(reportsRepositoryMock.save(any())).willAnswer(AdditionalAnswers.returnsFirstArg());
-        given(aggregatedReportsRepositoryMock.save(any())).willAnswer(AdditionalAnswers.returnsFirstArg());
+//        given(mongoReportsRepositoryMock.save(any())).willAnswer(AdditionalAnswers.returnsFirstArg());
+//        given(mongoAggregatedReportsRepositoryMock.save(any())).willAnswer(AdditionalAnswers.returnsFirstArg());
 
 
         // when
-        AggregatedReportDTO reportDTO = aggregatedChecksFacade.runAndSaveAggregatedChecks(null,List.of("Dummy Check"), "http://localhost:1212/dummyUrl");
+        AggregatedReportViewDTO reportDTO = aggregatedChecksFacade.runAndSaveAggregatedChecks("krowa", List.of("Dummy Check"), "http://localhost:1212/dummyUrl");
 
         // then
         assertThat(reportDTO).isNotNull();
     }
+
+
 
 
 }

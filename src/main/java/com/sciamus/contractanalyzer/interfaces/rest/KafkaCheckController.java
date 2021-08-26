@@ -1,10 +1,7 @@
 package com.sciamus.contractanalyzer.interfaces.rest;
 
 import com.sciamus.contractanalyzer.application.KafkaChecksFacade;
-import com.sciamus.contractanalyzer.application.ReportDTO;
-import com.sciamus.contractanalyzer.domain.checks.queues.KafkaCheckService;
-import com.sciamus.contractanalyzer.domain.checks.reports.Report;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.sciamus.contractanalyzer.application.ReportViewDTO;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,11 +17,11 @@ public class KafkaCheckController {
 
     //add parameters
     @PostMapping("/kafkaCheck/{name}/run")
-    ReportDTO runKafka(@PathVariable("name") String name,
-                       @RequestParam("incomingTopic") String firstTopic,
-                       @RequestParam("outgoingTopic") String secondTopic,
-                       @RequestParam("host") String host,
-                       @RequestParam("port") String port) {
+    ReportViewDTO runKafka(@PathVariable("name") String name,
+                           @RequestParam("incomingTopic") String firstTopic,
+                           @RequestParam("outgoingTopic") String secondTopic,
+                           @RequestParam("host") String host,
+                           @RequestParam("port") String port) {
 
         return kafkaChecksFacade.runKafkaCheck(firstTopic, secondTopic, host, port,name);
     }
