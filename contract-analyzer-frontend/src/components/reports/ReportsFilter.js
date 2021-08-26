@@ -3,6 +3,7 @@ import classes from "../Styles.module.css";
 import {Button, Col, Form, InputGroup, Label, Row} from "reactstrap";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import moment from "moment";
 
 const ReportsFilter = props => {
 
@@ -45,13 +46,12 @@ const ReportsFilter = props => {
             return ""
         }
 
-        console.log("only date " + date.toISOString().slice(0, 10) )
 
-        console.log("datetime " +  date.toISOString().slice(0, 11).trim() + time.trim())
+        const  formattedDate = moment(date).format("YYYY-MM-DD")
 
-        return time.length === 0 ? date.toISOString().slice(0, 10) :
+        return time.length === 0 ? formattedDate:
 
-            date.toISOString().slice(0, 11).trim() + time.trim();
+            formattedDate +'T' + time;
     }
 
     return (
@@ -72,6 +72,8 @@ const ReportsFilter = props => {
                     <Label>From</Label>
                     <Row>
                         <DatePicker
+
+                            dateFormat={"yyyy-MM-dd"}
                             selected={startDate}
                             onChange={(date) => setStartDate(date)}/>
                         <Label>Time</Label>
@@ -86,6 +88,7 @@ const ReportsFilter = props => {
                     <Label>To</Label>
                     <Row>
                         <DatePicker
+                            dateFormat={"yyyy-MM-dd"}
                             selected={finishDate}
                             onChange={(date) => setFinishDate(date)}/>
                         <Label>Time</Label>
