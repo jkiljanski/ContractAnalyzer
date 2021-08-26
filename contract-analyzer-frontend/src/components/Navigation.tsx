@@ -4,7 +4,7 @@ import '../App.css';
 import classes from "./Styles.module.css";
 import {useKeycloak} from "@react-keycloak/web";
 
-const Navigation = (props) => {
+const Navigation = () => {
 
 
     const {keycloak} = useKeycloak();

@@ -3,48 +3,54 @@ import ReactPaginate from 'react-paginate';
 import {Button, Input, InputGroup, InputGroupAddon, Table} from "reactstrap";
 import classes from "../Styles.module.css";
 import ReportViewer from "./ReportViewer";
-import '../pagination/Paginator.css'
 import {useKeycloak} from "@react-keycloak/web";
-import ReportsFilter from "./ReportsFilter";
+import ReportsFilterForm from "./ReportsFilterForm";
 import ReportTableHeaders from "./ReportTableHeaders";
+import Report from "../../model/Report";
+import {log} from "util";
 
 
-const ReportRunner = props => {
+interface Props {
+
+    reportsToFetch: Report[]
+    reportsHandler: (reports: React.SetStateAction<Report[]>) => void
+}
+
+const ReportRunner :React.FC<Props> = (props: Props) => {
 
 
     const [reports, setReports] = useState([]);
 
     const [reportId, setReportId] = useState('');
 
-    const [reportById, setReportById] = useState('');
+    const [reportById, setReportById] = useState<Report | undefined>(undefined);
 
     const [isError, setIsError] = useState(false);
 
-    const [currentPage, setCurrentPage] = useState(0);
+    const [pageCount, setPageCount] = useState<number>(0)
 
-    const [pageCount, setPageCount] = useState()
-
-    const [queryArgs, setQueryArgs] = useState([])
+    const [queryArgs, setQueryArgs] = useState(new Array<string>())
 
 
-    const reportDependingOnResult = (report) => {
+    const reportDependingOnResult = (report: Report | undefined) => {
 
-        return report.result === 'PASSED' ?
-            <ReportViewer key={report.id} style={classes.reportPassed} report={report}/> :
-            <ReportViewer key={report.id} style={classes.reportFailed} report={report}/>
+        return report!.result === 'PASSED' ?
+            <ReportViewer key={report!.id} style={classes.reportPassed} report={report as Report}/> :
+            <ReportViewer key={report!.id} style={classes.reportFailed} report={report as Report}/>
     }
-
 
     const {keycloak} = useKeycloak();
 
-    async function showFilteredReports(result, reportBody, startDateWithTime, finishDateWithTime, nameOfCheck, userName, pageNumber) {
+    // async function fetchFilteredReports(result: string, reportBody: string, startDateWithTime: string, finishDateWithTime: string, nameOfCheck: string, userName: string, pageNumber: number) {
+    async function fetchFilteredReports(pageNumber: number, args: Array<string>) {
 
-        setReportById('')
+        setReportById(undefined)
+        setQueryArgs([...args]);
 
-        setQueryArgs([result, reportBody, startDateWithTime, finishDateWithTime, nameOfCheck, userName]);
 
-        let response = await fetch('/filteredReports?result=' + result + '&reportBody=' + reportBody +
-            '&timestampFrom=' + startDateWithTime + '&timestampTo=' + finishDateWithTime + '&nameOfCheck=' + nameOfCheck + '&userName=' + userName + '&pageNumber=' + currentPage, {
+
+        let response = await fetch('/filteredReports?result=' + args[0] + '&reportBody=' + args[1] +
+            '&timestampFrom=' + args[2] + '&timestampTo=' + args[3] + '&nameOfCheck=' + args[4] + '&userName=' + args[5] + '&pageNumber=' + pageNumber, {
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + keycloak.token,
@@ -59,12 +65,16 @@ const ReportRunner = props => {
             setIsError(false);
             let allReports = await response.json();
             setPageCount(allReports.totalPages);
+            console.log(allReports.totalPages)
             let readyReports = allReports.content
-            setReports(readyReports.map(report => reportDependingOnResult(report)))
+            console.log(readyReports)
+            let mappedReport = readyReports.map((report: Report) => reportDependingOnResult(report));
+            console.log(mappedReport)
+            setReports(mappedReport)
         }
     }
 
-    async function getReportById() {
+    async function fetchReportById() {
         console.log(reportById)
         setReports([]);
         let response = await fetch('/reports/' + reportId, {
@@ -77,7 +87,6 @@ const ReportRunner = props => {
         });
 
         if (response.status !== 200) {
-            setReportById(response.statusText)
             setIsError(true);
         } else {
             setIsError(false);
@@ -86,23 +95,23 @@ const ReportRunner = props => {
         }
     }
 
-    const userInputHandler = event => {
+    const userInputHandler = (event: { target: { value: React.SetStateAction<string>; }; }) => {
         setReportId(event.target.value);
     }
 
-    const handlePageChange = async (selectedObject) => {
-        setCurrentPage(selectedObject.selected);
-        console.log(currentPage + " CUCUCUFCU PAGE");
-        console.log(queryArgs + "JEJEJEJJE Queryargs")
-        await showFilteredReports([...queryArgs], currentPage);
-    };
 
+    const handlePageChange = async (selectedObject: { selected: number; }) => {
+
+
+        await fetchFilteredReports(selectedObject.selected, queryArgs);
+
+    };
 
     return (
         <>
-            <ReportsFilter show={showFilteredReports}/>
+            <ReportsFilterForm show={fetchFilteredReports}/>
             <InputGroup>
-                <InputGroupAddon addonType="prepend"><Button className={classes.button} onClick={getReportById}>Show
+                <InputGroupAddon addonType="prepend"><Button className={classes.button} onClick={fetchReportById}>Show
                     report by id</Button>
                 </InputGroupAddon>
                 <Input type="text"
@@ -133,7 +142,8 @@ const ReportRunner = props => {
                 disabledClassName={"pagination__link--disabled"}
                 activeClassName={"pagination__link--active"}
                 containerClassName={'pagination'}
-            /></div>}
+                marginPagesDisplayed={3}
+                pageRangeDisplayed={3}/></div>}
         </>)
 }
 

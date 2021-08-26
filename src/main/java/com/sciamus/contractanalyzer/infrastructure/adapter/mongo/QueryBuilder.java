@@ -44,10 +44,10 @@ public class QueryBuilder {
 
         if(reportFilterParameters.timestampTo !=null && !reportFilterParameters.timestampTo.equals("") ) {
             if (reportFilterParameters.timestampTo.length()>10) {
-                to = Criteria.where("timestamp").lt(LocalDateTime.parse(reportFilterParameters.timestampTo));
+                to = Criteria.where("timestamp").lte(LocalDateTime.parse(reportFilterParameters.timestampTo));
             }
             else {
-                to = Criteria.where("timestamp").lt(LocalDate.parse(reportFilterParameters.timestampTo));
+                to = Criteria.where("timestamp").lte(LocalDate.parse(reportFilterParameters.timestampTo));
             }
         }
 

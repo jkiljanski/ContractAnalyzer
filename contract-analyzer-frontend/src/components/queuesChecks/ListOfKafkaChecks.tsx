@@ -2,16 +2,22 @@ import React, {useState} from "react";
 import {Button, ListGroup} from "reactstrap";
 import classes from "../Styles.module.css";
 
-const ListOfKafkaChecks = props => {
+
+interface Props {
+    kafkaChecksToRun: string[] | null
+    checkHandler: (nameOfCheck: string) => void
+}
+
+const ListOfKafkaChecks: React.FC<Props> = (props: Props) => {
 
     const [selectedCheck, setSelectedCheck] = useState('');
 
-    const onKafkaCheckClick = selected => {
+    const onKafkaCheckClick = (selected: string) => {
         setSelectedCheck(selected);
-        props.kafkaChecksHandler(selected);
+        props.checkHandler(selected);
     }
 
-    const list = props.kafkaChecks.map((check) =>
+    const list = props.kafkaChecksToRun!.map((check) =>
         <Button className={classes.button} onClick={() => onKafkaCheckClick(check)} active={selectedCheck === check}>
             {check}
         </Button>

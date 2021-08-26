@@ -1,22 +1,22 @@
 import './App.css';
-import ListOfChecks from "./components/ListOfChecks";
+import ListOfRestChecks from "./components/ListOfRestChecks";
 import React, {useCallback, useEffect, useState} from "react";
 import CheckRunner from "./components/CheckRunner";
 import Navigation from "./components/Navigation";
 import {Redirect, Route} from "react-router-dom";
-import ReportRunner from "./components/reports/ReportRunner";
+import ReportFetcher from "./components/reports/ReportRunner";
 import classes from "./components/Styles.module.css";
-import QueuesChecks from "./components/queuesChecks/QueuesChecks"
+import KafkaCheckRunner from "./components/queuesChecks/KafkaCheckRunner"
 import ListOfKafkaChecks from "./components/queuesChecks/ListOfKafkaChecks";
-import {createStore} from "redux";
+import Report from "./model/Report";
 
 function App() {
 
-    const [listOfChecks, setListOfChecks] = useState(['Loading checks...'])
+    const [listOfRestChecks, setListOfChecks] = useState<Array<string> | null>(null)
 
-    const [listOfKafkaChecks, setListOfKafkaChecks] = useState(['Loading Kafka checks...'])
+    const [listOfKafkaChecks, setListOfKafkaChecks] = useState<Array<string> | null>(null)
 
-    const [checksToRun, setChecksToRun] = useState([''])
+    const [checksToRun, setChecksToRun] = useState(new Array<string>())
 
     const [kafkaCheckToRun, setKafkaCheckToRun] = useState('');
 
@@ -24,9 +24,12 @@ function App() {
 
     const [kafkaError, setKafkaError] = useState(null);
 
-    const [reports, setReports] = useState([]);
+    const [reports, setReports] = useState(new Array<Report>());
 
-    const fetchListOfChecks = useCallback(async () => {
+
+
+    // @ts-ignore
+    let fetchListOfChecks = useCallback(async () => {
 
         try {
             const response = await fetch('/restContractChecks')
@@ -34,38 +37,31 @@ function App() {
                 throw new Error('Error fetching the list of checks')
             const dataReceived = await response.json();
             setListOfChecks(dataReceived.listOfChecks)
-        } catch (error) {
+        } catch (error: any) {
             setError(error.message)
         }
-        return fetchListOfChecks
+        return fetchListOfChecks;
 
-    }, [setListOfChecks,setError])
+    }, [setListOfChecks, setError]);
 
-    const fetchListOfKafkaChecks = useCallback(async () => {
+
+    // @ts-ignore
+    let fetchListOfKafkaChecks = useCallback(async () => {
 
         try {
             const response = await fetch('/kafkaCheck/')
             if (!response.ok)
                 throw new Error('Error fetching the list of kafka checks')
-            setListOfKafkaChecks(await response.json())
-        } catch (error) {
+            const dataReceived = await response.json();
+
+
+            setListOfKafkaChecks(dataReceived)
+        } catch (error: any) {
             setKafkaError(error.message)
         }
         return fetchListOfKafkaChecks;
-    }, [])
+    }, [setListOfKafkaChecks, setKafkaError])
 
-    const checkHandler = check => {
-
-        console.log("im in check handler " + check)
-        setChecksToRun(check)
-    }
-    const reportsHandler = reports => {
-        setReports(reports);
-    }
-
-    const kafkaCheckHandler = kafkaCheck => {
-        setKafkaCheckToRun(kafkaCheck);
-    }
 
     useEffect(() => {
         fetchListOfChecks();
@@ -74,6 +70,18 @@ function App() {
     useEffect(() => {
         fetchListOfKafkaChecks();
     }, [fetchListOfKafkaChecks]);
+
+    const checkHandler = (check: Array<string> | React.SetStateAction<string[]>) => {
+
+        setChecksToRun(check)
+    }
+    const reportsHandler = (reports: React.SetStateAction<Report[]>) => {
+        setReports(reports);
+    }
+    const kafkaCheckHandler = (kafkaCheck: string | React.SetStateAction<string>) => {
+        setKafkaCheckToRun(kafkaCheck);
+    }
+
 
 
     return (
@@ -85,18 +93,18 @@ function App() {
 
             <Route path={'/rest'}>
 
-                <ListOfChecks checks={listOfChecks} checkHandler={checkHandler}/>
-                <CheckRunner checkToRun={checksToRun}/>
+                <ListOfRestChecks checks={listOfRestChecks} checkHandler={checkHandler}/>
+                <CheckRunner checksToRun={checksToRun}/>
                 {error && <p className={classes.logoutButton}>{error}</p>}
 
             </Route>
             <Route path={'/queues'}>
-                <ListOfKafkaChecks kafkaChecks={listOfKafkaChecks} kafkaChecksHandler={kafkaCheckHandler}></ListOfKafkaChecks>
-                <QueuesChecks kafkaCheckToRun={kafkaCheckToRun}></QueuesChecks>
+                <ListOfKafkaChecks kafkaChecksToRun={listOfKafkaChecks} checkHandler={kafkaCheckHandler}/>
+                <KafkaCheckRunner checkToRun={kafkaCheckToRun}/>
                 {kafkaError && <p className={classes.brandSmall}>{kafkaError}</p>}
             </Route>
             <Route path={'/reports'}>
-                <ReportRunner reportToRun={reports} reportsHandler={reportsHandler}/>
+                <ReportFetcher reportsToFetch={reports} reportsHandler={reportsHandler}/>
             </Route>
         </div>
     );
