@@ -20,11 +20,10 @@ const ReportRunner = props => {
 
     const [isError, setIsError] = useState(false);
 
-    const [currentPage, setCurrentPage] = useState(0);
 
     const [pageCount, setPageCount] = useState()
 
-    const [queryArgs, setQueryArgs] = useState([])
+    const [queryArgs, setQueryArgs] = useState([""])
 
 
     const reportDependingOnResult = (report) => {
@@ -34,17 +33,18 @@ const ReportRunner = props => {
             <ReportViewer key={report.id} style={classes.reportFailed} report={report}/>
     }
 
-
     const {keycloak} = useKeycloak();
 
-    async function showFilteredReports(result, reportBody, startDateWithTime, finishDateWithTime, nameOfCheck, userName, pageNumber) {
+    async function fetchFilteredReports(result, reportBody, startDateWithTime, finishDateWithTime, nameOfCheck, userName, pageNumber) {
 
         setReportById('')
 
         setQueryArgs([result, reportBody, startDateWithTime, finishDateWithTime, nameOfCheck, userName]);
 
+        console.log(pageNumber + " INSIDE FETCH FUNCTION")
+
         let response = await fetch('/filteredReports?result=' + result + '&reportBody=' + reportBody +
-            '&timestampFrom=' + startDateWithTime + '&timestampTo=' + finishDateWithTime + '&nameOfCheck=' + nameOfCheck + '&userName=' + userName + '&pageNumber=' + currentPage, {
+            '&timestampFrom=' + startDateWithTime + '&timestampTo=' + finishDateWithTime + '&nameOfCheck=' + nameOfCheck + '&userName=' + userName + '&pageNumber=' + pageNumber, {
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + keycloak.token,
@@ -64,7 +64,7 @@ const ReportRunner = props => {
         }
     }
 
-    async function getReportById() {
+    async function fetchReportById() {
         console.log(reportById)
         setReports([]);
         let response = await fetch('/reports/' + reportId, {
@@ -91,18 +91,19 @@ const ReportRunner = props => {
     }
 
     const handlePageChange = async (selectedObject) => {
-        setCurrentPage(selectedObject.selected);
-        console.log(currentPage + " CUCUCUFCU PAGE");
-        console.log(queryArgs + "JEJEJEJJE Queryargs")
-        await showFilteredReports([...queryArgs], currentPage);
+
+
+
+        await fetchFilteredReports(...queryArgs, selectedObject.selected);
+
     };
 
 
     return (
         <>
-            <ReportsFilter show={showFilteredReports}/>
+            <ReportsFilter show={fetchFilteredReports}/>
             <InputGroup>
-                <InputGroupAddon addonType="prepend"><Button className={classes.button} onClick={getReportById}>Show
+                <InputGroupAddon addonType="prepend"><Button className={classes.button} onClick={fetchReportById}>Show
                     report by id</Button>
                 </InputGroupAddon>
                 <Input type="text"

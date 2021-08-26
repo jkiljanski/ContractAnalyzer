@@ -34,7 +34,7 @@ const ReportsFilter = props => {
         const startDateWithTime = convertToDateTimeFormat(startDate, startTime);
         const finishDateWithTime = convertToDateTimeFormat(finishDate, finishTime);
 
-        props.show(result, reportBody, startDateWithTime, finishDateWithTime, nameOfCheck, userName);
+        props.show(result, reportBody, startDateWithTime, finishDateWithTime, nameOfCheck, userName, 0);
     }
 
     const convertToDateTimeFormat = (date, time) => {
