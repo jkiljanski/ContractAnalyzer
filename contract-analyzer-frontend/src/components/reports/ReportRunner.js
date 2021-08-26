@@ -20,9 +20,8 @@ const ReportRunner = props => {
 
     const [isError, setIsError] = useState(false);
 
-
     const [pageCount, setPageCount] = useState()
-
+    
     const [queryArgs, setQueryArgs] = useState([""])
 
 
@@ -38,10 +37,7 @@ const ReportRunner = props => {
     async function fetchFilteredReports(result, reportBody, startDateWithTime, finishDateWithTime, nameOfCheck, userName, pageNumber) {
 
         setReportById('')
-
         setQueryArgs([result, reportBody, startDateWithTime, finishDateWithTime, nameOfCheck, userName]);
-
-        console.log(pageNumber + " INSIDE FETCH FUNCTION")
 
         let response = await fetch('/filteredReports?result=' + result + '&reportBody=' + reportBody +
             '&timestampFrom=' + startDateWithTime + '&timestampTo=' + finishDateWithTime + '&nameOfCheck=' + nameOfCheck + '&userName=' + userName + '&pageNumber=' + pageNumber, {
@@ -91,7 +87,6 @@ const ReportRunner = props => {
     }
 
     const handlePageChange = async (selectedObject) => {
-
 
 
         await fetchFilteredReports(...queryArgs, selectedObject.selected);
