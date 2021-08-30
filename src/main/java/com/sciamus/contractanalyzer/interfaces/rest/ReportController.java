@@ -73,9 +73,8 @@ public class ReportController {
             String tstmp = timestamp + "00:00";
             System.out.println(tstmp);
             return tstmp;
-
         }
-        System.out.println(timestamp + "DADDY wANTS");
         return  timestamp;
     }
+
 }
