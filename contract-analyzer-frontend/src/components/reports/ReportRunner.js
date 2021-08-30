@@ -22,7 +22,6 @@ const ReportRunner = props => {
 
     const [currentPage, setCurrentPage] = useState(0);
 
-    const [currentPageData, setCurrentPageData] = useState('')
 
     const [pageCount, setPageCount] = useState()
 
@@ -56,7 +55,6 @@ const ReportRunner = props => {
             setIsError(false);
             let allReports = await response.json();
             setPageCount(allReports.totalPages);
-            console.log(allReports.totalPages + "SUPER SUPER")
             allReports = reportDependingOnResult(allReports);
             setReports(allReports)
         }
@@ -84,9 +82,6 @@ const ReportRunner = props => {
         }
     }
 
-    // const currentPageData = reports
-    //     .slice(offset, offset + PER_PAGE)
-    //     .map(report => reportDependingOnResult(report));
 
     const userInputHandler = event => {
         setReportId(event.target.value);
@@ -127,18 +122,18 @@ const ReportRunner = props => {
             {/*<div><Paginator reports={reports} /></div>*/}
 
             {
-            <div className={classes.brand}><ReactPaginate
-                previousLabel={"←"}
-                nextLabel={"→"}
-                breakLabel={'...'}
-                pageCount={pageCount}
-                onPageChange={handlePageClick}
-                previousLinkClassName={"pagination__link"}
-                nextLinkClassName={"pagination__link"}
-                disabledClassName={"pagination__link--disabled"}
-                activeClassName={"pagination__link--active"}
-                containerClassName={'pagination'}
-            /></div>}
+                <div className={classes.brand}><ReactPaginate
+                    previousLabel={"←"}
+                    nextLabel={"→"}
+                    breakLabel={'...'}
+                    pageCount={pageCount}
+                    onPageChange={handlePageClick}
+                    previousLinkClassName={"pagination__link"}
+                    nextLinkClassName={"pagination__link"}
+                    disabledClassName={"pagination__link--disabled"}
+                    activeClassName={"pagination__link--active"}
+                    containerClassName={'pagination'}
+                /></div>}
         </>);
 };
 
