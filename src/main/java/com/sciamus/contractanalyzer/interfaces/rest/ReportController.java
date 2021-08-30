@@ -40,7 +40,7 @@ public class ReportController {
                                                    @RequestParam(value = "nameOfCheck", required = false) String nameOfCheck,
                                                    @RequestParam(value = "userName", required = false) String userName,
                                                    @RequestParam(value = "pageNumber", required = false) int number) {
-        return reportFacade.getFilteredReports(new ReportFilterParameters(result, reportBody, timestampFrom, timestampTo, nameOfCheck, userName), number);
+        return reportFacade.getFilteredReports(new ReportFilterParameters(result, reportBody, convertDateToDatetime(timestampFrom), convertDateToDatetime(timestampTo), nameOfCheck, userName), number);
     }
 
     @RolesAllowed("reader")
@@ -63,6 +63,18 @@ public class ReportController {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(exception.getMessage());
+    }
+
+
+    private String convertDateToDatetime(String timestamp) {
+
+        if (timestamp.length()<12) {
+
+            String tstmp = timestamp + "00:00";
+            System.out.println(tstmp);
+            return tstmp;
+        }
+        return  timestamp;
     }
 
 }
