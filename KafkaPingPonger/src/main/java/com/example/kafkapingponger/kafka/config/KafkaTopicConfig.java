@@ -47,9 +47,25 @@ public class KafkaTopicConfig {
     public NewTopic createCommand() {
         return new NewTopic("command-topic", 1, (short) 1);
     }
+
     @Bean
     public NewTopic createCount() {
         return new NewTopic("count-topic", 1, (short) 1);
+    }
+
+    @Bean
+    public NewTopic createComplexInputTopic1() {
+        return new NewTopic("complex-input-topic1", 1, (short) 1);
+    }
+
+    @Bean
+    public NewTopic createComplexInputTopic2() {
+        return new NewTopic("complex-input-topic2", 1, (short) 1);
+    }
+
+    @Bean
+    public NewTopic createComplexOutputTopic() {
+        return new NewTopic("complex-output-topic", 1, (short) 1);
     }
 
 
