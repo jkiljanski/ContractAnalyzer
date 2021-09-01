@@ -2,18 +2,23 @@ package com.sciamus.contractanalyzer.interfaces.rest;
 
 
 import com.sciamus.contractanalyzer.application.ReportFacade;
+import com.sciamus.contractanalyzer.application.ReportFilterParameters;
 import com.sciamus.contractanalyzer.application.ReportViewDTO;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportNotFoundException;
+import io.vavr.control.Try;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @RestController
 public class ReportController {
+
+    private static final DateTimeFormatter WITH_TIME_DATE_FORMAT = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
     private final ReportFacade reportFacade;
 
@@ -25,7 +30,7 @@ public class ReportController {
     @RolesAllowed("reader")
     @GetMapping("/reports/{id}")
     @ResponseBody
-    public ReportViewDTO GetReportById(
+    public ReportViewDTO getReportById(
             @PathVariable("id") String id) {
         return reportFacade.getReportByID(id);
     }
@@ -33,12 +38,14 @@ public class ReportController {
     @RolesAllowed("reader")
     @GetMapping("/filteredReports")
     @ResponseBody
-    public List<ReportViewDTO> getAllReports(@RequestParam("result") String result,
-                                             @RequestParam("reportBody") String reportBody,
-                                             @RequestParam("timestamp") String timestamp,
-                                             @RequestParam("nameOfCheck") String nameOfCheck,
-                                             @RequestParam("userName") String userName) {
-        return reportFacade.getFilteredReports(result, reportBody, timestamp, nameOfCheck, userName);
+    public Page<ReportViewDTO> getFileteredReports(@RequestParam(value = "result", required = false) String result,
+                                                   @RequestParam(value = "reportBody", required = false) String reportBody,
+                                                   @RequestParam(value = "timestampFrom", required = false) String timestampFrom,
+                                                   @RequestParam(value = "timestampTo", required = false) String timestampTo,
+                                                   @RequestParam(value = "nameOfCheck", required = false) String nameOfCheck,
+                                                   @RequestParam(value = "userName", required = false) String userName,
+                                                   @RequestParam(value = "pageNumber", required = false) int number) {
+        return reportFacade.getFilteredReports(new ReportFilterParameters(result, reportBody, convertDateToDatetime(timestampFrom), convertDateToDatetime(timestampTo), nameOfCheck, userName), number);
     }
 
     @RolesAllowed("reader")
@@ -46,10 +53,10 @@ public class ReportController {
     @ResponseBody
     public Page<ReportViewDTO> getPagedReports(@RequestParam("pageNumber") int pageNumber,
                                                @RequestParam(value = "sortingProperty", required = false) String sortingProperty,
-                                               @RequestParam(value = "order",required = false) String sortingOrder) {
+                                               @RequestParam(value = "order", required = false) String sortingOrder) {
         return sortingProperty == null ?
-                reportFacade.findByPageNumber(pageNumber) :
-                reportFacade.findByPageNumberAndSortingProperty(pageNumber, sortingProperty, sortingOrder);
+                reportFacade.findAllByPageNumber(pageNumber) :
+                reportFacade.findAllByPageNumberAndSortingProperty(pageNumber, sortingProperty, sortingOrder);
     }
 
 
@@ -63,5 +70,15 @@ public class ReportController {
                 .body(exception.getMessage());
     }
 
+
+    private LocalDateTime convertDateToDatetime(String timestamp) {
+
+        if (timestamp==null||timestamp.isBlank()) {
+            return null;
+        }
+
+        return Try.of(() -> LocalDateTime.parse(timestamp, WITH_TIME_DATE_FORMAT))
+                .get();
+    }
 
 }

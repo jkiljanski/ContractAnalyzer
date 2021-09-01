@@ -10,6 +10,7 @@
     "@testing-library/user-event": "^12.8.3",
     "bootstrap": "^5.0.2",
     "keycloak-js": "^14.0.0",
+    "moments": "^0.0.2",
     "react": "^17.0.2",
     "react-bootstrap-table": "^4.3.1",
     "react-bootstrap-table-next": "^4.0.3",
