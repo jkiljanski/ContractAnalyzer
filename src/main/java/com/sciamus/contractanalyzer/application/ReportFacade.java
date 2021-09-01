@@ -6,6 +6,7 @@ import com.sciamus.contractanalyzer.domain.checks.reports.Report;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportResults;
 import com.sciamus.contractanalyzer.infrastructure.port.ReportInfrastructureDTO;
 import com.sciamus.contractanalyzer.infrastructure.port.ReportPersistancePort;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,13 +46,23 @@ public class ReportFacade {
                 .map(reportViewMapper::mapToDTO).collect(Collectors.toList());
     }
 
-    public List<ReportViewDTO> findByPageSize(int documentsPerPage) {
+    public Page<ReportViewDTO> findByPageNumber(int pageNumber) {
 
-        return reportPersistancePort.findAll(documentsPerPage).stream()
-                .map(reportInfrastructureMapper::mapFromDTO)
-                .map(reportViewMapper::mapToDTO)
-                .collect(Collectors.toList());
+        Page<ReportInfrastructureDTO> page = reportPersistancePort.findAll(pageNumber);
+
+        return page.map(this::convertInfrastractureDTOToViewDTO);
     }
+
+
+    public Page<ReportViewDTO> findByPageNumberAndSortingProperty(int pageNumber, String sortingProperty, String sortingOrder) {
+
+
+        Page<ReportInfrastructureDTO> page = reportPersistancePort.findAll(pageNumber, sortingProperty, sortingOrder );
+
+        return page.map(this::convertInfrastractureDTOToViewDTO);
+
+    }
+
 
 
     private ReportInfrastructureDTO convertInterfaceDTOToInfrastructureDTO(ReportViewDTO dto) {
@@ -69,7 +80,5 @@ public class ReportFacade {
                         r.getUserName().contains(userName))
                 .collect(Collectors.toList());
     }
-
-
 
 }

@@ -8,7 +8,7 @@ const ReportViewer = (props) => {
             {Object.entries(props.report).map( ([key, value]) => (
                 <td>
                     <Card>
-                        <CardBody className={classes.brandSmall} className={props.style}>
+                        <CardBody className={[classes.brandSmall, props.style]}>
                             {value}
                         </CardBody>
                     </Card>
