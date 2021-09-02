@@ -16,7 +16,6 @@ import org.keycloak.KeycloakSecurityContext;
 import org.keycloak.representations.AccessToken;
 import org.mockito.AdditionalAnswers;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.net.MalformedURLException;
@@ -57,7 +56,7 @@ public class AggregatedChecksTest {
 
         given(securityConfigMock.provideKeycloakSecurityContext()).willReturn(keycloakSecurityContextMock);
 
-        given(aggregatedReportPersistancePortMock.save(any(), Mockito.anyString())).willAnswer(AdditionalAnswers.returnsFirstArg());
+        given(aggregatedReportPersistancePortMock.save(any())).willAnswer(AdditionalAnswers.returnsFirstArg());
         given(reportPersistancePortMock.save(any())).willAnswer(AdditionalAnswers.returnsFirstArg());
 
 

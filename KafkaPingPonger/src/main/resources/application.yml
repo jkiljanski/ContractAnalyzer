@@ -28,7 +28,6 @@ spring.cloud.stream.bindings.process-out-1:
 spring.cloud.stream.bindings.process-in-0:
   destination: input-topic
 
-server:
   port: 8888
 
 

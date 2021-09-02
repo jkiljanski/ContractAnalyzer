@@ -25,11 +25,12 @@ public class MongoAggregatedReportsPersistenceAdapter implements AggregatedRepor
 
 
     @Override
-    public AggregatedReportInfrastructureDTO save(AggregatedReportInfrastructureDTO report, String name) {
+    public AggregatedReportInfrastructureDTO save(AggregatedReportInfrastructureDTO report) {
 
         AggregatedReportDocument reportDocument = aggregatedReportDocumentMapper.mapToDocument(report);
         reportDocument.id = aggregatedReportIdGenerator.getNextID();
-        reportDocument.addName(name != null ? name : "Aggregated report#" + reportDocument.id);
+        if (reportDocument.aggregatedReportName == null)
+            reportDocument.addName("Aggregated report#" + reportDocument.id);
         AggregatedReportDocument saved = mongoAggregatedReportsRepository.save(reportDocument);
         return aggregatedReportDocumentMapper.mapFromDocument(saved);
 
