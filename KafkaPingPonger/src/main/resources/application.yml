@@ -4,8 +4,6 @@ spring:
     incoming-topic: ping
     outgoing-topic: pong
 
-
-
   cloud:
     stream:
       kafka:
@@ -16,24 +14,22 @@ spring:
               default:
                   key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
                   value.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+
+      bindings:
+        process-out-0:
+          destination: command-topic
+        process-out-1:
+          destination: count-topic
+        process-in-0:
+          destination: input-topic
+
+        transform-in-0:
+          destination: transform-input-topic
+        transform-out-0:
+          destination: transform-output-topic
+
     function:
       definition: process, transform
-
-spring.cloud.stream.bindings.process-out-0:
-  destination: command-topic
-
-spring.cloud.stream.bindings.process-out-1:
-  destination: count-topic
-
-spring.cloud.stream.bindings.process-in-0:
-  destination: input-topic
-
-
-spring.cloud.stream.bindings.transform-in-0:
-  destination: transform-input-topic
-
-spring.cloud.stream.bindings.transform-out-0:
-  destination: transform-output-topic
 
 server:
   port: 8888

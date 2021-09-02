@@ -5,11 +5,10 @@ import com.sciamus.contractanalyzer.domain.checks.queues.kafka.config.KafkaProdu
 import com.sciamus.contractanalyzer.domain.checks.reports.Report;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportBuilder;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportResults;
+import io.vavr.control.Option;
 import io.vavr.control.Try;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.kafka.core.KafkaTemplate;
 
 import java.time.Duration;
@@ -25,9 +24,6 @@ public class KafkaTransformationCheck implements KafkaCheck {
     private final KafkaProducFactory kafkaProducFactory;
     private final KafkaConsumFactory kafkaConsumFactory;
     private ReportBuilder reportBuilder = new ReportBuilder();
-    private String checkUniqueKey;
-
-    final Logger logger = getLogger();
 
     public KafkaTransformationCheck(KafkaProducFactory kafkaProducFactory, KafkaConsumFactory kafkaConsumFactory) {
         this.kafkaProducFactory = kafkaProducFactory;
@@ -39,32 +35,31 @@ public class KafkaTransformationCheck implements KafkaCheck {
         //given:
         KafkaTemplate<String, String> producer = Producer(host, port);
         Consumer<String, String> consumer = Consumer(incomingTopic, host, port);
-        setCheckUniqueIdentifier();
-        List<Integer> integersListToSendToOutsideProcessor = getIntegersListToSendToOutsideProcessor();
-        String seqOfNumbersToSendToOutsideProcessor = convertListOfIntegersToStringSeq(integersListToSendToOutsideProcessor);
+        String checkUniqueIdentifier = getCheckUniqueIdentifier();
+        List<Integer> randomIntegers = generateRandomIntegers();
+        String outsideProcessorMessage = convertRandomIntegersToMessage(randomIntegers);
 
         //when:
-        sendMessagesToOutsideSystemAndGoToSleep(outgoingTopic, producer, seqOfNumbersToSendToOutsideProcessor);
-        Integer expectedAnswer = getExpectedAnswer(integersListToSendToOutsideProcessor);
+        sendMessageToOutsideSystem(outgoingTopic, checkUniqueIdentifier, producer, outsideProcessorMessage);
+        Integer expectedAnswer = getExpectedAnswer(randomIntegers);
 
         Iterable<ConsumerRecord<String, String>> recordsFromOutsideSystem = waitForRecordFromOutsideSystem(incomingTopic, consumer);
-        Integer actualAnswer = checkIfReceivedRecordsHaveUniqueIdentifier(recordsFromOutsideSystem);
+        Option<Integer> actualAnswer = checkIfReceivedRecordsHaveUniqueIdentifier(recordsFromOutsideSystem);
 
         //then:
         setUpReportBuilder(reportBuilder);
 
-        if (expectedAnswer.equals(actualAnswer))
+        if (expectedAnswer.equals(actualAnswer.getOrNull()))
             return getPassedCheckReport(reportBuilder);
         return getFailedCheckReport(expectedAnswer, actualAnswer, reportBuilder);
     }
 
-    private String convertListOfIntegersToStringSeq(List<Integer> integersList) {
-        StringBuilder seqOfNumbers = new StringBuilder();
-        for (int i=0; i< integersList.size(); i++) {
-            seqOfNumbers.append(integersList.get(i).intValue());
-        }
-        String a = seqOfNumbers.toString();
-        return seqOfNumbers.toString();
+    private String convertRandomIntegersToMessage(List<Integer> integersList) {
+
+        return integersList
+                .stream()
+                .map(number -> Integer.toString(number))
+                .collect(Collectors.joining());
     }
 
     private void setUpConsumer(Consumer consumer) {
@@ -82,8 +77,8 @@ public class KafkaTransformationCheck implements KafkaCheck {
         return producer;
     }
 
-    private void setCheckUniqueIdentifier() {
-        this.checkUniqueKey = UUID.randomUUID() + "--test--";
+    private String getCheckUniqueIdentifier() {
+        return UUID.randomUUID() + "--test--";
     }
 
     private Iterable<ConsumerRecord<String, String>> waitForRecordFromOutsideSystem(String incomingTopic, Consumer<String, String> consumer) {
@@ -93,38 +88,28 @@ public class KafkaTransformationCheck implements KafkaCheck {
         return records;
     }
 
-    private List<Integer> getIntegersListToSendToOutsideProcessor() {
+    private List<Integer> generateRandomIntegers() {
         return Stream
                 .generate(() -> new Random().nextInt(10))
                 .limit(10)
                 .collect(Collectors.toList());
     }
 
-    private void sendMessagesToOutsideSystemAndGoToSleep(String outgoingTopic, KafkaTemplate<String, String> producer, String seqOfNumbersToSendToOutsideProcessor) {
-        sendMessagesToBeChecked(outgoingTopic, producer, checkUniqueKey, seqOfNumbersToSendToOutsideProcessor);
+    private void sendMessageToOutsideSystem(String outgoingTopic, String checkUniqueIdentifier, KafkaTemplate<String, String> producer, String outsideProcessorMessage) {
+        producer.send(outgoingTopic, checkUniqueIdentifier, outsideProcessorMessage);
     }
 
-    private void sendMessagesToBeChecked(String outgoingTopic, KafkaTemplate<String, String> producer, String checkUniqueKey, String toSendToTopic) {
-        producer.send(outgoingTopic, checkUniqueKey, toSendToTopic);
-    }
+    private Option<Integer> checkIfReceivedRecordsHaveUniqueIdentifier(Iterable<ConsumerRecord<String, String>> records) {
+        final Integer[] intTry = {null};
 
-    private Integer checkIfReceivedRecordsHaveUniqueIdentifier(Iterable<ConsumerRecord<String, String>> records) {
+        records.forEach(record -> {
+            intTry[0] = Try.of(
+                    () -> Integer.valueOf(record.value()))
+                    .getOrElseThrow(() ->
+                            new RuntimeException("Sorry, I cannot convert " + record.value() + " to Integer type"));
+        });
 
-        for (ConsumerRecord<String, String> record : records) {
-            logger.info("logging records after second poll: key" + record.key() + " value: " + record.value()
-                    + " offset: " + record.offset()
-                    + " timestamp " + record.timestamp());
-                Integer intTry = Try.of(
-                        () -> Integer.valueOf(record.value()))
-                        .getOrElseThrow(() ->
-                                new RuntimeException("Sorry, I cannot convert the value you provided to Integer type"));
-            return intTry;
-        }
-        return null;
-    }
-
-    private Logger getLogger() {
-        return LogManager.getLogger(KafkaMessagesSimpleCountCheck.class);
+        return Option.of(intTry[0]);
     }
 
     private Integer getExpectedAnswer(List<Integer> toSend) {
@@ -137,10 +122,12 @@ public class KafkaTransformationCheck implements KafkaCheck {
     }
 
     private void setUpReportBuilder(ReportBuilder reportBuilder) {
-        reportBuilder.createTimestamp().setNameOfCheck(getName());
+        reportBuilder
+                .createTimestamp()
+                .setNameOfCheck(getName());
     }
 
-    private Report getFailedCheckReport(Integer expectedAnswer, Integer answerToCheck, ReportBuilder reportBuilder) {
+    private Report getFailedCheckReport(Integer expectedAnswer, Option<Integer> answerToCheck, ReportBuilder reportBuilder) {
         return reportBuilder
                 .setResult(ReportResults.FAILED)
                 .setReportBody("Sorry, please have another shot. " +
