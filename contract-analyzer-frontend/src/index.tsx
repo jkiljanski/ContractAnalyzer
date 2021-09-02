@@ -12,11 +12,9 @@ const keycloakInitOptions = { onLoad: 'login-required' }
 
 ReactDOM.render(
     <ReactKeycloakProvider authClient={keycloak} initOptions={keycloakInitOptions}>
-    <BrowserRouter>
         <React.StrictMode>
             <App/>
         </React.StrictMode>
-    </BrowserRouter>
         </ReactKeycloakProvider>
             ,
     document.getElementById('root')

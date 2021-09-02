@@ -3,7 +3,7 @@ import ListOfRestChecks from "./components/ListOfRestChecks";
 import React, {useCallback, useEffect, useState} from "react";
 import CheckRunner from "./components/CheckRunner";
 import Navigation from "./components/Navigation";
-import {Redirect, Route} from "react-router-dom";
+import {BrowserRouter, Redirect, Route} from "react-router-dom";
 import ReportFetcher from "./components/reports/ReportRunner";
 import classes from "./components/Styles.module.css";
 import KafkaCheckRunner from "./components/queuesChecks/KafkaCheckRunner"
@@ -85,6 +85,9 @@ function App() {
 
 
     return (
+
+        <BrowserRouter>
+
         <div className={classes.App}>
             <Navigation/>
             <Route path={'/'} exact>
@@ -107,6 +110,7 @@ function App() {
                 <ReportFetcher reportsToFetch={reports} reportsHandler={reportsHandler}/>
             </Route>
         </div>
+        </BrowserRouter>
     );
 
 }

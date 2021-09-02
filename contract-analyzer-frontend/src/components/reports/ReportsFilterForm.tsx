@@ -20,7 +20,6 @@ const ReportsFilterForm = (props: { show: (pageNum: number, args: string[]) => P
     const formSubmitHandler = (event: { preventDefault: () => void; }) => {
         event.preventDefault();
 
-        //validation??
 
         const result = resultInputRef.current!.value;
         const reportBody = reportBodyInputRef.current!.value;
@@ -36,21 +35,21 @@ const ReportsFilterForm = (props: { show: (pageNum: number, args: string[]) => P
         const startDateWithTime = convertToDateTimeFormat(startDate, startTime);
         const finishDateWithTime = convertToDateTimeFormat(finishDate, finishTime);
 
-        console.log(startDateWithTime, finishDateWithTime, "MOTHERFUCKER")
+        console.log(startDateWithTime, finishDateWithTime, " dates MOTHERFUCKER")
 
         props.show(0,[result,reportBody,startDateWithTime,finishDateWithTime,nameOfCheck,userName]);
     }
 
-    const convertToDateTimeFormat = (date: Date | null, time: string) => {
+    const convertToDateTimeFormat = (date: Date | null, time: string | null) => {
 
-        if (date?.toDateString().length === 0) {
+        if (date===null) {
             return ""
         }
 
 
         const formattedDate = moment(date).format("YYYY-MM-DD")
 
-        return time.length === 0 ? formattedDate :
+        return time ? formattedDate :
 
             formattedDate + 'T' + time;
     }

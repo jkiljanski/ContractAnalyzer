@@ -41,6 +41,14 @@
 
 }
 
+.paginator  {
+    text-align: center !important;
+    color: #4f346a;
+    background-color: darkseagreen;
+    padding: 1rem;
+    font-size: large;
+    font-weight: bold;
+}
 
 
 .resetButton {

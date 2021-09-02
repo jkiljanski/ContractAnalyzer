@@ -7,7 +7,6 @@ import {useKeycloak} from "@react-keycloak/web";
 import ReportsFilterForm from "./ReportsFilterForm";
 import ReportTableHeaders from "./ReportTableHeaders";
 import Report from "../../model/Report";
-import {log} from "util";
 
 
 interface Props {
@@ -16,14 +15,14 @@ interface Props {
     reportsHandler: (reports: React.SetStateAction<Report[]>) => void
 }
 
-const ReportRunner :React.FC<Props> = (props: Props) => {
+const ReportRunner: React.FC<Props> = (props: Props) => {
 
 
     const [reports, setReports] = useState([]);
 
     const [reportId, setReportId] = useState('');
 
-    const [reportById, setReportById] = useState<Report | undefined>(undefined);
+    const [reportById, setReportById] = useState<Report | null>(null);
 
     const [isError, setIsError] = useState(false);
 
@@ -32,11 +31,13 @@ const ReportRunner :React.FC<Props> = (props: Props) => {
     const [queryArgs, setQueryArgs] = useState(new Array<string>())
 
 
-    const reportDependingOnResult = (report: Report | undefined) => {
+    const reportDependingOnResult = (report: Report | null) => {
 
-        return report!.result === 'PASSED' ?
-            <ReportViewer key={report!.id} style={classes.reportPassed} report={report as Report}/> :
-            <ReportViewer key={report!.id} style={classes.reportFailed} report={report as Report}/>
+        console.log(report?.result + " in mapper function")
+
+        return report && (report.result === 'PASSED' ?
+            <ReportViewer key={report.id} style={classes.reportPassed} report={report as Report}/> :
+            <ReportViewer key={report.id} style={classes.reportFailed} report={report as Report}/>)
     }
 
     const {keycloak} = useKeycloak();
@@ -44,9 +45,8 @@ const ReportRunner :React.FC<Props> = (props: Props) => {
     // async function fetchFilteredReports(result: string, reportBody: string, startDateWithTime: string, finishDateWithTime: string, nameOfCheck: string, userName: string, pageNumber: number) {
     async function fetchFilteredReports(pageNumber: number, args: Array<string>) {
 
-        setReportById(undefined)
+        setReportById(null)
         setQueryArgs([...args]);
-
 
 
         let response = await fetch('/filteredReports?result=' + args[0] + '&reportBody=' + args[1] +
@@ -64,12 +64,19 @@ const ReportRunner :React.FC<Props> = (props: Props) => {
         else {
             setIsError(false);
             let allReports = await response.json();
+
+
             setPageCount(allReports.totalPages);
-            console.log(allReports.totalPages)
+            console.log(allReports.totalPages + " total pages after query")
+            console.log(allReports.totalElements + " total pages after query")
+            console.log(args + " ARGS!!!!")
+
             let readyReports = allReports.content
-            console.log(readyReports)
+            console.log(readyReports + " before mapping")
+
+
             let mappedReport = readyReports.map((report: Report) => reportDependingOnResult(report));
-            console.log(mappedReport)
+            console.log(mappedReport.result + " after mapping")
             setReports(mappedReport)
         }
     }
@@ -131,7 +138,7 @@ const ReportRunner :React.FC<Props> = (props: Props) => {
             </Table>}
             {isError && <div className={classes.reportFailed}>{reportById}</div>}
 
-            {<div className={classes.brand}><ReactPaginate
+            {<div ><ReactPaginate
                 previousLabel={"←"}
                 nextLabel={"→"}
                 breakLabel={'...'}
@@ -142,8 +149,8 @@ const ReportRunner :React.FC<Props> = (props: Props) => {
                 disabledClassName={"pagination__link--disabled"}
                 activeClassName={"pagination__link--active"}
                 containerClassName={'pagination'}
-                marginPagesDisplayed={3}
-                pageRangeDisplayed={3}/></div>}
+                pageRangeDisplayed={5}
+                marginPagesDisplayed={3}/></div>}
         </>)
 }
 
