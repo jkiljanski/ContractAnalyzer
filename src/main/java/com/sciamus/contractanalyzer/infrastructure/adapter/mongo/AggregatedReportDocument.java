@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -25,7 +25,7 @@ public class AggregatedReportDocument {
     @Field("namesOfChecks")
     public List<String> namesOfChecks;
     @Field("timestamp")
-    public Date timestamp;
+    public LocalDateTime timestamp;
     @DBRef
     @Field("failedTestsId")
     public List<Report> failedTestReportList;
@@ -40,7 +40,7 @@ public class AggregatedReportDocument {
     }
 
     @PersistenceConstructor
-    public AggregatedReportDocument(String id, String aggregatedReportName, List<String> namesOfChecks, Date timestamp, List<Report> failedTestReportList, String passedPercentage, String failedPercentage, String userName) {
+    public AggregatedReportDocument(String id, String aggregatedReportName, List<String> namesOfChecks, LocalDateTime timestamp, List<Report> failedTestReportList, String passedPercentage, String failedPercentage, String userName) {
         this.id = id;
         this.aggregatedReportName = aggregatedReportName;
         this.namesOfChecks = namesOfChecks;

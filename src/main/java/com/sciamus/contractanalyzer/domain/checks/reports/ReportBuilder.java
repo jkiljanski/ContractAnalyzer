@@ -1,13 +1,12 @@
 package com.sciamus.contractanalyzer.domain.checks.reports;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class ReportBuilder {
     private String id;
     private ReportResults result;
     private String reportBody;
-    // refactor to Localdate
-    private Date timestamp;
+    private LocalDateTime timestamp;
     private String nameOfCheck;
     private String userName;
 
@@ -27,11 +26,11 @@ public class ReportBuilder {
     }
 
     public ReportBuilder createTimestamp(){
-        this.timestamp = new Date(System.currentTimeMillis());
+        this.timestamp = LocalDateTime.now();
         return this;
     }
 
-    public ReportBuilder setTimestamp(Date timestamp) {
+    public ReportBuilder setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
         return this;
     }

@@ -2,13 +2,13 @@ package com.sciamus.contractanalyzer.application;
 
 import lombok.Getter;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
 public class AggregatedReportViewDTO {
 
-    public AggregatedReportViewDTO(String id, String aggregatedReportName, List<String> namesOfChecks, Date timestamp, List<FailedCheckDTO> failedTests, String passedPercentage, String failedPercentage, String userName) {
+    public AggregatedReportViewDTO(String id, String aggregatedReportName, List<String> namesOfChecks, LocalDateTime timestamp, List<FailedCheckDTO> failedTests, String passedPercentage, String failedPercentage, String userName) {
         this.id = id;
         this.aggregatedReportName = aggregatedReportName;
         this.namesOfChecks = namesOfChecks;
@@ -22,7 +22,7 @@ public class AggregatedReportViewDTO {
     private String id;
         private String aggregatedReportName;
         private List<String> namesOfChecks;
-        private Date timestamp;
+        private LocalDateTime timestamp;
         private List<FailedCheckDTO> failedTests;
         private String passedPercentage;
         private String failedPercentage;
