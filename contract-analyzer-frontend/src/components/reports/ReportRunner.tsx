@@ -8,7 +8,6 @@ import ReportsFilterForm from "./ReportsFilterForm";
 import ReportTableHeaders from "./ReportTableHeaders";
 import Report from "../../model/Report";
 
-
 interface Props {
 
     reportsToFetch: Report[]
@@ -138,17 +137,17 @@ const ReportRunner: React.FC<Props> = (props: Props) => {
             </Table>}
             {isError && <div className={classes.reportFailed}>{reportById}</div>}
 
-            {<div ><ReactPaginate
+            {<div><ReactPaginate
                 previousLabel={"←"}
                 nextLabel={"→"}
                 breakLabel={'...'}
                 pageCount={pageCount}
                 onPageChange={handlePageChange}
-                previousLinkClassName={"pagination__link"}
-                nextLinkClassName={"pagination__link"}
-                disabledClassName={"pagination__link--disabled"}
-                activeClassName={"pagination__link--active"}
-                containerClassName={'pagination'}
+                previousLinkClassName={classes.pagination__link}
+                nextLinkClassName={classes.pagination__link}
+                disabledClassName={classes.pagination__linkDisabled}
+                activeClassName={classes.pagination__linkActive}
+                containerClassName={classes.pagination}
                 pageRangeDisplayed={5}
                 marginPagesDisplayed={3}/></div>}
         </>)
