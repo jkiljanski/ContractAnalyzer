@@ -17,11 +17,11 @@ const ListOfKafkaChecks: React.FC<Props> = (props: Props) => {
         props.checkHandler(selected);
     }
 
-    const list = props.kafkaChecksToRun!.map((check) =>
+    const list = props.kafkaChecksToRun && (props.kafkaChecksToRun!.map((check) =>
         <Button className={classes.button} onClick={() => onKafkaCheckClick(check)} active={selectedCheck === check}>
             {check}
         </Button>
-    );
+    ));
     return (
         <ListGroup className={classes.brand}>
             <p> Available Kafka Checks</p>

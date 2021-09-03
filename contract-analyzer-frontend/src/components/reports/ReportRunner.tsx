@@ -140,7 +140,7 @@ const ReportRunner: React.FC<Props> = (props: Props) => {
             {<div><ReactPaginate
                 previousLabel={"←"}
                 nextLabel={"→"}
-                breakLabel={'...'}
+                // breakLabel={'...'}
                 pageCount={pageCount}
                 onPageChange={handlePageChange}
                 previousLinkClassName={classes.pagination__link}
@@ -148,8 +148,8 @@ const ReportRunner: React.FC<Props> = (props: Props) => {
                 disabledClassName={classes.pagination__linkDisabled}
                 activeClassName={classes.pagination__linkActive}
                 containerClassName={classes.pagination}
-                pageRangeDisplayed={5}
-                marginPagesDisplayed={3}/></div>}
+                pageRangeDisplayed={3}
+                marginPagesDisplayed={0}/></div>}
         </>)
 }
 
