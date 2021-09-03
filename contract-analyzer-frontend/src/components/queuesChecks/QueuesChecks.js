@@ -1,8 +1,10 @@
 import React, {useState, useRef} from "react";
-import {Button, Form, InputGroup} from "reactstrap";
+import {Button, Form, InputGroup, Table} from "reactstrap";
 import { useKeycloak } from "@react-keycloak/web";
 import ReportViewer from "../reports/ReportViewer";
 import classes from './QueuesChecks.module.css';
+import AggregatedReportTableHeaders from "../reports/AggregatedReportTableHeaders";
+import ReportTableHeaders from "../reports/ReportTableHeaders";
 
 const QueuesChecks = props => {
 
@@ -55,6 +57,7 @@ const QueuesChecks = props => {
     }
 
     const formSubmitHandler = event => {
+        setKafkaCheckReport('');
         event.preventDefault();
 
         const incomingTopic = incomingTopicInputRef.current.value;
@@ -110,9 +113,15 @@ const QueuesChecks = props => {
                     <Button type="submit">Run check</Button>
         </Form>
             {sending}
-            {error.length === 0 ? <ReportViewer report={kafkaCheckReport} /> : error}
+            {error.length === 0 && kafkaCheckReport ?
+                <Table>
+                    <ReportTableHeaders></ReportTableHeaders>
+                    <tbody>
+                        <ReportViewer report={kafkaCheckReport}/>
+                    </tbody>
+                </Table> : error}
         </>
     )
-}
+};
 
 export default QueuesChecks;
