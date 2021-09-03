@@ -5,10 +5,10 @@ import com.sciamus.contractanalyzer.domain.checks.queues.kafka.config.KafkaProdu
 import com.sciamus.contractanalyzer.domain.checks.reports.Report;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportBuilder;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportResults;
+import io.vavr.control.Option;
 import io.vavr.control.Try;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.logging.log4j.Logger;
 import org.springframework.kafka.core.KafkaTemplate;
 
 import java.time.Duration;
@@ -16,7 +16,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.apache.logging.log4j.LogManager.getLogger;
 
 public class KafkaComplexCheck implements KafkaCheck {
 
@@ -24,9 +23,7 @@ public class KafkaComplexCheck implements KafkaCheck {
 
     private final KafkaProducFactory kafkaProducFactory;
     private final KafkaConsumFactory kafkaConsumFactory;
-    private ReportBuilder reportBuilder = new ReportBuilder();
-
-    final Logger logger = getLogger();
+    private final ReportBuilder reportBuilder = new ReportBuilder();
 
     public KafkaComplexCheck(KafkaProducFactory kafkaProducFactory, KafkaConsumFactory kafkaConsumFactory) {
         this.kafkaProducFactory = kafkaProducFactory;
@@ -44,24 +41,24 @@ public class KafkaComplexCheck implements KafkaCheck {
         String firstMessageUniqueIdentifier = messageUniqueIdentifier + "1";
         String secondMessageUniqueIdentifier = messageUniqueIdentifier + "2";
 
-        List<Integer> integersListToSendToOutsideProcessor1 = getIntegersListToSendToOutsideProcessor();
-        List<Integer> integersListToSendToOutsideProcessor2 = getIntegersListToSendToOutsideProcessor();
+        List<Integer> randomIntegers1 = generateRandomIntegers();
+        List<Integer> randomIntegers2 = generateRandomIntegers();
 
-        String seqOfNumbersToSendToOutsideProcessor1 = convertListOfIntegersToStringSeq(integersListToSendToOutsideProcessor1);
-        String seqOfNumbersToSendToOutsideProcessor2 = convertListOfIntegersToStringSeq(integersListToSendToOutsideProcessor2);
+        String outsideProcessorMessage1 = convertRandomIntegersToMessage(randomIntegers1);
+        String outsideProcessorMessage2 = convertRandomIntegersToMessage(randomIntegers2);
 
         //when:
-        sendMessageToOutsideSystem(outgoingTopic, producer, seqOfNumbersToSendToOutsideProcessor1, firstMessageUniqueIdentifier);
-        sendMessageToOutsideSystem(outgoingTopic, producer, seqOfNumbersToSendToOutsideProcessor2, secondMessageUniqueIdentifier);
-        List<Integer> expectedAnswer = getExpectedAnswer(integersListToSendToOutsideProcessor1, integersListToSendToOutsideProcessor2);
+        sendMessageToOutsideSystem(outgoingTopic, producer, outsideProcessorMessage1, firstMessageUniqueIdentifier);
+        sendMessageToOutsideSystem(outgoingTopic, producer, outsideProcessorMessage2, secondMessageUniqueIdentifier);
+        List<Integer> expectedAnswer = getExpectedAnswer(randomIntegers1, randomIntegers2);
 
         Iterable<ConsumerRecord<String, String>> recordsFromOutsideSystem = waitForRecordFromOutsideSystem(incomingTopic, consumer);
-        List<Integer> actualAnswer = checkIfReceivedRecordsHaveUniqueIdentifier(recordsFromOutsideSystem);
+        Option<List<Integer>> actualAnswer = getActualAnswer(recordsFromOutsideSystem, messageUniqueIdentifier);
 
         //then:
         setUpReportBuilder(reportBuilder);
 
-        if (expectedAnswer.equals(actualAnswer))
+        if (expectedAnswer.equals(actualAnswer.getOrNull()))
             return getPassedCheckReport(reportBuilder);
         return getFailedCheckReport(expectedAnswer, actualAnswer, reportBuilder);
     }
@@ -85,19 +82,18 @@ public class KafkaComplexCheck implements KafkaCheck {
         return UUID.randomUUID() + "--test--";
     }
 
-    private List<Integer> getIntegersListToSendToOutsideProcessor() {
+    private List<Integer> generateRandomIntegers() {
         return Stream
                 .generate(() -> new Random().nextInt(10))
                 .limit(10)
                 .collect(Collectors.toList());
     }
 
-    private String convertListOfIntegersToStringSeq(List<Integer> integersList) {
-        StringBuilder seqOfNumbers = new StringBuilder();
-        for (Integer integer : integersList) {
-            seqOfNumbers.append(integer.intValue());
-        }
-        return seqOfNumbers.toString();
+    private String convertRandomIntegersToMessage(List<Integer> integersList) {
+        return integersList
+                .stream()
+                .map(number -> Integer.toString(number))
+                .collect(Collectors.joining());
     }
 
     private Iterable<ConsumerRecord<String, String>> waitForRecordFromOutsideSystem(String incomingTopic, Consumer<String, String> consumer) {
@@ -107,23 +103,22 @@ public class KafkaComplexCheck implements KafkaCheck {
         return records;
     }
 
-    private List<Integer> checkIfReceivedRecordsHaveUniqueIdentifier(Iterable<ConsumerRecord<String, String>> records) {
+    private Option<List<Integer>> getActualAnswer(Iterable<ConsumerRecord<String, String>> records, String messageUniqueIdentifier) {
 
-        for (ConsumerRecord<String, String> record : records) {
-            logger.info("logging records after second poll: key" + record.key() + " value: " + record.value()
-                    + " offset: " + record.offset()
-                    + " timestamp " + record.timestamp());
+        final List[] receivedNumbers = new List[]{new ArrayList<>()};
 
-            List<Integer> receivedNumbers = Stream.of(record.value()
+        records.forEach(record -> {
+                if (record.key().equals(messageUniqueIdentifier)) {
+                    receivedNumbers[0] = Stream.of(record.value()
                     .split("/"))
                     .map(pair -> Try.of(
-                            () -> Integer.valueOf(pair))
-                            .getOrElseThrow(() ->
-                                    new RuntimeException("Sorry, I cannot convert the value you provided to Integer type")))
+                    () -> Integer.valueOf(pair))
+                    .getOrElseThrow(() ->
+                            new RuntimeException("Sorry, I cannot convert " + record.value() + " to Integer type")))
                     .collect(Collectors.toList());
-            return receivedNumbers;
-        }
-        return null;
+                }
+        });
+        return Option.of(receivedNumbers[0]);
     }
 
     private void sendMessageToOutsideSystem(String outgoingTopic, KafkaTemplate<String, String> producer,
@@ -150,7 +145,7 @@ public class KafkaComplexCheck implements KafkaCheck {
         reportBuilder.createTimestamp().setNameOfCheck(getName());
     }
 
-    private Report getFailedCheckReport(List<Integer> expectedAnswer, List<Integer> answerToCheck, ReportBuilder reportBuilder) {
+    private Report getFailedCheckReport(List<Integer> expectedAnswer, Option<List<Integer>> answerToCheck, ReportBuilder reportBuilder) {
         return reportBuilder
                 .setResult(ReportResults.FAILED)
                 .setReportBody("Sorry, please have another shot. " +

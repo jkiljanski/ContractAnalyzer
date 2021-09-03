@@ -15,6 +15,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class TopicsListener {
@@ -63,13 +64,11 @@ public class TopicsListener {
     }
 
     private List<String> convertSumsOfPairsToString(List<Integer> sumsOfPairs) {
-        List<String> stringSumsOfPairs = new ArrayList<>(sumsOfPairs.size());
-        for (Integer sumOfPair : sumsOfPairs) {
-            stringSumsOfPairs.add(String.valueOf(sumOfPair));
-        }
-        return stringSumsOfPairs;
+        return sumsOfPairs
+                .stream()
+                .map(pair -> String.valueOf(pair))
+                .collect(Collectors.toList());
     }
-
 
     private KStream<String, String> getMessagesWithoutGroupNumber(KStream<String, String> inputStream) {
         return inputStream.map((k, v) -> new KeyValue<>(k.substring(0, k.length() - 1), v));
@@ -82,7 +81,7 @@ public class TopicsListener {
         KStream<String, String> joinedInputStream = inputStream1WithOriginalKey
                 .join(inputStream2WithOriginalKey,
                         (firstValue, secondValue) -> computeJoinedInputStreamValue(firstValue, secondValue),
-                        JoinWindows.of(Duration.ofMillis(10)),
+                        JoinWindows.of(Duration.ofMillis(150)),
                         StreamJoined.with(
                                 Serdes.String(),
                                 Serdes.String(),
