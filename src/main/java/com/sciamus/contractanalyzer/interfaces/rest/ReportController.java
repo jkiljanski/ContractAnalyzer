@@ -44,20 +44,12 @@ public class ReportController {
                                                    @RequestParam(value = "timestampTo", required = false) String timestampTo,
                                                    @RequestParam(value = "nameOfCheck", required = false) String nameOfCheck,
                                                    @RequestParam(value = "userName", required = false) String userName,
-                                                   @RequestParam(value = "pageNumber", required = false) int number) {
-        return reportFacade.getFilteredReports(new ReportFilterParameters(result, reportBody, convertDateToDatetime(timestampFrom), convertDateToDatetime(timestampTo), nameOfCheck, userName), number);
+                                                   @RequestParam(value = "pageNumber", required = false) int number,
+                                                   @RequestParam(value = "sortingProperty", required = false) String sortingProperty,
+                                                   @RequestParam(value = "order", required = false) String sortingOrder) {
+        return reportFacade.getFilteredReports(new ReportFilterParameters(result, reportBody, convertDateToDatetime(timestampFrom), convertDateToDatetime(timestampTo), nameOfCheck, userName, sortingProperty, sortingOrder), number);
     }
 
-    @RolesAllowed("reader")
-    @GetMapping("/reports/paged")
-    @ResponseBody
-    public Page<ReportViewDTO> getPagedReports(@RequestParam("pageNumber") int pageNumber,
-                                               @RequestParam(value = "sortingProperty", required = false) String sortingProperty,
-                                               @RequestParam(value = "order", required = false) String sortingOrder) {
-        return sortingProperty == null ?
-                reportFacade.findAllByPageNumber(pageNumber) :
-                reportFacade.findAllByPageNumberAndSortingProperty(pageNumber, sortingProperty, sortingOrder);
-    }
 
 
     @ExceptionHandler(ReportNotFoundException.class)

@@ -79,7 +79,13 @@ public class MongoReportPersistenceAdapter implements ReportPersistancePort {
 
         MongoQueryBuilder mongoQueryBuilder = new MongoQueryBuilder();
 
-        Pageable pageable = PageRequest.of(pageNumber, 10);
+        Pageable pageable;
+
+        if (!(reportFilterParameters.sortingOrder == null || reportFilterParameters.sortingProperty == null || reportFilterParameters.sortingOrder.isBlank() || reportFilterParameters.sortingProperty.isBlank())) {
+             pageable = PageRequest.of(pageNumber, 10, Sort.Direction.fromString(reportFilterParameters.sortingOrder), reportFilterParameters.sortingProperty);
+        } else {
+             pageable = PageRequest.of(pageNumber, 10);
+        }
 
         ReportFilterParametersInfrastructureDTO reportFilterParametersInfrastructureDTO = reportFilterParametersMapper.mapToDTO(reportFilterParameters);
 
