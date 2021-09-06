@@ -54,12 +54,12 @@ public class KafkaTopicConfig {
 
     @Bean
     public NewTopic createTransformationStreamIn() {
-        return new NewTopic("transformation-input-topic", 1, (short) 1);
+        return new NewTopic("transform-input-topic", 1, (short) 1);
     }
 
     @Bean
     public NewTopic createTransformationStreamOut() {
-        return new NewTopic("transformation-output-topic", 1, (short) 1);
+        return new NewTopic("transform-output-topic", 1, (short) 1);
     }
 
 

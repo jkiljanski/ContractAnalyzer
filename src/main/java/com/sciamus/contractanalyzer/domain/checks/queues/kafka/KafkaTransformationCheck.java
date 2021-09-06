@@ -44,14 +44,15 @@ public class KafkaTransformationCheck implements KafkaCheck {
         Integer expectedAnswer = getExpectedAnswer(randomIntegers);
 
         Iterable<ConsumerRecord<String, String>> recordsFromOutsideSystem = waitForRecordFromOutsideSystem(incomingTopic, consumer);
-        Option<Integer> actualAnswer = checkIfReceivedRecordsHaveUniqueIdentifier(recordsFromOutsideSystem);
+        Option<Integer> actualAnswer = getActualAnswer(recordsFromOutsideSystem);
 
         //then:
         setUpReportBuilder(reportBuilder);
 
-        if (expectedAnswer.equals(actualAnswer.getOrNull()))
-            return getPassedCheckReport(reportBuilder);
-        return getFailedCheckReport(expectedAnswer, actualAnswer, reportBuilder);
+        return actualAnswer
+                .filter(answer -> expectedAnswer.equals(actualAnswer.get()))
+                .map(correctAnswer -> getPassedCheckReport(reportBuilder))
+                .getOrElse(() -> getFailedCheckReport(expectedAnswer, actualAnswer, reportBuilder));
     }
 
     private String convertRandomIntegersToMessage(List<Integer> integersList) {
@@ -73,8 +74,7 @@ public class KafkaTransformationCheck implements KafkaCheck {
     }
 
     private KafkaTemplate<String, String> Producer(String host, String port) {
-        KafkaTemplate<String, String> producer = kafkaProducFactory.createProducer(host, port);
-        return producer;
+        return kafkaProducFactory.createProducer(host, port);
     }
 
     private String getCheckUniqueIdentifier() {
@@ -84,7 +84,8 @@ public class KafkaTransformationCheck implements KafkaCheck {
     private Iterable<ConsumerRecord<String, String>> waitForRecordFromOutsideSystem(String incomingTopic, Consumer<String, String> consumer) {
 
         Iterable<ConsumerRecord<String, String>> records = consumer.poll(Duration.ofSeconds(10)).records(incomingTopic);
-        consumer.close();
+        Try.run(consumer::close)
+                .getOrElseThrow(ex -> new RuntimeException("Can't close Consumer application"));
         return records;
     }
 
@@ -99,7 +100,7 @@ public class KafkaTransformationCheck implements KafkaCheck {
         producer.send(outgoingTopic, checkUniqueIdentifier, outsideProcessorMessage);
     }
 
-    private Option<Integer> checkIfReceivedRecordsHaveUniqueIdentifier(Iterable<ConsumerRecord<String, String>> records) {
+    private Option<Integer> getActualAnswer(Iterable<ConsumerRecord<String, String>> records) {
         final Integer[] intTry = {null};
 
         records.forEach(record -> {

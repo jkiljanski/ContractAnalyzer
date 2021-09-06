@@ -12,7 +12,7 @@ import java.util.function.Function;
 public class TransformationStreamProcessor {
 
     @Bean
-    public Function<KStream<String, String>, KStream<String, String>> transform() {
+    public Function<KStream<String, String>, KStream<String, String>> transformNumberSeqToSum() {
 
         return input ->
                 input

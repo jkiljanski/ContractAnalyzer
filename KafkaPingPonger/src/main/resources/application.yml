@@ -29,7 +29,7 @@ spring:
           destination: transform-output-topic
 
     function:
-      definition: process, transform
+      definition: process, transformNumberSeqToSum
 
 server:
   port: 8888
