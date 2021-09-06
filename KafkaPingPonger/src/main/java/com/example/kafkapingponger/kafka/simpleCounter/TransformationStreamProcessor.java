@@ -16,7 +16,6 @@ public class TransformationStreamProcessor {
 
         return input ->
                 input
-                    .peek((key, value) -> System.out.println("key value before answer counting " + key + " " + value))
                     .filter((k, v) -> Objects.nonNull(k) && k.contains("test"))
                     .map((k, v) -> new KeyValue<>(k, countSumOfPairs(v)));
     }
