@@ -28,6 +28,7 @@ import static org.mockito.BDDMockito.given;
 public class ReportRepositoryTest {
 
 
+    public static final int PAGE_SIZE = 10;
     private ReportFacade reportFacade;
 
 
@@ -59,7 +60,7 @@ public class ReportRepositoryTest {
         //given
 
         ReportInfrastructureDTO testReportInfrastructureDTO = new TestReportInfrastructureDTO();
-        Page<ReportInfrastructureDTO> page = new PageImpl(List.of(testReportInfrastructureDTO), PageRequest.of(0, 10), 1);
+        Page<ReportInfrastructureDTO> page = new PageImpl(List.of(testReportInfrastructureDTO), PageRequest.of(0, PAGE_SIZE), 1);
         given(reportPersistancePortMock.findAll(reportFilterParameters, 0)).willReturn(page);
 
         // when

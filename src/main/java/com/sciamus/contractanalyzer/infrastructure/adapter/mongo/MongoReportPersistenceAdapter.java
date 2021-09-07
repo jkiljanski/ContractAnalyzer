@@ -15,6 +15,8 @@ import java.util.stream.Collectors;
 
 public class MongoReportPersistenceAdapter implements ReportPersistancePort {
 
+    public static final int PAGE_SIZE = 10;
+
     private final ReportDocumentMapper reportDocumentMapper;
 
     private final MongoReportsRepository mongoReportsRepository;
@@ -82,9 +84,9 @@ public class MongoReportPersistenceAdapter implements ReportPersistancePort {
         Pageable pageable;
 
         if (reportFilterParameters.sortingOrder != null && reportFilterParameters.sortingProperty != null && !reportFilterParameters.sortingOrder.isBlank() && !reportFilterParameters.sortingProperty.isBlank()) {
-             pageable = PageRequest.of(pageNumber, 10, Sort.Direction.fromString(reportFilterParameters.sortingOrder), reportFilterParameters.sortingProperty);
+             pageable = PageRequest.of(pageNumber, PAGE_SIZE, Sort.Direction.fromString(reportFilterParameters.sortingOrder), reportFilterParameters.sortingProperty);
         } else {
-             pageable = PageRequest.of(pageNumber, 10);
+             pageable = PageRequest.of(pageNumber, PAGE_SIZE);
         }
 
         ReportFilterParametersInfrastructureDTO reportFilterParametersInfrastructureDTO = reportFilterParametersMapper.mapToDTO(reportFilterParameters);
