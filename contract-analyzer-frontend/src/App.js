@@ -98,6 +98,13 @@ function App() {
             <Route path={'/reports'}>
                 <ReportRunner reportToRun={reports} reportsHandler={reportsHandler}/>
             </Route>
+            /* TODO write this form in react */
+            <form action="/contracts/importFile" method="post" enctype="multipart/form-data">
+                <p>
+                    Select OpenAPI JSON file : <input type="file" name="file" size="45" />
+                </p>
+                <input type="submit" value="Upload" />
+            </form>
         </div>
     );
 
