@@ -82,11 +82,9 @@ public class KafkaTransformationCheck implements KafkaCheck {
     }
 
     private Iterable<ConsumerRecord<String, String>> waitForRecordFromOutsideSystem(String incomingTopic, Consumer<String, String> consumer) {
-
-        Iterable<ConsumerRecord<String, String>> records = consumer.poll(Duration.ofSeconds(10)).records(incomingTopic);
-        Try.run(consumer::close)
-                .getOrElseThrow(ex -> new RuntimeException("Can't close Consumer application"));
-        return records;
+        return Try.of(() ->
+            consumer.poll(Duration.ofSeconds(10)).records(incomingTopic)
+        ).andFinally(consumer::close).get();
     }
 
     private List<Integer> generateRandomIntegers() {

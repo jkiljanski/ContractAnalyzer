@@ -23,9 +23,9 @@ spring:
         process-in-0:
           destination: input-topic
 
-        transform-in-0:
+        transformNumberSeqToSum-in-0:
           destination: transform-input-topic
-        transform-out-0:
+        transformNumberSeqToSum-out-0:
           destination: transform-output-topic
 
     function:
