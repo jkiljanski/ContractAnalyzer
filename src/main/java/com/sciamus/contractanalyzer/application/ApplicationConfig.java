@@ -6,6 +6,7 @@ import com.sciamus.contractanalyzer.application.mapper.report.ReportInfrastructu
 import com.sciamus.contractanalyzer.application.mapper.report.ReportViewMapper;
 import com.sciamus.contractanalyzer.domain.checks.queues.KafkaCheckService;
 import com.sciamus.contractanalyzer.domain.checks.rest.RestCheckRepository;
+import com.sciamus.contractanalyzer.domain.contracts.rest.RestContractsRepository;
 import com.sciamus.contractanalyzer.infrastructure.port.AggregatedReportPersistancePort;
 import com.sciamus.contractanalyzer.infrastructure.port.ReportPersistancePort;
 import com.sciamus.contractanalyzer.misc.CurrentUserService;
@@ -75,6 +76,11 @@ public class ApplicationConfig {
     @Bean
     public  KafkaChecksFacade kafkaChecksFacade (KafkaCheckService kafkaCheckService) {
         return new KafkaChecksFacade(kafkaCheckService, reportViewMapper());
+    }
+
+    @Bean
+    public ContractsFacade contractsFacade (RestContractsRepository restContractsRepository) {
+        return new ContractsFacade(restContractsRepository);
     }
 
 }

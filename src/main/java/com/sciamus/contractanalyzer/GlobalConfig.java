@@ -2,6 +2,7 @@ package com.sciamus.contractanalyzer;
 
 import com.sciamus.contractanalyzer.application.ApplicationConfig;
 import com.sciamus.contractanalyzer.domain.checks.DomainConfig;
+import com.sciamus.contractanalyzer.domain.contracts.ContractsDomainConfig;
 import com.sciamus.contractanalyzer.infrastructure.InfrastructureConfig;
 import com.sciamus.contractanalyzer.misc.conf.SecurityConfig;
 import org.springframework.boot.SpringBootConfiguration;
@@ -15,7 +16,7 @@ import org.springframework.context.annotation.Import;
 @EnableConfigurationProperties
 @ComponentScan("com.sciamus.contractanalyzer.interfaces.rest")
 
-@Import({SecurityConfig.class, DomainConfig.class, InfrastructureConfig.class, ApplicationConfig.class})
+@Import({SecurityConfig.class, DomainConfig.class, InfrastructureConfig.class, ApplicationConfig.class, ContractsDomainConfig.class})
 public class GlobalConfig {
 
 
