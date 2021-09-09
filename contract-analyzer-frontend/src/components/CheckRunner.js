@@ -6,6 +6,7 @@ import ReportViewer from "./reports/ReportViewer";
 import AggregatedReportTableHeaders from "./reports/AggregatedReportTableHeaders";
 import ReportTableHeaders from "./reports/ReportTableHeaders";
 import AggregatedReportViewer from "./reports/AggregatedReportViewer";
+import {API_BASE_URL} from "../index";
 
 
 const CheckRunner = (props) => {
@@ -39,7 +40,7 @@ const CheckRunner = (props) => {
 
         if (checkToRun.length === 1) {
             setIsAggregated(false)
-            response = await fetch('/checks/' + checkToRun + '/run?url=' + host, {
+            response = await fetch(API_BASE_URL + '/checks/' + checkToRun + '/run?url=' + host, {
                 method: 'POST',
                 headers: {
                     'Authorization': 'Bearer ' + keycloak.token,
@@ -53,7 +54,7 @@ const CheckRunner = (props) => {
 
         } else {
             setIsAggregated(true)
-            response = await fetch('/aggregatedChecks/run?namesOfChecks=' + checkToRun + '&url=' + host, {
+            response = await fetch(API_BASE_URL + '/aggregatedChecks/run?namesOfChecks=' + checkToRun + '&url=' + host, {
                 method: 'POST',
                 headers: {
                     'Authorization': 'Bearer ' + keycloak.token,

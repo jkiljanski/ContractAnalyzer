@@ -7,6 +7,7 @@ import '../pagination/Paginator.css'
 import {useKeycloak} from "@react-keycloak/web";
 import ReportsFilter from "./ReportsFilter";
 import ReportTableHeaders from "./ReportTableHeaders";
+    import {API_BASE_URL} from "../../index";
 
 
 const ReportRunner = props => {
@@ -39,7 +40,7 @@ const ReportRunner = props => {
         setReportById('')
         setQueryArgs([result, reportBody, startDateWithTime, finishDateWithTime, nameOfCheck, userName]);
 
-        let response = await fetch('/filteredReports?result=' + result + '&reportBody=' + reportBody +
+        let response = await fetch(API_BASE_URL + '/filteredReports?result=' + result + '&reportBody=' + reportBody +
             '&timestampFrom=' + startDateWithTime + '&timestampTo=' + finishDateWithTime + '&nameOfCheck=' + nameOfCheck + '&userName=' + userName + '&pageNumber=' + pageNumber, {
             method: 'GET',
             headers: {
@@ -65,7 +66,7 @@ const ReportRunner = props => {
     async function fetchReportById() {
         console.log(reportById)
         setReports([]);
-        let response = await fetch('/reports/' + reportId, {
+        let response = await fetch(API_BASE_URL + '/reports/' + reportId, {
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + keycloak.token,

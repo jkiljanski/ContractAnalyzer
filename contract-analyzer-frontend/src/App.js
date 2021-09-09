@@ -9,8 +9,11 @@ import classes from "./components/Styles.module.css";
 import QueuesChecks from "./components/queuesChecks/QueuesChecks"
 import ListOfKafkaChecks from "./components/queuesChecks/ListOfKafkaChecks";
 import {createStore} from "redux";
+import {API_BASE_URL} from "./index";
 
 function App() {
+
+    const [cow, setCow] = useState("1")
 
     const [listOfChecks, setListOfChecks] = useState(['Loading checks...'])
 
@@ -29,7 +32,7 @@ function App() {
     const fetchListOfChecks = useCallback(async () => {
 
         try {
-            const response = await fetch('/restContractChecks')
+            const response = await fetch(API_BASE_URL + '/restContractChecks')
             if (!response.ok)
                 throw new Error('Error fetching the list of checks')
             const dataReceived = await response.json();
@@ -44,7 +47,7 @@ function App() {
     const fetchListOfKafkaChecks = useCallback(async () => {
 
         try {
-            const response = await fetch('/kafkaCheck/')
+            const response = await fetch(API_BASE_URL + '/kafkaCheck/')
             if (!response.ok)
                 throw new Error('Error fetching the list of kafka checks')
             setListOfKafkaChecks(await response.json())

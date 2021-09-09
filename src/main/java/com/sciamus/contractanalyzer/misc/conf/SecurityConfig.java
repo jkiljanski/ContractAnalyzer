@@ -22,11 +22,9 @@ import org.springframework.security.web.authentication.session.SessionAuthentica
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.cors.CorsConfiguration;
 
 import java.security.Principal;
-
-import static com.google.common.base.Predicates.instanceOf;
-import static io.vavr.API.*;
 
 @KeycloakConfiguration
 @Import(SwaggerConfig.class)
@@ -40,7 +38,9 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter impleme
                 .anyRequest()
                 .permitAll();
         http.csrf().disable();
-        ;
+        http
+                .cors()
+                .configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues());
     }
 
     @Override

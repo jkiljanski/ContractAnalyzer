@@ -87,5 +87,18 @@ services:
       - kafka
       - zookeeper
 
+  frontend:
+    build:
+      context: contract-analyzer-frontend
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_API_BASE_URL: http://localhost:8080
+    ports:
+      - 80:3000
+    restart: always
+    depends_on:
+      - keycloak
+    volumes:
+      - "./app:/usr/src/app/app"
 
 #"-Djboss.socket.binding.port-offset=10"

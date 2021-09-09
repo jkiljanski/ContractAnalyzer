@@ -3,6 +3,7 @@ import {Button, Form, InputGroup} from "reactstrap";
 import { useKeycloak } from "@react-keycloak/web";
 import ReportViewer from "../reports/ReportViewer";
 import classes from './QueuesChecks.module.css';
+import {API_BASE_URL} from "../../index";
 
 const QueuesChecks = props => {
 
@@ -32,7 +33,7 @@ const QueuesChecks = props => {
 
 
         setSending('Check is running, wait...')
-        let response = await fetch('/kafkaCheck/' + kafkaCheckToRun + '/run' +
+        let response = await fetch(API_BASE_URL + '/kafkaCheck/' + kafkaCheckToRun + '/run' +
             '?incomingTopic=' + incomingTopic + '&outgoingTopic=' + outgoingTopic +
             '&host=' + host + '&port=' + port, {
             method: 'POST',
