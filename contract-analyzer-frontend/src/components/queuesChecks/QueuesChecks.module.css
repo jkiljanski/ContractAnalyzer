@@ -12,3 +12,20 @@
 .form {
     background-color: darkseagreen;
 }
+
+.reportPassed {
+    color: green;
+    /*background-color: darkseagreen;*/
+    padding: 1rem;
+    font-size: small;
+    text-decoration: none !important;
+}
+
+
+.reportFailed {
+    color: red;
+    /*background-color: darkseagreen;*/
+    padding: 1rem;
+    font-size: small;
+    text-decoration: none !important;
+}

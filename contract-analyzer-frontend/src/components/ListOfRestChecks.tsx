@@ -3,15 +3,15 @@ import {Button, ButtonGroup, ListGroup} from "reactstrap";
 import classes from "./Styles.module.css";
 import Counter from "./Counter";
 
-const ListOfChecks = (props) => {
+const ListOfRestChecks = (props: { checkHandler: (listOfChecks: string[]) => void; checks: string[] | null; }) => {
 
 
-    const [selectedChecks, setSelected] = useState([]);
+    const [selectedChecks, setSelected] = useState(new Array<string>());
 
 
     const [, forceUpdate] = useReducer(x => x + 1, 0);
 
-    const onResetButtonClick = (selected) => {
+    const onResetButtonClick = (selected: string) => {
 
         let indices = [];
         let idx = selectedChecks.indexOf(selected)
@@ -22,31 +22,25 @@ const ListOfChecks = (props) => {
         }
         for (let i = indices.length - 1; i >= 0; i--)
             selectedChecks.splice(indices[i], 1);
-        console.log(selectedChecks)
         setSelected(selectedChecks)
-        console.log(selectedChecks)
         props.checkHandler(selectedChecks)
         forceUpdate();
     }
 
-    const howManySelected = (check) => {
+    const howManySelected = (check: string) => {
         return selectedChecks.filter(x => x === check).length
     }
 
-    const onCheckClick = (selected) => {
+    const onCheckClick = (selected: string) => {
 
-        // const index = selectedChecks.indexOf(selected);
-        // if (index < 0) {
+
         selectedChecks.push(selected);
-        // } else {
-        //     selectedChecks.splice(index, 1);
-        // }
 
         setSelected([...selectedChecks]);
         props.checkHandler(selectedChecks)
     }
 
-    const list = props.checks.map((check) =>
+    const list = props.checks?.map((check) =>
         <ButtonGroup><Button className={classes.button} onClick={() => onCheckClick(check)}
                              active={selectedChecks.includes(check)}>
             {check}<Counter onClick={() => onResetButtonClick(check)} count={howManySelected(check)}/>
@@ -63,4 +57,4 @@ const ListOfChecks = (props) => {
     );
 }
 
-export default ListOfChecks
+export default ListOfRestChecks
