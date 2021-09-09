@@ -62,6 +62,11 @@ public class KafkaConfig {
         return new KafkaMessagesManyRunsCheckWithVavr(kafkaProducFactory(),kafkaConsumFactory());
     }
 
+    @Bean
+    KafkaTransformationCheck kafkaTransformationCheck(){
+        return new KafkaTransformationCheck(kafkaProducFactory(),kafkaConsumFactory());
+    }
+
 
 
 
