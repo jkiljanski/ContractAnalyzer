@@ -1,32 +1,32 @@
 import React, {useRef, useState} from "react";
 import classes from "../Styles.module.css";
 import {Button, Col, Form, InputGroup, Label, Row} from "reactstrap";
-import DatePicker from "react-datepicker";
+import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 
-const ReportsFilter = props => {
+const ReportsFilterForm = (props: { show: (pageNum: number, args: string[]) => Promise<void>; }) => {
 
-    const resultInputRef = useRef();
-    const reportBodyInputRef = useRef();
-    const nameOfCheckInputRef = useRef();
-    const userNameInputRef = useRef();
+    const resultInputRef = useRef<HTMLSelectElement>(null);
+    const reportBodyInputRef = useRef<HTMLInputElement>(null);
+    const nameOfCheckInputRef = useRef<HTMLInputElement>(null);
+    const userNameInputRef = useRef<HTMLInputElement>(null);
+    const startTimeInputRef = useRef<HTMLInputElement>(null);
+    const finishTimeInputRef = useRef<HTMLInputElement>(null);
 
-    const startTimeInputRef = useRef();
-    const finishTimeInputRef = useRef();
+    const [startDate, setStartDate] = useState<Date | null>(null);
+    const [finishDate, setFinishDate] = useState<Date | null>(null);
 
-    const [startDate, setStartDate] = useState(null);
-    const [finishDate, setFinishDate] = useState(null);
-
-    const formSubmitHandler = (event) => {
+    const formSubmitHandler = (event: { preventDefault: () => void; }) => {
         event.preventDefault();
 
-        const result = resultInputRef.current.value;
-        const reportBody = reportBodyInputRef.current.value;
-        const startTime = startTimeInputRef.current.value;
-        const finishTime = finishTimeInputRef.current.value;
-        const nameOfCheck = nameOfCheckInputRef.current.value;
-        const userName = userNameInputRef.current.value;
+
+        const result = resultInputRef.current!.value;
+        const reportBody = reportBodyInputRef.current!.value;
+        const startTime = startTimeInputRef.current!.value;
+        const finishTime = finishTimeInputRef.current!.value;
+        const nameOfCheck = nameOfCheckInputRef.current!.value;
+        const userName = userNameInputRef.current!.value;
 
         if ((startTime && !startDate) || (finishTime && !finishDate)) {
             return;
@@ -35,20 +35,23 @@ const ReportsFilter = props => {
         const startDateWithTime = convertToDateTimeFormat(startDate, startTime);
         const finishDateWithTime = convertToDateTimeFormat(finishDate, finishTime);
 
+        console.log(startDateWithTime, finishDateWithTime, " dates MOTHERFUCKER")
 
-        console.log(result, reportBody, startDateWithTime, finishDateWithTime, nameOfCheck, userName + " COJESTKURWA")
-
-        props.show(result, reportBody, startDateWithTime, finishDateWithTime, nameOfCheck, userName, 0);
+        props.show(0,[result,reportBody,startDateWithTime,finishDateWithTime,nameOfCheck,userName]);
     }
 
-    const convertToDateTimeFormat = (date, time) => {
+    const convertToDateTimeFormat = (date: Date | null, time: string | null) => {
 
-        if (date === null) {
+        if (date===null) {
             return ""
         }
 
+
         const formattedDate = moment(date).format("YYYY-MM-DD")
-        return time.length === 0 ? formattedDate + "T00:00" : formattedDate + 'T' + time;
+
+        return time ? formattedDate :
+
+            formattedDate + 'T' + time;
     }
 
     return (
@@ -69,10 +72,11 @@ const ReportsFilter = props => {
                     <Label>From</Label>
                     <Row>
                         <DatePicker
-
                             dateFormat={"yyyy-MM-dd"}
-                            selected={startDate}
-                            onChange={(date) => setStartDate(date)}/>
+                            selected={startDate ? moment(startDate).toDate() : null}
+                            // onChange={(date) => setStartDate(date)}/>
+                            onChange={ startDate => setStartDate(startDate as Date)}/>
+
                         <Label>Time</Label>
                         <input
                             type="time"
@@ -86,8 +90,8 @@ const ReportsFilter = props => {
                     <Row>
                         <DatePicker
                             dateFormat={"yyyy-MM-dd"}
-                            selected={finishDate}
-                            onChange={(date) => setFinishDate(date)}/>
+                            selected={finishDate ? moment(finishDate).toDate() : null}
+                            onChange={(date) => setFinishDate(date as Date)}/>
                         <Label>Time</Label>
                         <input
                             type="time"
@@ -130,4 +134,4 @@ const ReportsFilter = props => {
     )
 }
 
-export default ReportsFilter;
+export default ReportsFilterForm;

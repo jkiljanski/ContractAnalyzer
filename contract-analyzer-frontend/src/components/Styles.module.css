@@ -41,6 +41,14 @@
 
 }
 
+.paginator  {
+    text-align: center !important;
+    color: #4f346a;
+    background-color: darkseagreen;
+    padding: 1rem;
+    font-size: large;
+    font-weight: bold;
+}
 
 
 .resetButton {
@@ -79,7 +87,6 @@
     padding: 1rem;
     font-size: small;
     text-decoration: none !important;
-
 }
 
 .aggregatedReport {
@@ -99,4 +106,34 @@ input[type=text]:focus{
 .reportTable {
     width: 100%;
     border-color: black;
+}
+
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    cursor: pointer;
+}
+
+.pagination a {
+    padding: 3px;
+    color: salmon;
+    text-decoration: none;
+    background-color: #6c7ac9;
+}
+
+.pagination__link {
+    font-weight: bold;
+}
+
+.pagination__link--active a {
+    font-weight: bold;
+    color: salmon;
+    background: aqua;
+}
+
+.pagination__link--disabled a {
+    color: salmon;
+    /*border: 1px solid rgb(198, 197, 202);*/
 }
