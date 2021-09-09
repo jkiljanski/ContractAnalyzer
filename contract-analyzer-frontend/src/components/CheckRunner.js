@@ -5,6 +5,7 @@ import {useKeycloak} from "@react-keycloak/web";
 import ReportViewer from "./reports/ReportViewer";
 import AggregatedReportTableHeaders from "./reports/AggregatedReportTableHeaders";
 import ReportTableHeaders from "./reports/ReportTableHeaders";
+import AggregatedReportViewer from "./reports/AggregatedReportViewer";
 
 
 const CheckRunner = (props) => {
@@ -22,7 +23,7 @@ const CheckRunner = (props) => {
     const {keycloak} = useKeycloak();
 
     async function runCheck() {
-
+        setReport(initialMessage);
 
         if (!keycloak.authenticated) {
             alert("You're not logged in, please log in or check keycloak server")
@@ -94,10 +95,17 @@ const CheckRunner = (props) => {
 
             {error ? <b>{error}</b> :null}
             {report.id != null ? <b>Your check was run and produced the following report: </b> : null} <br/>
-            {report &&
+            {report && isAggregated &&
                 <Table>
-                    {isAggregated && <AggregatedReportTableHeaders></AggregatedReportTableHeaders> }
-                    {!isAggregated && <ReportTableHeaders></ReportTableHeaders>}
+                    <AggregatedReportTableHeaders></AggregatedReportTableHeaders>
+                    <tbody>
+                        <AggregatedReportViewer style={classes.aggregatedReport} report={report}/>
+                    </tbody>
+                </Table>
+            }
+            {report && !isAggregated &&
+                <Table>
+                    <ReportTableHeaders></ReportTableHeaders>
                     <tbody>
                     {report.result === 'PASSED' ?
                         <ReportViewer style={classes.reportPassed} report={report}/> :

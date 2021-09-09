@@ -2,8 +2,6 @@ package com.sciamus.contractanalyzer.application;
 
 import com.sciamus.contractanalyzer.application.mapper.report.ReportInfrastructureMapper;
 import com.sciamus.contractanalyzer.application.mapper.report.ReportViewMapper;
-import com.sciamus.contractanalyzer.domain.checks.reports.Report;
-import com.sciamus.contractanalyzer.domain.checks.reports.ReportResults;
 import com.sciamus.contractanalyzer.infrastructure.port.ReportInfrastructureDTO;
 import com.sciamus.contractanalyzer.infrastructure.port.ReportPersistancePort;
 import org.springframework.data.domain.Page;
@@ -40,13 +38,10 @@ public class ReportFacade {
         return reportViewMapper.mapToDTO(reportInfrastructureMapper.mapFromDTO(dto));
     }
 
-    public List<ReportViewDTO> getFilteredReports(String result, String reportBody, String timestamp, String nameOfCheck, String userName) {
-        return innerGetFilteredReports(result, reportBody, timestamp, nameOfCheck, userName)
-                .stream()
-                .map(reportViewMapper::mapToDTO).collect(Collectors.toList());
-    }
 
-    public Page<ReportViewDTO> findByPageNumber(int pageNumber) {
+
+
+    public Page<ReportViewDTO> findAllByPageNumber(int pageNumber) {
 
         Page<ReportInfrastructureDTO> page = reportPersistancePort.findAll(pageNumber);
 
@@ -54,31 +49,23 @@ public class ReportFacade {
     }
 
 
-    public Page<ReportViewDTO> findByPageNumberAndSortingProperty(int pageNumber, String sortingProperty, String sortingOrder) {
+    public Page<ReportViewDTO> findAllByPageNumberAndSortingProperty(int pageNumber, String sortingProperty, String sortingOrder) {
 
 
-        Page<ReportInfrastructureDTO> page = reportPersistancePort.findAll(pageNumber, sortingProperty, sortingOrder );
+        Page<ReportInfrastructureDTO> page = reportPersistancePort.findAll(pageNumber, sortingProperty, sortingOrder);
 
         return page.map(this::convertInfrastractureDTOToViewDTO);
 
     }
 
 
-
     private ReportInfrastructureDTO convertInterfaceDTOToInfrastructureDTO(ReportViewDTO dto) {
         return reportInfrastructureMapper.mapToDTO(reportViewMapper.mapFromDTO(dto));
     }
 
-    public List<Report> innerGetFilteredReports(String result, String reportBody, String timestamp, String nameOfCheck, String userName) {
-        List<ReportInfrastructureDTO> filteredReports = reportPersistancePort.findAll();
-        return filteredReports
-                .stream()
-                .map(reportInfrastructureMapper::mapFromDTO)
-                .filter(r -> (result.isEmpty() || r.getResult().equals(ReportResults.valueOf(result))) &&
-                        r.getReportBody().contains(reportBody) &&
-                        r.getNameOfCheck().contains(nameOfCheck) &&
-                        r.getUserName().contains(userName))
-                .collect(Collectors.toList());
-    }
 
+    public Page<ReportViewDTO> getFilteredReports(ReportFilterParameters reportFilterParameters, int pageNumber) {
+        Page<ReportInfrastructureDTO> page = reportPersistancePort.findAll(reportFilterParameters, pageNumber);
+        return  page.map(this::convertInfrastractureDTOToViewDTO);
+    }
 }

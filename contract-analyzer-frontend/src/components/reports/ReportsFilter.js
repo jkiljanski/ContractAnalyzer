@@ -1,8 +1,9 @@
-import React, {useState, useRef} from "react";
+import React, {useRef, useState} from "react";
 import classes from "../Styles.module.css";
-import {Button, Col, Form, Input, InputGroup, InputGroupAddon, Label, Row} from "reactstrap";
+import {Button, Col, Form, InputGroup, Label, Row} from "reactstrap";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import moment from "moment";
 
 const ReportsFilter = props => {
 
@@ -34,15 +35,20 @@ const ReportsFilter = props => {
         const startDateWithTime = convertToDateTimeFormat(startDate, startTime);
         const finishDateWithTime = convertToDateTimeFormat(finishDate, finishTime);
 
-        console.log(result, reportBody, startDateWithTime, finishDateWithTime, nameOfCheck, userName)
 
-        props.show(result, reportBody, startDateWithTime, finishDateWithTime, nameOfCheck, userName);
+        console.log(result, reportBody, startDateWithTime, finishDateWithTime, nameOfCheck, userName + " COJESTKURWA")
+
+        props.show(result, reportBody, startDateWithTime, finishDateWithTime, nameOfCheck, userName, 0);
     }
 
     const convertToDateTimeFormat = (date, time) => {
-        if (!date)
-            return null;
-        return date.toISOString().split('T')[0] + ' ' + time;
+
+        if (date === null) {
+            return ""
+        }
+
+        const formattedDate = moment(date).format("YYYY-MM-DD")
+        return time.length === 0 ? formattedDate + "T00:00" : formattedDate + 'T' + time;
     }
 
     return (
@@ -63,9 +69,11 @@ const ReportsFilter = props => {
                     <Label>From</Label>
                     <Row>
                         <DatePicker
+
+                            dateFormat={"yyyy-MM-dd"}
                             selected={startDate}
-                            onChange={(date) => setStartDate(date)} />
-                            <Label>Time</Label>
+                            onChange={(date) => setStartDate(date)}/>
+                        <Label>Time</Label>
                         <input
                             type="time"
                             name="startTime"
@@ -77,14 +85,15 @@ const ReportsFilter = props => {
                     <Label>To</Label>
                     <Row>
                         <DatePicker
+                            dateFormat={"yyyy-MM-dd"}
                             selected={finishDate}
-                            onChange={(date) => setFinishDate(date)} />
-                            <Label>Time</Label>
-                            <input
-                                type="time"
-                                name="finishTime"
-                                ref={finishTimeInputRef}
-                            />
+                            onChange={(date) => setFinishDate(date)}/>
+                        <Label>Time</Label>
+                        <input
+                            type="time"
+                            name="finishTime"
+                            ref={finishTimeInputRef}
+                        />
                     </Row>
                 </Col>
                 <Col>
@@ -92,7 +101,7 @@ const ReportsFilter = props => {
                         <Label>Name of check</Label>
                         <input type="text"
                                name="nameOfCheck"
-                               ref={nameOfCheckInputRef} />
+                               ref={nameOfCheckInputRef}/>
                     </InputGroup>
                 </Col>
             </Row>
@@ -102,7 +111,7 @@ const ReportsFilter = props => {
                         <Label>Report body</Label>
                         <input type="text"
                                name="reportBody"
-                               ref={reportBodyInputRef} />
+                               ref={reportBodyInputRef}/>
                     </InputGroup>
                 </Col>
             </Row>
@@ -112,7 +121,7 @@ const ReportsFilter = props => {
                         <Label>Username</Label>
                         <input type="text"
                                name="userName"
-                               ref={userNameInputRef} />
+                               ref={userNameInputRef}/>
                     </InputGroup>
                 </Col>
             </Row>

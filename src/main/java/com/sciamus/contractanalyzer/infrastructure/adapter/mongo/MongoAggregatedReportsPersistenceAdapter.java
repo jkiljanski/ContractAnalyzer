@@ -29,6 +29,8 @@ public class MongoAggregatedReportsPersistenceAdapter implements AggregatedRepor
 
         AggregatedReportDocument reportDocument = aggregatedReportDocumentMapper.mapToDocument(report);
         reportDocument.id = aggregatedReportIdGenerator.getNextID();
+        if (reportDocument.aggregatedReportName == null)
+            reportDocument.addName("Aggregated report#" + reportDocument.id);
         AggregatedReportDocument saved = mongoAggregatedReportsRepository.save(reportDocument);
         return aggregatedReportDocumentMapper.mapFromDocument(saved);
 

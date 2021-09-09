@@ -82,6 +82,10 @@
 
 }
 
+.aggregatedReport {
+    color: dimgray;
+}
+
 input[type="text"]{
     background-color: white;
     border: none;

@@ -31,7 +31,6 @@ spring:
     function:
       definition: process, transformNumberSeqToSum
 
-server:
   port: 8888
 
 
