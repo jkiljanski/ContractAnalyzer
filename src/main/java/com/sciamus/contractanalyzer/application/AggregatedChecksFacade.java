@@ -47,8 +47,8 @@ public class AggregatedChecksFacade {
 
 
     public AggregatedReportViewDTO addAggregatedReportToRepository(String name, AggregatedReport aggregatedReport) {
-        aggregatedReport.addName(name != null ? name : "Aggregated report#" + aggregatedReport.id);
-
+        if (name != null)
+            aggregatedReport.addName(name);
         return convertInfrastractureDTOToViewDTO(aggregatedReportPersistancePort.save(aggregatedReportInfrastructureMapper.mapToDTO(aggregatedReport)));
     }
 

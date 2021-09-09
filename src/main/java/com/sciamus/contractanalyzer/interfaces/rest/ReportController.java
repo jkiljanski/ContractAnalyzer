@@ -5,15 +5,20 @@ import com.sciamus.contractanalyzer.application.ReportFacade;
 import com.sciamus.contractanalyzer.application.ReportFilterParameters;
 import com.sciamus.contractanalyzer.application.ReportViewDTO;
 import com.sciamus.contractanalyzer.domain.checks.reports.ReportNotFoundException;
+import io.vavr.control.Try;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.RolesAllowed;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @RestController
 public class ReportController {
+
+    private static final DateTimeFormatter WITH_TIME_DATE_FORMAT = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
     private final ReportFacade reportFacade;
 
@@ -40,7 +45,7 @@ public class ReportController {
                                                    @RequestParam(value = "nameOfCheck", required = false) String nameOfCheck,
                                                    @RequestParam(value = "userName", required = false) String userName,
                                                    @RequestParam(value = "pageNumber", required = false) int number) {
-        return reportFacade.getFilteredReports(new ReportFilterParameters(result, reportBody, timestampFrom, timestampTo, nameOfCheck, userName), number);
+        return reportFacade.getFilteredReports(new ReportFilterParameters(result, reportBody, convertDateToDatetime(timestampFrom), convertDateToDatetime(timestampTo), nameOfCheck, userName), number);
     }
 
     @RolesAllowed("reader")
@@ -63,6 +68,17 @@ public class ReportController {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(exception.getMessage());
+    }
+
+
+    private LocalDateTime convertDateToDatetime(String timestamp) {
+
+        if (timestamp==null||timestamp.isBlank()) {
+            return null;
+        }
+
+        return Try.of(() -> LocalDateTime.parse(timestamp, WITH_TIME_DATE_FORMAT))
+                .get();
     }
 
 }

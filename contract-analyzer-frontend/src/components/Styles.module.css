@@ -89,6 +89,10 @@
     text-decoration: none !important;
 }
 
+.aggregatedReport {
+    color: dimgray;
+}
+
 input[type="text"]{
     background-color: white;
     border: none;
