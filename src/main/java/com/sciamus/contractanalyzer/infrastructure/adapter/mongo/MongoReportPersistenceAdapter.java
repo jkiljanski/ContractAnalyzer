@@ -6,6 +6,7 @@ import com.sciamus.contractanalyzer.domain.checks.reports.ReportNotFoundExceptio
 import com.sciamus.contractanalyzer.infrastructure.port.ReportFilterParametersInfrastructureDTO;
 import com.sciamus.contractanalyzer.infrastructure.port.ReportInfrastructureDTO;
 import com.sciamus.contractanalyzer.infrastructure.port.ReportPersistancePort;
+import org.assertj.core.util.Strings;
 import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
@@ -83,7 +84,7 @@ public class MongoReportPersistenceAdapter implements ReportPersistancePort {
 
         Pageable pageable;
 
-        if (reportFilterParameters.sortingOrder != null && reportFilterParameters.sortingProperty != null && !reportFilterParameters.sortingOrder.isBlank() && !reportFilterParameters.sortingProperty.isBlank()) {
+        if (!(Strings.isNullOrEmpty(reportFilterParameters.sortingOrder) || Strings.isNullOrEmpty(reportFilterParameters.sortingProperty))) {
              pageable = PageRequest.of(pageNumber, PAGE_SIZE, Sort.Direction.fromString(reportFilterParameters.sortingOrder), reportFilterParameters.sortingProperty);
         } else {
              pageable = PageRequest.of(pageNumber, PAGE_SIZE);
