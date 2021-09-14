@@ -1,7 +1,13 @@
 import React from "react";
 import {Badge} from "reactstrap";
 
-const Counter = (props) => {
+interface Props {
+    count: number
+    onClick: () =>void
+
+}
+
+const Counter: React.FC<Props> = (props:Props) => {
 
     let number= props.count;
 

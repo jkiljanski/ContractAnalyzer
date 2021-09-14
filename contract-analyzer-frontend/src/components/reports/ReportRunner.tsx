@@ -1,44 +1,52 @@
-    import React, {useState} from "react";
+import React, {useState} from "react";
 import ReactPaginate from 'react-paginate';
 import {Button, Input, InputGroup, InputGroupAddon, Table} from "reactstrap";
 import classes from "../Styles.module.css";
 import ReportViewer from "./ReportViewer";
-import '../pagination/Paginator.css'
 import {useKeycloak} from "@react-keycloak/web";
-import ReportsFilter from "./ReportsFilter";
+import ReportsFilterForm from "./ReportsFilterForm";
 import ReportTableHeaders from "./ReportTableHeaders";
-    import {API_BASE_URL} from "../../index";
+import Report from "../../model/Report";
+import {API_BASE_URL} from "../../index";
 
+interface Props {
 
-const ReportRunner = props => {
+    reportsToFetch: Report[]
+    reportsHandler: (reports: React.SetStateAction<Report[]>) => void
+}
+
+const ReportRunner: React.FC<Props> = (props: Props) => {
 
 
     const [reports, setReports] = useState([]);
 
     const [reportId, setReportId] = useState('');
 
-    const [reportById, setReportById] = useState('');
+    const [reportById, setReportById] = useState<Report | null>(null);
 
     const [isError, setIsError] = useState(false);
 
-    const [pageCount, setPageCount] = useState()
-    
-    const [queryArgs, setQueryArgs] = useState([""])
+    const [pageCount, setPageCount] = useState<number>(0)
+
+    const [queryArgs, setQueryArgs] = useState(new Array<string>())
 
 
-    const reportDependingOnResult = (report) => {
+    const reportDependingOnResult = (report: Report | null) => {
 
-        return report.result === 'PASSED' ?
-            <ReportViewer key={report.id} style={classes.reportPassed} report={report}/> :
-            <ReportViewer key={report.id} style={classes.reportFailed} report={report}/>
+        console.log(report?.result + " in mapper function")
+
+        return report && (report.result === 'PASSED' ?
+            <ReportViewer key={report.id} style={classes.reportPassed} report={report as Report}/> :
+            <ReportViewer key={report.id} style={classes.reportFailed} report={report as Report}/>)
     }
 
     const {keycloak} = useKeycloak();
 
-    async function fetchFilteredReports(result, reportBody, startDateWithTime, finishDateWithTime, nameOfCheck, userName, pageNumber) {
+    // async function fetchFilteredReports(result: string, reportBody: string, startDateWithTime: string, finishDateWithTime: string, nameOfCheck: string, userName: string, pageNumber: number) {
+    async function fetchFilteredReports(pageNumber: number, args: Array<string>) {
 
-        setReportById('')
-        setQueryArgs([result, reportBody, startDateWithTime, finishDateWithTime, nameOfCheck, userName]);
+        setReportById(null)
+        setQueryArgs([...args]);
 
         let response = await fetch(API_BASE_URL + '/filteredReports?result=' + result + '&reportBody=' + reportBody +
             '&timestampFrom=' + startDateWithTime + '&timestampTo=' + finishDateWithTime + '&nameOfCheck=' + nameOfCheck + '&userName=' + userName + '&pageNumber=' + pageNumber, {
@@ -55,11 +63,20 @@ const ReportRunner = props => {
         else {
             setIsError(false);
             let allReports = await response.json();
-            console.log(allReports.content + "SHIEEEET")
+
+
             setPageCount(allReports.totalPages);
-            console.log(allReports.totalPages)
+            console.log(allReports.totalPages + " total pages after query")
+            console.log(allReports.totalElements + " total pages after query")
+            console.log(args + " ARGS!!!!")
+
             let readyReports = allReports.content
-            setReports(readyReports.map(report => reportDependingOnResult(report)))
+            console.log(readyReports + " before mapping")
+
+
+            let mappedReport = readyReports.map((report: Report) => reportDependingOnResult(report));
+            console.log(mappedReport.result + " after mapping")
+            setReports(mappedReport)
         }
     }
 
@@ -76,7 +93,6 @@ const ReportRunner = props => {
         });
 
         if (response.status !== 200) {
-            setReportById(response.statusText)
             setIsError(true);
         } else {
             setIsError(false);
@@ -85,22 +101,21 @@ const ReportRunner = props => {
         }
     }
 
-    const userInputHandler = event => {
+    const userInputHandler = (event: { target: { value: React.SetStateAction<string>; }; }) => {
         setReportId(event.target.value);
     }
 
-    const handlePageChange = async (selectedObject) => {
 
-        console.log(queryArgs + " QUERYYYYYY")
+    const handlePageChange = async (selectedObject: { selected: number; }) => {
 
-        await fetchFilteredReports(...queryArgs, selectedObject.selected);
+
+        await fetchFilteredReports(selectedObject.selected, queryArgs);
 
     };
 
-
     return (
         <>
-            <ReportsFilter show={fetchFilteredReports}/>
+            <ReportsFilterForm show={fetchFilteredReports}/>
             <InputGroup>
                 <InputGroupAddon addonType="prepend"><Button className={classes.button} onClick={fetchReportById}>Show
                     report by id</Button>
@@ -122,18 +137,19 @@ const ReportRunner = props => {
             </Table>}
             {isError && <div className={classes.reportFailed}>{reportById}</div>}
 
-            {<div className={classes.brand}><ReactPaginate
+            {<div><ReactPaginate
                 previousLabel={"←"}
                 nextLabel={"→"}
-                breakLabel={'...'}
+                // breakLabel={'...'}
                 pageCount={pageCount}
                 onPageChange={handlePageChange}
-                previousLinkClassName={"pagination__link"}
-                nextLinkClassName={"pagination__link"}
-                disabledClassName={"pagination__link--disabled"}
-                activeClassName={"pagination__link--active"}
-                containerClassName={'pagination'}
-            /></div>}
+                previousLinkClassName={classes.pagination__link}
+                nextLinkClassName={classes.pagination__link}
+                disabledClassName={classes.pagination__linkDisabled}
+                activeClassName={classes.pagination__linkActive}
+                containerClassName={classes.pagination}
+                pageRangeDisplayed={3}
+                marginPagesDisplayed={0}/></div>}
         </>)
 }
 

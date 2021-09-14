@@ -1,4 +1,4 @@
-package com.example.kafkapingponger.kafka;
+package com.example.kafkapingponger.kafka.pingPonger;
 
 import com.example.kafkapingponger.kafka.config.KafkaStreamFactory;
 import org.apache.kafka.clients.consumer.ConsumerRecord;

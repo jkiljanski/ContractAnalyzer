@@ -49,4 +49,6 @@ public class MongoAdapterConfig {
         return new ReportIdGenerator(mongoReportsRepository);
     }
 
+
+
 }

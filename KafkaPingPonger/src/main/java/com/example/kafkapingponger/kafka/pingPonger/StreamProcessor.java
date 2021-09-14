@@ -1,4 +1,4 @@
-package com.example.kafkapingponger.kafka;
+package com.example.kafkapingponger.kafka.pingPonger;
 
 
 import org.apache.kafka.streams.KeyValue;
@@ -13,7 +13,6 @@ import java.util.function.Function;
 
 @Configuration
 public class StreamProcessor {
-
 
     @Bean
     public Function<KStream<String, String>, KStream<String, String>[]> process() {
