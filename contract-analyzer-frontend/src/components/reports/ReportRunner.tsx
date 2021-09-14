@@ -7,6 +7,7 @@ import {useKeycloak} from "@react-keycloak/web";
 import ReportsFilterForm from "./ReportsFilterForm";
 import ReportTableHeaders from "./ReportTableHeaders";
 import Report from "../../model/Report";
+import {API_BASE_URL} from "../../index";
 
 interface Props {
 
@@ -47,8 +48,7 @@ const ReportRunner: React.FC<Props> = (props: Props) => {
         setReportById(null)
         setQueryArgs([...args]);
 
-
-        let response = await fetch('/filteredReports?result=' + args[0] + '&reportBody=' + args[1] +
+        let response = await fetch(API_BASE_URL + '/filteredReports?result=' + args[0] + '&reportBody=' + args[1] +
             '&timestampFrom=' + args[2] + '&timestampTo=' + args[3] + '&nameOfCheck=' + args[4] + '&userName=' + args[5] + '&pageNumber=' + pageNumber, {
             method: 'GET',
             headers: {
@@ -83,7 +83,7 @@ const ReportRunner: React.FC<Props> = (props: Props) => {
     async function fetchReportById() {
         console.log(reportById)
         setReports([]);
-        let response = await fetch('/reports/' + reportId, {
+        let response = await fetch(API_BASE_URL + '/reports/' + reportId, {
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + keycloak.token,

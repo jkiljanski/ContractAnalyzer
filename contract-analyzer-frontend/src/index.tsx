@@ -5,8 +5,9 @@ import App from './App';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {BrowserRouter} from "react-router-dom";
 import { ReactKeycloakProvider } from '@react-keycloak/web'
-import keycloak from './keycloak'
+import keycloak from './keycloak';
 
+export const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 const keycloakInitOptions = { onLoad: 'login-required' }
 
