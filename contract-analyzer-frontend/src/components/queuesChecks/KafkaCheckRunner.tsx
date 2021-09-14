@@ -4,6 +4,7 @@ import {useKeycloak} from "@react-keycloak/web";
 import ReportViewer from "../reports/ReportViewer";
 import classes from './QueuesChecks.module.css';
 import Report from "../../model/Report";
+import {API_BASE_URL} from "../../index";
 
 
 interface Props {
@@ -39,7 +40,7 @@ const KafkaCheckRunner: React.FC<Props> = (props:Props) => {
 
 
         setSending('Check is running, wait...')
-        let response = await fetch('/kafkaCheck/' + kafkaCheckToRun + '/run' +
+        let response = await fetch(API_BASE_URL + '/kafkaCheck/' + kafkaCheckToRun + '/run' +
             '?incomingTopic=' + incomingTopic + '&outgoingTopic=' + outgoingTopic +
             '&host=' + host + '&port=' + port, {
             method: 'POST',

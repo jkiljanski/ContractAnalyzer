@@ -48,8 +48,8 @@ const ReportRunner: React.FC<Props> = (props: Props) => {
         setReportById(null)
         setQueryArgs([...args]);
 
-        let response = await fetch(API_BASE_URL + '/filteredReports?result=' + result + '&reportBody=' + reportBody +
-            '&timestampFrom=' + startDateWithTime + '&timestampTo=' + finishDateWithTime + '&nameOfCheck=' + nameOfCheck + '&userName=' + userName + '&pageNumber=' + pageNumber, {
+        let response = await fetch(API_BASE_URL + '/filteredReports?result=' + args[0] + '&reportBody=' + args[1] +
+            '&timestampFrom=' + args[2] + '&timestampTo=' + args[3] + '&nameOfCheck=' + args[4] + '&userName=' + args[5] + '&pageNumber=' + pageNumber, {
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + keycloak.token,

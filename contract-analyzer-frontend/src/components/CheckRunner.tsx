@@ -6,6 +6,7 @@ import ReportViewer from "./reports/ReportViewer";
 import AggregatedReportTableHeaders from "./reports/AggregatedReportTableHeaders";
 import ReportTableHeaders from "./reports/ReportTableHeaders";
 import Report from "../model/Report";
+import {API_BASE_URL} from "../index";
 
 interface Props {
     checksToRun: string[]
@@ -40,7 +41,7 @@ const CheckRunner: React.FC<Props> = (props: Props) => {
 
             if (checksToRun.length === 1) {
                 setIsAggregated(false)
-                response = await fetch('/checks/' + checksToRun + '/run?url=' + host, {
+                response = await fetch(API_BASE_URL + '/checks/' + checksToRun + '/run?url=' + host, {
                     method: 'POST',
                     headers: {
                         'Authorization': 'Bearer ' + keycloak.token,
