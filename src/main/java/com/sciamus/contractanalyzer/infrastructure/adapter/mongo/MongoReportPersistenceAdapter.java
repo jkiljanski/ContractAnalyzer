@@ -6,6 +6,7 @@ import com.sciamus.contractanalyzer.domain.checks.reports.ReportNotFoundExceptio
 import com.sciamus.contractanalyzer.infrastructure.port.ReportFilterParametersInfrastructureDTO;
 import com.sciamus.contractanalyzer.infrastructure.port.ReportInfrastructureDTO;
 import com.sciamus.contractanalyzer.infrastructure.port.ReportPersistancePort;
+import org.assertj.core.util.Strings;
 import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
@@ -14,6 +15,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class MongoReportPersistenceAdapter implements ReportPersistancePort {
+
+    public static final int PAGE_SIZE = 10;
 
     private final ReportDocumentMapper reportDocumentMapper;
 
@@ -79,7 +82,13 @@ public class MongoReportPersistenceAdapter implements ReportPersistancePort {
 
         MongoQueryBuilder mongoQueryBuilder = new MongoQueryBuilder();
 
-        Pageable pageable = PageRequest.of(pageNumber, 10);
+        Pageable pageable;
+
+        if (!(Strings.isNullOrEmpty(reportFilterParameters.sortingOrder) || Strings.isNullOrEmpty(reportFilterParameters.sortingProperty))) {
+             pageable = PageRequest.of(pageNumber, PAGE_SIZE, Sort.Direction.fromString(reportFilterParameters.sortingOrder), reportFilterParameters.sortingProperty);
+        } else {
+             pageable = PageRequest.of(pageNumber, PAGE_SIZE);
+        }
 
         ReportFilterParametersInfrastructureDTO reportFilterParametersInfrastructureDTO = reportFilterParametersMapper.mapToDTO(reportFilterParameters);
 

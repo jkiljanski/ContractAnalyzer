@@ -20,4 +20,6 @@ public interface ReportPersistancePort {
     Page<ReportInfrastructureDTO> findAll(ReportFilterParameters reportFilterParameters, int pageNumber);
 
 
+
+
 }

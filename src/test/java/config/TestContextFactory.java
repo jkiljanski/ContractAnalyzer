@@ -3,6 +3,7 @@ package config;
 import com.sciamus.contractanalyzer.application.AggregatedChecksFacade;
 import com.sciamus.contractanalyzer.application.ApplicationConfig;
 import com.sciamus.contractanalyzer.application.ChecksFacade;
+import com.sciamus.contractanalyzer.application.ReportFacade;
 import com.sciamus.contractanalyzer.domain.checks.aggregatedChecks.AggregatedReportConfig;
 import com.sciamus.contractanalyzer.domain.checks.rest.RestCheck;
 import com.sciamus.contractanalyzer.domain.checks.rest.RestCheckRepository;
@@ -34,7 +35,6 @@ public class TestContextFactory {
     }
 
 
-
     public RestChecksConfig restChecksConfig = new RestChecksConfig();
     AggregatedReportConfig aggregatedReportConfig = new AggregatedReportConfig();
     SuitesConfig suitesConfig = new SuitesConfig();
@@ -45,7 +45,6 @@ public class TestContextFactory {
         //może to jeszcze gdzieś wyekspediować
         return new ApplicationConfig(securityConfigurable);
     }
-
 
     // listę zapodać do RestChecksConfig
     private RestCheckRepository getRestCheckRepository(List<RestCheck> restCheckList) {
@@ -67,6 +66,10 @@ public class TestContextFactory {
 
         return getAppConfig().aggregatedChecksFacade(getRestCheckRepository(restCheckList),aggregatedReportPersistancePort, getChecksFacade(restCheckList));
 
+    }
+
+    public ReportFacade getReportFacade() {
+        return getAppConfig().reportFacade(reportPersistencePort);
     }
 
 //    public SuitesService getSuitesService(List<CheckSuite> suites) {
