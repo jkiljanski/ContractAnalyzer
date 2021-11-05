@@ -8,7 +8,6 @@ import ReportFetcher from "./components/reports/ReportRunner";
 import classes from "./components/Styles.module.css";
 import KafkaCheckRunner from "./components/queuesChecks/KafkaCheckRunner"
 import ListOfKafkaChecks from "./components/queuesChecks/ListOfKafkaChecks";
-import {createStore} from "redux";
 import {API_BASE_URL} from "./index";
 import Report from "./model/Report";
 
@@ -29,40 +28,34 @@ function App() {
     const [reports, setReports] = useState(new Array<Report>());
 
 
-
-    // @ts-ignore
-    let fetchListOfChecks = useCallback(async () => {
+    let fetchListOfChecks: () => Promise<void> = useCallback(async () => {
 
         try {
             const response = await fetch(API_BASE_URL + '/restContractChecks')
             if (!response.ok)
-                throw new Error('Error fetching the list of checks')
+                return Promise.reject(Error('Error fetching the list of checks'))
             const dataReceived = await response.json();
             setListOfChecks(dataReceived.listOfChecks)
         } catch (error: any) {
             setError(error.message)
         }
-        return fetchListOfChecks;
 
-    }, [setListOfChecks, setError]);
+    }, []);
 
 
-    // @ts-ignore
-    let fetchListOfKafkaChecks = useCallback(async () => {
+    let fetchListOfKafkaChecks: () => Promise<void> = useCallback(async () => {
 
         try {
             const response = await fetch(API_BASE_URL + '/kafkaCheck/')
             if (!response.ok)
-                throw new Error('Error fetching the list of kafka checks')
+                return Promise.reject(Error('Error fetching the list of kafka checks'))
             const dataReceived = await response.json();
-
 
             setListOfKafkaChecks(dataReceived)
         } catch (error: any) {
             setKafkaError(error.message)
         }
-        return fetchListOfKafkaChecks;
-    }, [setListOfKafkaChecks, setKafkaError])
+    }, [])
 
 
     useEffect(() => {
@@ -84,34 +77,32 @@ function App() {
         setKafkaCheckToRun(kafkaCheck);
     }
 
-
-
     return (
 
         <BrowserRouter>
 
-        <div className={classes.App}>
-            <Navigation/>
-            <Route path={'/'} exact>
-                <Redirect to={'/rest'}/>
-            </Route>
+            <div className={classes.App}>
+                <Navigation/>
+                <Route path={'/'} exact>
+                    <Redirect to={'/rest'}/>
+                </Route>
 
-            <Route path={'/rest'}>
+                <Route path={'/rest'}>
 
-                <ListOfRestChecks checks={listOfRestChecks} checkHandler={checkHandler}/>
-                <CheckRunner checksToRun={checksToRun}/>
-                {error && <p className={classes.logoutButton}>{error}</p>}
+                    <ListOfRestChecks checks={listOfRestChecks} checkHandler={checkHandler}/>
+                    <CheckRunner checksToRun={checksToRun}/>
+                    {error && <p className={classes.logoutButton}>{error}</p>}
 
-            </Route>
-            <Route path={'/queues'}>
-                <ListOfKafkaChecks kafkaChecksToRun={listOfKafkaChecks} checkHandler={kafkaCheckHandler}/>
-                <KafkaCheckRunner checkToRun={kafkaCheckToRun}/>
-                {kafkaError && <p className={classes.brandSmall}>{kafkaError}</p>}
-            </Route>
-            <Route path={'/reports'}>
-                <ReportFetcher reportsToFetch={reports} reportsHandler={reportsHandler}/>
-            </Route>
-        </div>
+                </Route>
+                <Route path={'/queues'}>
+                    <ListOfKafkaChecks kafkaChecksToRun={listOfKafkaChecks} checkHandler={kafkaCheckHandler}/>
+                    <KafkaCheckRunner checkToRun={kafkaCheckToRun}/>
+                    {kafkaError && <p className={classes.brandSmall}>{kafkaError}</p>}
+                </Route>
+                <Route path={'/reports'}>
+                    <ReportFetcher reportsToFetch={reports} reportsHandler={reportsHandler}/>
+                </Route>
+            </div>
         </BrowserRouter>
     );
 
